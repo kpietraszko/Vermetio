@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19dae60af28271c45a418e0869b9b921, type: 3}
   m_Name: SimSettingsFoam
   m_EditorClassIdentifier: 
-  _foamFadeRate: 0.22
+  _foamFadeRate: 0.26
   _waveFoamStrength: 1
   _waveFoamCoverage: 0.71
   _shorelineFoamMaxDepth: 0.27

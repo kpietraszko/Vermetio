@@ -4,8 +4,6 @@
 
 using UnityEngine;
 using UnityEngine.Rendering;
-using Unity.Entities;
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -268,9 +266,6 @@ namespace Crest
             for (int i = 0; i < _wavelengths.Length; i++)
             {
                 _amplitudes[i] = Random.value * _weight * _spectrum.GetAmplitude(_wavelengths[i], _componentsPerOctave, out _);
-                foreach (var world in World.All)
-                {
-                }
             }
         }
 

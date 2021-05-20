@@ -2,8 +2,11 @@
 
 // Copyright 2020 Wave Harmonic Ltd
 
+using System;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -80,6 +83,7 @@ namespace Crest
             public void Draw(CommandBuffer buf, float weight, int isTransition, int lodIdx)
             {
                 HasWaves = false;
+
                 _gerstner.UpdateBatch(this, _batchIndex);
 
                 if (HasWaves && weight > 0f)

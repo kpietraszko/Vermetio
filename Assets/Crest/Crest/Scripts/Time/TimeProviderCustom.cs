@@ -6,16 +6,47 @@ using UnityEngine;
 
 namespace Crest
 {
-    /// <summary>
-    /// This time provider fixes the ocean time at a custom value which is usable for testing/debugging.
-    /// </summary>
     public class TimeProviderCustom : TimeProviderBase
     {
-        public float _time = 0f;
-        public float _deltaTime = 0f;
+        public override float CurrentTime
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (UnityEditor.EditorApplication.isPlaying)
+                {
+                    return (System.Diagnostics.Stopwatch.GetTimestamp() / System.TimeSpan.TicksPerMillisecond) / 1000f;
+                }
+                else
+                {
+                    return (float) OceanRenderer.LastUpdateEditorTime;
+                }
+#else
+                return (System.Diagnostics.Stopwatch.GetTimestamp() / System.TimeSpan.TicksPerMillisecond) / 1000f;
+#endif
+            }
+        }
 
-        public override float CurrentTime => _time;
-        public override float DeltaTime => _deltaTime;
+        public override float DeltaTime
+        {
+            get
+            {
+#if UNITY_EDITOR
+                if (UnityEditor.EditorApplication.isPlaying)
+                {
+                    return Time.deltaTime;
+                }
+                else
+                {
+                    return 1f / 20f;
+                }
+#else
+                return Time.deltaTime;
+#endif
+                ;
+            }
+        }
+
         public override float DeltaTimeDynamics => DeltaTime;
     }
 }

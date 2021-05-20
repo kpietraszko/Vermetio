@@ -2,7 +2,9 @@
 
 // Copyright 2020 Wave Harmonic Ltd
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
@@ -217,6 +219,16 @@ namespace Crest
         public override void BuildCommandBuffer(OceanRenderer ocean, CommandBuffer buf)
         {
             base.BuildCommandBuffer(ocean, buf);
+            
+            string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (Application.isPlaying)
+            {
+                using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "GerstnerTime.csv"), append: true))
+                {
+                    outputFile.WriteLine($"{DateTime.Now.Ticks};{OceanRenderer.Instance.CurrentTime}");
+                };
+            }
 
             Shader.SetGlobalFloat(sp_AttenuationInShallows, Settings.AttenuationInShallows);
 

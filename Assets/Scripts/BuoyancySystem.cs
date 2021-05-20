@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Runtime.CompilerServices;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -43,13 +45,21 @@ public class BuoyancySystem : SystemBase
         var phaseBuffer = EntityManager.GetBuffer<PhaseElement>(spectrumEntity);
 
         var elapsedTime = Time.ElapsedTime;
+        
+        string docPath =
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        
+        using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "BuoyancyElapsedTime.csv"), append: true))
+        {
+            outputFile.WriteLine($"{DateTime.Now.Ticks};{elapsedTime}");
+        }
 
         Entities
             .ForEach((ref Translation translation, in Rotation rotation, in BuoyantComponent buoyant) =>
         {
             if (!SampleDisplacement(
                 (float) elapsedTime, 
-                translation.Value,
+                ref translation.Value,
                 0.5f,
                 out var displacement,
                 spectrum.WindDirectionAngle,
@@ -59,18 +69,20 @@ public class BuoyancySystem : SystemBase
                 waveAngleBuffer,
                 phaseBuffer))
             {
-                Debug.LogWarning("Failed to sample displacement");
+                
             }
-            translation = new Translation() {Value = displacement};
+            // if (elapsedTime < 1f)
+            //     Debug.Log($"{translation.Value}");
+
+            translation.Value.y = displacement.y;
         }).Schedule();
     }
 
-    // TODO: add shore attenuation - adapt code from compute shader, get depth from ray downward to terrain
-    private static bool SampleDisplacement(
-        float elapsedTime, 
-        float3 i_worldPos,
-        float i_minSpatialLength,
-        out float3 o_displacement,
+    private static bool TryGetWaterHeight(
+        float elapsedTime,
+        ref float3 worldPos,
+        float minSpatialLength,
+        out float height,
         float windDirAngle,
         float chop,
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
@@ -78,16 +90,76 @@ public class BuoyancySystem : SystemBase
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
         DynamicBuffer<PhaseElement> phaseBuffer)
     {
-        o_displacement = new float3();
+        // FPI - guess should converge to location that displaces to the target position
+        var guess = worldPos;
+        // 2 iterations was enough to get very close when chop = 1, added 2 more which should be
+        // sufficient for most applications. for high chop values or really stormy conditions there may
+        // be some error here. one could also terminate iteration based on the size of the error, this is
+        // worth trying but is left as future work for now.
+        float3 disp;
+        for (int i = 0; i < 4 && SampleDisplacement(
+            elapsedTime,
+            ref worldPos,
+            0.1f,
+            out disp,
+            windDirAngle,
+            chop,
+            wavelengthBuffer,
+            waveAmplitudeBuffer,
+            waveAngleBuffer,
+            phaseBuffer); i++)
+        {
+            var error = guess + disp - worldPos;
+            guess.x -= error.x;
+            guess.z -= error.z;
+        }
+
+        var undisplacedWorldPos = guess;
+        undisplacedWorldPos.y = 0f; // hardcoded sea level
+
+        if (!SampleDisplacement(
+            elapsedTime,
+            ref undisplacedWorldPos,
+            0.1f,
+            out var displacement,
+            windDirAngle,
+            chop,
+            wavelengthBuffer,
+            waveAmplitudeBuffer,
+            waveAngleBuffer,
+            phaseBuffer))
+        {
+            height = default;
+            return false;
+        }
+        
+        height = 0f + displacement.y; // 0 is hard coded sea level
+        return true;
+    }
+
+    // TODO: add shore attenuation - adapt code from compute shader, get depth from ray downward to terrain
+    private static bool SampleDisplacement(
+        float elapsedTime, 
+        ref float3 worldPos, // not sure why this is ref
+        float minSpatialLength,
+        out float3 displacement,
+        float windDirAngle,
+        float chop,
+        DynamicBuffer<WavelengthElement> wavelengthBuffer,
+        DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
+        DynamicBuffer<WaveAngleElement> waveAngleBuffer,
+        DynamicBuffer<PhaseElement> phaseBuffer)
+    {
+        displacement = new float3();
 
         if (waveAmplitudeBuffer.IsEmpty || !waveAmplitudeBuffer.IsCreated)
         {
             return false;
         }
 
-        var pos = new float2(i_worldPos.x, i_worldPos.z);
+        var pos = new float2(worldPos.x, worldPos.z);
         float windAngle = windDirAngle;
-        float minWavelength = i_minSpatialLength / 2f;
+        float minWavelength = minSpatialLength / 2f;
 
         for (int j = 0; j < waveAmplitudeBuffer.Length; j++)
         {
@@ -104,7 +176,7 @@ public class BuoyancySystem : SystemBase
             float x = dot(D, pos);
             float t = k * (x + C * elapsedTime) + phaseBuffer[j];
             float disp = -chop * sin(t);
-            o_displacement += waveAmplitudeBuffer[j] * new float3(
+            displacement += waveAmplitudeBuffer[j] * new float3(
                 D.x * disp,
                 cos(t),
                 D.y * disp
@@ -114,6 +186,7 @@ public class BuoyancySystem : SystemBase
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static float ComputeWaveSpeed(float wavelength /*, float depth*/)
     {
         // wave speed of deep sea ocean waves: https://en.wikipedia.org/wiki/Wind_wave

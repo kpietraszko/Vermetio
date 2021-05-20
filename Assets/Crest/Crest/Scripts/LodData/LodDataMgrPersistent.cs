@@ -2,6 +2,8 @@
 
 // Copyright 2020 Wave Harmonic Ltd
 
+using System;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering;
 

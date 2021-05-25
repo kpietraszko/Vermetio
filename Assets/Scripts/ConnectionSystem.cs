@@ -9,6 +9,7 @@ using Unity.Transforms;
 using UnityEngine;
 
 [UpdateInWorld(UpdateInWorld.TargetWorld.Default)]
+[AlwaysSynchronizeSystem]
 public class ConnectionSystem : SystemBase
 {
     // Singleton component to trigger connections once from a control system
@@ -34,6 +35,7 @@ public class ConnectionSystem : SystemBase
         
         foreach (var world in World.All)
         {
+            Debug.Log($"World: {world.Name}");
             var network = world.GetExistingSystem<NetworkStreamReceiveSystem>();
             if (world.GetExistingSystem<ClientSimulationSystemGroup>() != null)
             {
@@ -43,7 +45,7 @@ public class ConnectionSystem : SystemBase
                 Debug.Log("Connecting...");
                 network.Connect(ep);
             }
-#if UNITY_EDITOR
+            #if UNITY_EDITOR || UNITY_SERVER
             else if (world.GetExistingSystem<ServerSimulationSystemGroup>() != null)
             {
                 // Server world automatically listens for connections from any host
@@ -52,7 +54,7 @@ public class ConnectionSystem : SystemBase
                 Debug.Log("Listening...");
                 network.Listen(ep);
             }
-#endif
+            #endif
         }
     }
 }

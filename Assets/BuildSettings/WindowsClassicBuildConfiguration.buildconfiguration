@@ -3,30 +3,56 @@
     "Components": [
         {
             "$type": "Unity.Build.Common.GeneralSettings, Unity.Build",
-            "ProductName": "Product Name",
-            "CompanyName": "Company Name",
+            "ProductName": "VermetioServer",
+            "CompanyName": "Krzysztof Pietraszko",
             "Version": "1.0.0"
         },
         {
             "$type": "Unity.Build.Common.SceneList, Unity.Build",
             "$version": 1,
-            "BuildCurrentScene": true,
+            "BuildCurrentScene": false,
             "SceneInfos": [
                 {
+                    "Scene": "GlobalObjectId_V1-1-beb7da61f22359844bdf6b711e1189b4-102900000-0",
+                    "AutoLoad": true
+                },
+                {
+                    "Scene": "GlobalObjectId_V1-1-4a0d0c9c6f3acb041b62d5e0279bd85b-102900000-0",
+                    "AutoLoad": true
+                },
+                {
+                    "Scene": "GlobalObjectId_V1-1-beb7da61f22359844bdf6b711e1189b4-102900000-0",
+                    "AutoLoad": true
+                },
+                {
                     "Scene": "GlobalObjectId_V1-1-946e865eb270bb547a93a0673e1017b0-102900000-0",
-                    "AutoLoad": false
+                    "AutoLoad": true
                 }
             ]
+        },
+        {
+            "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
+            "OutputDirectory": "D:\\UnityRozne\\VermetioServerBuild"
+        },
+        {
+            "$type": "NetCodeConversionSettings, Unity.NetCode.Authoring.Hybrid",
+            "Target": 1
+        },
+        {
+            "$type": "Unity.Build.Common.PlayerScriptingDefines, Unity.Build",
+            "Defines": [
+                "UNITY_SERVER"
+            ]
+        },
+        {
+            "$type": "Unity.Build.Common.ScriptingDebuggerSettings, Unity.Build",
+            "WaitForManagedDebugger": true
         },
         {
             "$type": "Unity.Build.Classic.ClassicBuildProfile, Unity.Build.Classic",
             "$version": 1,
             "Platform": "win",
             "Configuration": 2
-        },
-        {
-            "$type": "NetCodeConversionSettings, Unity.NetCode.Authoring.Hybrid",
-            "Target": 2
         }
     ]
 }

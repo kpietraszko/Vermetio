@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.unity.build-report-inspector": {
+      "version": "0.2.2-preview",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.burst": {
       "version": "1.4.1",
       "depth": 1,
@@ -203,15 +210,6 @@
         "com.unity.properties": "1.6.0-preview",
         "com.unity.serialization": "1.6.1-preview",
         "com.unity.modules.uielements": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.recorder": {
-      "version": "2.5.5",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.timeline": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },

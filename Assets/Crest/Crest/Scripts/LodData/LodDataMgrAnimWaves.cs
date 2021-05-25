@@ -222,13 +222,13 @@ namespace Crest
             
             string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            if (Application.isPlaying)
-            {
-                using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "GerstnerTime.csv"), append: true))
-                {
-                    outputFile.WriteLine($"{DateTime.Now.Ticks};{OceanRenderer.Instance.CurrentTime}");
-                };
-            }
+            // if (Application.isPlaying)
+            // {
+            //     using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "GerstnerTime.csv"), append: true))
+            //     {
+            //         outputFile.WriteLine($"{DateTime.Now.Ticks};{OceanRenderer.Instance.CurrentTime}");
+            //     };
+            // }
 
             Shader.SetGlobalFloat(sp_AttenuationInShallows, Settings.AttenuationInShallows);
 

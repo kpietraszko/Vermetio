@@ -8,12 +8,20 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using Unity.NetCode;
+using Unity.Physics;
+using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateInGroup(typeof(ServerSimulationSystemGroup))]
+[UpdateInGroup(typeof(GhostPredictionSystemGroup))]
+[UpdateAfter(typeof(ExportPhysicsWorld))]
+// [UpdateBefore(typeof(EndFramePhysicsSystem))]
 public class BuoyancySystem : SystemBase
 {
+    BuildPhysicsWorld _buildPhysicsWorld;
+    ExportPhysicsWorld _exportPhysicsWorld;
+    EndFramePhysicsSystem _endFramePhysics;
+
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -22,6 +30,10 @@ public class BuoyancySystem : SystemBase
         RequireSingletonForUpdate<WaveAmplitudeElement>();
         RequireSingletonForUpdate<WaveAngleElement>();
         RequireSingletonForUpdate<PhaseElement>();
+        
+        _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
+        _exportPhysicsWorld = World.GetOrCreateSystem<ExportPhysicsWorld>();
+        _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
     }
 
     protected override void OnUpdate()
@@ -46,15 +58,20 @@ public class BuoyancySystem : SystemBase
 
         var elapsedTime = Time.ElapsedTime;
         
-        string docPath =
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        
-        using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "BuoyancyElapsedTime.csv"), append: true))
-        {
-            outputFile.WriteLine($"{DateTime.Now.Ticks};{elapsedTime}");
-        }
+        // string docPath =
+        //     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //
+        // using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "BuoyancyElapsedTime.csv"), append: true))
+        // {
+        //     outputFile.WriteLine($"{DateTime.Now.Ticks};{elapsedTime}");
+        // }
 
+        var physicsWorld = _buildPhysicsWorld.PhysicsWorld;
+
+        Dependency = JobHandle.CombineDependencies(Dependency, _endFramePhysics.GetOutputDependency());
+        
         Entities
+            .WithReadOnly(physicsWorld)
             .ForEach((ref Translation translation, in Rotation rotation, in BuoyantComponent buoyant) =>
         {
             if (!SampleDisplacement(
@@ -64,6 +81,8 @@ public class BuoyancySystem : SystemBase
                 out var displacement,
                 spectrum.WindDirectionAngle,
                 spectrum.Chop,
+                spectrum.AttenuationInShallows, 
+                physicsWorld, 
                 wavelengthBuffer,
                 waveAmplitudeBuffer,
                 waveAngleBuffer,
@@ -76,6 +95,8 @@ public class BuoyancySystem : SystemBase
 
             translation.Value.y = displacement.y;
         }).Schedule();
+        
+        _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
     }
 
     private static bool TryGetWaterHeight(
@@ -85,6 +106,8 @@ public class BuoyancySystem : SystemBase
         out float height,
         float windDirAngle,
         float chop,
+        float attenuationInShallows, 
+        PhysicsWorld physicsWorld, 
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
@@ -103,7 +126,9 @@ public class BuoyancySystem : SystemBase
             0.1f,
             out disp,
             windDirAngle,
-            chop,
+            chop, 
+            attenuationInShallows, 
+            physicsWorld, 
             wavelengthBuffer,
             waveAmplitudeBuffer,
             waveAngleBuffer,
@@ -123,7 +148,9 @@ public class BuoyancySystem : SystemBase
             0.1f,
             out var displacement,
             windDirAngle,
-            chop,
+            chop, 
+            attenuationInShallows, 
+            physicsWorld, 
             wavelengthBuffer,
             waveAmplitudeBuffer,
             waveAngleBuffer,
@@ -136,8 +163,7 @@ public class BuoyancySystem : SystemBase
         height = 0f + displacement.y; // 0 is hard coded sea level
         return true;
     }
-
-    // TODO: add shore attenuation - adapt code from compute shader, get depth from ray downward to terrain
+    
     private static bool SampleDisplacement(
         float elapsedTime, 
         ref float3 worldPos, // not sure why this is ref
@@ -145,6 +171,8 @@ public class BuoyancySystem : SystemBase
         out float3 displacement,
         float windDirAngle,
         float chop,
+        float attenuationInShallows, 
+        PhysicsWorld physicsWorld, 
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
@@ -160,6 +188,7 @@ public class BuoyancySystem : SystemBase
         var pos = new float2(worldPos.x, worldPos.z);
         float windAngle = windDirAngle;
         float minWavelength = minSpatialLength / 2f;
+        var weight = GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld);
 
         for (int j = 0; j < waveAmplitudeBuffer.Length; j++)
         {
@@ -169,7 +198,8 @@ public class BuoyancySystem : SystemBase
             float C = ComputeWaveSpeed(wavelengthBuffer[j]);
 
             // direction
-            var D = new float2(cos((radians(windAngle + waveAngleBuffer[j]))), sin((radians(windAngle + waveAngleBuffer[j]))));
+            var D = new float2(cos((radians(windAngle + waveAngleBuffer[j]))),
+                sin((radians(windAngle + waveAngleBuffer[j]))));
             // wave number
             float k = 2f * PI / wavelengthBuffer[j];
 
@@ -183,7 +213,43 @@ public class BuoyancySystem : SystemBase
             );
         }
 
+        displacement *= weight;
+
         return true;
+    }
+
+    private static float GetAttenuatedWeight(
+        float2 worldPos,  
+        float attenuationInShallows, 
+        DynamicBuffer<WavelengthElement> wavelengthBuffer, 
+        PhysicsWorld physicsWorld)
+    {
+        var sortedWavelengths = wavelengthBuffer.AsNativeArray();
+        sortedWavelengths.Sort();
+        var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
+        
+        var rayStart = new float3(worldPos.x, 0f, worldPos.y);
+        var raycastInput = new RaycastInput()
+        {
+            Start = rayStart, // 0f is hardcoded sea level
+            End = rayStart - new float3(0f, 256f, 0f),
+            Filter = new CollisionFilter()
+            {
+                BelongsTo = 1 << 1,
+                CollidesWith = 1 << 0,
+            }
+        };
+
+        physicsWorld.CastRay(raycastInput, out var raycastHit);
+        Debug.Log($"position: {raycastHit.Position}");
+        float depth = abs(0f + raycastHit.Position.y); // 0f is hardcoded sea level;
+        Debug.Log($"{depth}");
+        var maxDepth = 100f;
+        var depthNormalized = depth / maxDepth;
+        Debug.Log($"{depthNormalized}");
+        var depth_wt = saturate(depthNormalized * medianWavelength / PI);
+        sortedWavelengths.Dispose();
+        return attenuationInShallows * depth_wt + (1.0f - attenuationInShallows);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -21,4 +21,5 @@ public struct WaveSpectrumComponent : IComponentData
     //   authoring the data in the Editor.
     public float WindDirectionAngle;
     public float Chop;
+    public float AttenuationInShallows;
 }

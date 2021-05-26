@@ -23,14 +23,14 @@ public class TimeProvider : TimeProviderBase
 #if UNITY_EDITOR
             if (UnityEditor.EditorApplication.isPlaying)
             {
-                value = (float) GetTimeData().ElapsedTime;
+                value = GetInterpolationTime();
             }
             else
             {
                 value = (float) OceanRenderer.LastUpdateEditorTime;
             }
 #else
-                value = (float) GetTimeData().ElapsedTime;
+                value = GetInterpolationTime();
 #endif
             _delta = value - _previousTime;
             _previousTime = value;
@@ -45,14 +45,14 @@ public class TimeProvider : TimeProviderBase
 #if UNITY_EDITOR
             if (UnityEditor.EditorApplication.isPlaying)
             {
-                return GetTimeData().DeltaTime;
+                return Time.deltaTime;
             }
             else
             {
                 return 1f / 20f;
             }
 #else
-            return GetTimeData().DeltaTime;
+            return Time.deltaTime;
 #endif
             ;
         }
@@ -60,7 +60,7 @@ public class TimeProvider : TimeProviderBase
 
     public override float DeltaTimeDynamics => DeltaTime;
 
-    private TimeData GetTimeData()
+    private float GetInterpolationTime()
     {
         for (int i = 0; i < World.All.Count; i++)
         {
@@ -68,9 +68,10 @@ public class TimeProvider : TimeProviderBase
             if (clientSimSystemGroup == null)
                 continue;
 
-            return World.All[i].Time;
+            return (clientSimSystemGroup.InterpolationTick + clientSimSystemGroup.InterpolationTickFraction) *
+                   clientSimSystemGroup.ServerTickDeltaTime;
         }
 
-        return default(TimeData);
+        return 0f;
     }
 }

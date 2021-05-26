@@ -40,10 +40,14 @@ public class WaveSpectrumAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         Assert.IsNotNull(gerstner);
         var spectrum = gerstner._spectrum;
         Assert.IsNotNull(spectrum);
+
+        var attenuationInShallows = OceanRenderer.Instance._lodDataAnimWaves.Settings.AttenuationInShallows;
+        
         dstManager.AddComponentData(entity, new WaveSpectrumComponent()
         {
             WindDirectionAngle = gerstner._windDirectionAngle,
             Chop = spectrum._chop,
+            AttenuationInShallows = attenuationInShallows
         });
 
         dstManager.AddBuffer<WavelengthElement>(entity);

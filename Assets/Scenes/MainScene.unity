@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 865219233}
   - component: {fileID: 865219232}
   - component: {fileID: 865219230}
+  - component: {fileID: 865219231}
   m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
@@ -283,6 +284,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!154 &865219231
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865219229}
+  m_Material: {fileID: 0}
+  m_Enabled: 1
+  m_TerrainData: {fileID: 15600000, guid: c77316a1ea375d14dbbe5b6a95cac277, type: 2}
+  m_EnableTreeColliders: 1
 --- !u!218 &865219232
 Terrain:
   m_ObjectHideFlags: 0
@@ -324,7 +336,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 865219229}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -500, y: -10, z: -500}
+  m_LocalPosition: {x: -500, y: -100, z: -500}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -695,8 +707,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695907642}
-  m_LocalRotation: {x: 0.021489503, y: 0.93401754, z: -0.35190782, w: 0.057536077}
-  m_LocalPosition: {x: 25.618147, y: 27.555933, z: 71.90532}
+  m_LocalRotation: {x: -0.020208994, y: 0.9696867, z: -0.22836277, w: -0.08455676}
+  m_LocalPosition: {x: -233.72864, y: 5.9648085, z: -52.715565}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

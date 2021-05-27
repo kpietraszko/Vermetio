@@ -13,8 +13,9 @@ using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateInGroup(typeof(GhostPredictionSystemGroup))]
+[UpdateInGroup(typeof(GhostSimulationSystemGroup))]
 [UpdateAfter(typeof(ExportPhysicsWorld))]
+[UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
 // [UpdateBefore(typeof(EndFramePhysicsSystem))]
 public class BuoyancySystem : SystemBase
 {

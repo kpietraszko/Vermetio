@@ -73,9 +73,9 @@ public class BuoyancySystem : SystemBase
         
         Entities
             .WithReadOnly(physicsWorld)
-            .ForEach((ref Translation translation, in Rotation rotation, in BuoyantComponent buoyant) =>
+            .ForEach((ref Translation translation/*, ref PhysicsVelocity pv*/, in Rotation rotation/*, in PhysicsMass pm*/, in BuoyantComponent buoyant) =>
         {
-            if (!SampleDisplacement(
+            if (!TryGetWaterHeight(
                 (float) elapsedTime, 
                 ref translation.Value,
                 0.5f,
@@ -91,10 +91,8 @@ public class BuoyancySystem : SystemBase
             {
                 
             }
-            // if (elapsedTime < 1f)
-            //     Debug.Log($"{translation.Value}");
 
-            translation.Value.y = displacement.y;
+            translation.Value.y = displacement;
         }).Schedule();
         
         _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
@@ -124,7 +122,7 @@ public class BuoyancySystem : SystemBase
         for (int i = 0; i < 4 && SampleDisplacement(
             elapsedTime,
             ref worldPos,
-            0.1f,
+            minSpatialLength,
             out disp,
             windDirAngle,
             chop, 
@@ -146,7 +144,7 @@ public class BuoyancySystem : SystemBase
         if (!SampleDisplacement(
             elapsedTime,
             ref undisplacedWorldPos,
-            0.1f,
+            minSpatialLength,
             out var displacement,
             windDirAngle,
             chop, 

@@ -9,14 +9,13 @@ using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using Unity.NetCode;
 using Unity.Physics;
+using Unity.Physics.Extensions;
 using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
 
 [UpdateInGroup(typeof(GhostSimulationSystemGroup))]
-[UpdateAfter(typeof(ExportPhysicsWorld))]
 [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
-// [UpdateBefore(typeof(EndFramePhysicsSystem))]
 public class BuoyancySystem : SystemBase
 {
     BuildPhysicsWorld _buildPhysicsWorld;
@@ -58,6 +57,7 @@ public class BuoyancySystem : SystemBase
         var phaseBuffer = EntityManager.GetBuffer<PhaseElement>(spectrumEntity);
 
         var elapsedTime = Time.ElapsedTime;
+        var deltaTime = Time.DeltaTime;
         
         // string docPath =
         //     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -73,7 +73,7 @@ public class BuoyancySystem : SystemBase
         
         Entities
             .WithReadOnly(physicsWorld)
-            .ForEach((ref Translation translation/*, ref PhysicsVelocity pv*/, in Rotation rotation/*, in PhysicsMass pm*/, in BuoyantComponent buoyant) =>
+            .ForEach((ref Translation translation, ref PhysicsVelocity pv, in Rotation rotation, in PhysicsMass pm, in BuoyantComponent buoyant) =>
         {
             if (!TryGetWaterHeight(
                 (float) elapsedTime, 
@@ -92,7 +92,8 @@ public class BuoyancySystem : SystemBase
                 
             }
 
-            translation.Value.y = displacement;
+            // translation.Value.y = displacement;
+            pv.ApplyImpulse(pm, translation, rotation, new float3(0f, 10f * deltaTime, 0f), translation.Value);
         }).Schedule();
         
         _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
@@ -240,12 +241,9 @@ public class BuoyancySystem : SystemBase
         };
 
         physicsWorld.CastRay(raycastInput, out var raycastHit);
-        Debug.Log($"position: {raycastHit.Position}");
         float depth = abs(0f + raycastHit.Position.y); // 0f is hardcoded sea level;
-        Debug.Log($"{depth}");
         var maxDepth = 100f;
         var depthNormalized = depth / maxDepth;
-        Debug.Log($"{depthNormalized}");
         var depth_wt = saturate(depthNormalized * medianWavelength / PI);
         sortedWavelengths.Dispose();
         return attenuationInShallows * depth_wt + (1.0f - attenuationInShallows);

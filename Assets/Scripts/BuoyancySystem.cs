@@ -30,7 +30,7 @@ public class BuoyancySystem : SystemBase
         RequireSingletonForUpdate<WaveAmplitudeElement>();
         RequireSingletonForUpdate<WaveAngleElement>();
         RequireSingletonForUpdate<PhaseElement>();
-        
+
         _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
         _exportPhysicsWorld = World.GetOrCreateSystem<ExportPhysicsWorld>();
         _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
@@ -58,7 +58,7 @@ public class BuoyancySystem : SystemBase
 
         var elapsedTime = Time.ElapsedTime;
         var deltaTime = Time.DeltaTime;
-        
+
         // string docPath =
         //     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         //
@@ -70,32 +70,59 @@ public class BuoyancySystem : SystemBase
         var physicsWorld = _buildPhysicsWorld.PhysicsWorld;
 
         Dependency = JobHandle.CombineDependencies(Dependency, _endFramePhysics.GetOutputDependency());
-        
+
         Entities
             .WithReadOnly(physicsWorld)
-            .ForEach((ref Translation translation, ref PhysicsVelocity pv, in Rotation rotation, in PhysicsMass pm, in BuoyantComponent buoyant) =>
-        {
-            if (!TryGetWaterHeight(
-                (float) elapsedTime, 
-                ref translation.Value,
-                0.5f,
-                out var displacement,
-                spectrum.WindDirectionAngle,
-                spectrum.Chop,
-                spectrum.AttenuationInShallows, 
-                physicsWorld, 
-                wavelengthBuffer,
-                waveAmplitudeBuffer,
-                waveAngleBuffer,
-                phaseBuffer))
+            .ForEach((ref Translation translation, ref PhysicsVelocity pv, in Rotation rotation, in LocalToWorld localToWorld, 
+                in PhysicsMass pm, in PhysicsCollider col, 
+                in BuoyantComponent buoyant) =>
             {
-                
-            }
+                var voxels = new NativeList<float3>(Allocator.Temp);
+                var voxelResolution = 0.1f; // represents the half size of a voxel when creating the voxel representation
+                var boundingBox = col.Value.Value.CalculateAabb();
+                var rigidTransform = new RigidTransform(rotation.Value, translation.Value);
+                var worldSpaceBb = Unity.Physics.Math.TransformAabb(rigidTransform, boundingBox);
+                // Debug.Log($"{worldSpaceBb.Min}");
+                for (var iy = -worldSpaceBb.Min.y; iy < worldSpaceBb.Max.y; iy += voxelResolution)
+                {
+                    if (!TryGetWaterHeight(
+                        (float) elapsedTime,
+                        ref translation.Value,
+                        0.5f,
+                        out var waterHeight,
+                        spectrum.WindDirectionAngle,
+                        spectrum.Chop,
+                        spectrum.AttenuationInShallows,
+                        physicsWorld,
+                        wavelengthBuffer,
+                        waveAmplitudeBuffer,
+                        waveAngleBuffer,
+                        phaseBuffer))
+                    {
+                        // TODO: handle failure?
+                    }
 
-            // translation.Value.y = displacement;
-            pv.ApplyImpulse(pm, translation, rotation, new float3(0f, 10f * deltaTime, 0f), translation.Value);
-        }).Schedule();
-        
+                    for (var ix = -worldSpaceBb.Min.x; ix < worldSpaceBb.Max.x; ix += voxelResolution)
+                    {
+                        for (var iz = -worldSpaceBb.Min.z; iy < worldSpaceBb.Max.z; iy += voxelResolution)
+                        {
+                            var x = (voxelResolution * 0.5f) + ix;
+                            var y = (voxelResolution * 0.5f) + iy;
+                            var z = (voxelResolution * 0.5f) + iz;
+
+                            var p = new float3(x, y, z); // + worldSpaceBb.Center;
+
+                            Gizmos.color = new Color(0, 1, 0, 0.5f);
+                            Gizmos.DrawCube(p, new float3(voxelResolution));
+                            // TODO: check if p is inside collider
+                        }
+                    }
+                }
+
+                // translation.Value.y = displacement;
+                // pv.ApplyImpulse(pm, translation, rotation, new float3(0f, 10f * deltaTime, 0f), translation.Value);
+            }).Schedule();
+
         _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
     }
 
@@ -106,8 +133,8 @@ public class BuoyancySystem : SystemBase
         out float height,
         float windDirAngle,
         float chop,
-        float attenuationInShallows, 
-        PhysicsWorld physicsWorld, 
+        float attenuationInShallows,
+        PhysicsWorld physicsWorld,
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
@@ -120,19 +147,21 @@ public class BuoyancySystem : SystemBase
         // be some error here. one could also terminate iteration based on the size of the error, this is
         // worth trying but is left as future work for now.
         float3 disp;
-        for (int i = 0; i < 4 && SampleDisplacement(
-            elapsedTime,
-            ref worldPos,
-            minSpatialLength,
-            out disp,
-            windDirAngle,
-            chop, 
-            attenuationInShallows, 
-            physicsWorld, 
-            wavelengthBuffer,
-            waveAmplitudeBuffer,
-            waveAngleBuffer,
-            phaseBuffer); i++)
+        for (int i = 0;
+            i < 4 && SampleDisplacement(
+                elapsedTime,
+                ref worldPos,
+                minSpatialLength,
+                out disp,
+                windDirAngle,
+                chop,
+                attenuationInShallows,
+                physicsWorld,
+                wavelengthBuffer,
+                waveAmplitudeBuffer,
+                waveAngleBuffer,
+                phaseBuffer);
+            i++)
         {
             var error = guess + disp - worldPos;
             guess.x -= error.x;
@@ -148,9 +177,9 @@ public class BuoyancySystem : SystemBase
             minSpatialLength,
             out var displacement,
             windDirAngle,
-            chop, 
-            attenuationInShallows, 
-            physicsWorld, 
+            chop,
+            attenuationInShallows,
+            physicsWorld,
             wavelengthBuffer,
             waveAmplitudeBuffer,
             waveAngleBuffer,
@@ -159,20 +188,20 @@ public class BuoyancySystem : SystemBase
             height = default;
             return false;
         }
-        
+
         height = 0f + displacement.y; // 0 is hard coded sea level
         return true;
     }
-    
+
     private static bool SampleDisplacement(
-        float elapsedTime, 
+        float elapsedTime,
         ref float3 worldPos, // not sure why this is ref
         float minSpatialLength,
         out float3 displacement,
         float windDirAngle,
         float chop,
-        float attenuationInShallows, 
-        PhysicsWorld physicsWorld, 
+        float attenuationInShallows,
+        PhysicsWorld physicsWorld,
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
@@ -219,15 +248,15 @@ public class BuoyancySystem : SystemBase
     }
 
     private static float GetAttenuatedWeight(
-        float2 worldPos,  
-        float attenuationInShallows, 
-        DynamicBuffer<WavelengthElement> wavelengthBuffer, 
+        float2 worldPos,
+        float attenuationInShallows,
+        DynamicBuffer<WavelengthElement> wavelengthBuffer,
         PhysicsWorld physicsWorld)
     {
         var sortedWavelengths = wavelengthBuffer.AsNativeArray();
         sortedWavelengths.Sort();
         var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
-        
+
         var rayStart = new float3(worldPos.x, 0f, worldPos.y);
         var raycastInput = new RaycastInput()
         {

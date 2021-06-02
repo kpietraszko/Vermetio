@@ -41,7 +41,11 @@ public class WaveSpectrumAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         var spectrum = gerstner._spectrum;
         Assert.IsNotNull(spectrum);
 
-        var attenuationInShallows = OceanRenderer.Instance._lodDataAnimWaves.Settings.AttenuationInShallows;
+        var attenuationInShallowsMaybe = OceanRenderer.Instance?._lodDataAnimWaves?.Settings?.AttenuationInShallows;
+        if (!attenuationInShallowsMaybe.HasValue)
+            Debug.LogWarning("Failed to get attenuation in shallows");
+
+        var attenuationInShallows = attenuationInShallowsMaybe ?? 0f;
         
         dstManager.AddComponentData(entity, new WaveSpectrumComponent()
         {

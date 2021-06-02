@@ -178,7 +178,7 @@ Material:
     - _DiffuseShadow: {r: 0, g: 0.16078432, b: 0.30588236, a: 1}
     - _FoamBubbleColor: {r: 0.6383055, g: 0.8301887, b: 0.8243741, a: 1}
     - _FoamWhiteColor: {r: 1, g: 0.99634784, b: 0.97199994, a: 0.6862745}
-    - _SkyAwayFromSun: {r: 0.15419213, g: 0.22129796, b: 0.5372549, a: 1}
+    - _SkyAwayFromSun: {r: 0.15294115, g: 0.25032556, b: 0.5372549, a: 1}
     - _SkyBase: {r: 0.55200005, g: 0.85242355, b: 1, a: 1}
     - _SkyTowardsSun: {r: 2.6390157, g: 1.8217498, b: 0.9236555, a: 1}
     - _SubSurface: {r: 0, g: 0.48, b: 0.36, a: 1}

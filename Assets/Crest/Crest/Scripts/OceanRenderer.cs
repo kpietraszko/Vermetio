@@ -96,7 +96,7 @@ namespace Crest
         public Transform Root { get; private set; }
 
         [Tooltip("Optional provider for time, can be used to hard-code time for automation, or provide server time. Defaults to local Unity time."), SerializeField]
-        TimeProviderBase _timeProvider = new TimeProviderCustom();
+        TimeProviderBase _timeProvider = null;
         TimeProviderDefault _timeProviderDefault = new TimeProviderDefault();
         public ITimeProvider TimeProvider
         {

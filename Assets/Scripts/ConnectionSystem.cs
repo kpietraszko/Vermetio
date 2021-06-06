@@ -35,7 +35,7 @@ public class ConnectionSystem : SystemBase
         
         foreach (var world in World.All)
         {
-            Debug.Log($"World: {world.Name}");
+            // Debug.Log($"World: {world.Name}");
             var network = world.GetExistingSystem<NetworkStreamReceiveSystem>();
             if (world.GetExistingSystem<ClientSimulationSystemGroup>() != null)
             {

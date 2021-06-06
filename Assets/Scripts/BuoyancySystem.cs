@@ -13,7 +13,9 @@ using Unity.Physics.Extensions;
 using Unity.Physics.Systems;
 using Unity.Profiling;
 using Unity.Transforms;
+using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Profiling;
 using ForceMode = Unity.Physics.Extensions.ForceMode;
 using Math = System.Math;
 using quaternion = Unity.Mathematics.quaternion;
@@ -25,6 +27,7 @@ public class BuoyancySystem : SystemBase
     BuildPhysicsWorld _buildPhysicsWorld;
     ExportPhysicsWorld _exportPhysicsWorld;
     EndFramePhysicsSystem _endFramePhysics;
+    GhostSimulationSystemGroup _ghostSimulationSystemGroup;
 
     protected override void OnCreate()
     {
@@ -38,6 +41,7 @@ public class BuoyancySystem : SystemBase
         _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
         _exportPhysicsWorld = World.GetOrCreateSystem<ExportPhysicsWorld>();
         _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
+        _ghostSimulationSystemGroup = World.GetExistingSystem<GhostSimulationSystemGroup>();
     }
 
     protected override void OnUpdate()
@@ -62,6 +66,7 @@ public class BuoyancySystem : SystemBase
 
         var elapsedTime = Time.ElapsedTime;
         var deltaTime = Time.DeltaTime;
+        var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
 
         // string docPath =
         //     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -75,65 +80,54 @@ public class BuoyancySystem : SystemBase
 
         Dependency = JobHandle.CombineDependencies(Dependency, _endFramePhysics.GetOutputDependency());
         
-        var heightMarker = new ProfilerMarker("Height");
         var voxelizationMarker = new ProfilerMarker(("Voxelization"));
 
+        var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
+
         Entities
-            // .WithoutBurst()
+            .WithName("Voxelization")
+            .WithoutBurst()
+            .WithNone<VoxelElement>()
             .WithReadOnly(physicsWorld)
-            .ForEach((ref Translation translation, ref PhysicsVelocity pv, in Rotation rotation,
-                in LocalToWorld localToWorld,
-                in PhysicsMass pm, in PhysicsCollider col,
+            .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PhysicsVelocity pv,
+                ref PhysicsMass pm, in Rotation rotation, in PhysicsCollider col,
                 in BuoyantComponent buoyant) =>
             {
                 // GizmoManager.ClearGizmos();
-
-                var voxels = new NativeList<float3>(Allocator.Temp); // not used for now
-                var submergedVoxels = new NativeList<float3>(Allocator.Temp);
-                var voxelResolution = 1.1f; // represents the half size? of a voxel when creating the voxel representation
+                var voxelResolution = 0.21f; // represents the half size? of a voxel when creating the voxel representation (in world space)
+                ecb.SetComponent(entityInQueryIndex, entity, new BuoyantComponent() { VoxelResolution = voxelResolution});
                 var boundingBox = col.Value.Value.CalculateAabb();
-                var rigidTransform = new RigidTransform(rotation.Value, translation.Value);
+                var rigidTransform = new RigidTransform(quaternion.identity, translation.Value);
                 var worldSpaceBb = Unity.Physics.Math.TransformAabb(rigidTransform, boundingBox);
-                // DrawBounds(new Bounds(worldSpaceBb.Center, worldSpaceBb.Extents), 1 / 60f);
+                // DrawBounds(new Bounds(boundingBox.Center, boundingBox.Extents), deltaTime);
+                var bufferCreated = false;
+                DynamicBuffer<VoxelElement> voxelsBuffer = default;
                 // Debug.Log($"{worldSpaceBb.Min}");
-                for (var ix = worldSpaceBb.Min.x; ix < worldSpaceBb.Max.x; ix += voxelResolution)
+                for (var ix = boundingBox.Min.x; ix < boundingBox.Max.x; ix += voxelResolution)
                 {
-                    for (var iz = worldSpaceBb.Min.z; iz < worldSpaceBb.Max.z; iz += voxelResolution)
+                    for (var iz = boundingBox.Min.z; iz < boundingBox.Max.z; iz += voxelResolution)
                     {
-                        heightMarker.Begin();
-                        if (!GerstnerHelpers.TryGetWaterHeight( // water height doesn't depend on the y of the voxel
-                            (float) elapsedTime,
-                            ref translation.Value,
-                            0.5f,
-                            out var waterHeight,
-                            spectrum.WindDirectionAngle,
-                            spectrum.Chop,
-                            spectrum.AttenuationInShallows,
-                            physicsWorld,
-                            wavelengthBuffer,
-                            waveAmplitudeBuffer,
-                            waveAngleBuffer,
-                            phaseBuffer))
-                        {
-                            // TODO: handle failure?
-                        }
-
-                        heightMarker.End();
-                        
                         voxelizationMarker.Begin();
-                        for (var iy = worldSpaceBb.Min.y; iy < worldSpaceBb.Max.y; iy += voxelResolution)
+                        for (var iy = boundingBox.Min.y; iy < boundingBox.Max.y; iy += voxelResolution)
                         {
                             var x = (voxelResolution * 0.5f) + ix;
                             var y = (voxelResolution * 0.5f) + iy;
                             var z = (voxelResolution * 0.5f) + iz;
 
                             var p = new float3(x, y, z); // + worldSpaceBb.Center;
+                            var worldSpaceP = transform(new RigidTransform(rotation.Value, translation.Value), p);
 
                             // TODO: check if p is inside collider
 
+                            // GizmoManager.AddGizmoAction(() =>
+                            // {
+                            //     Gizmos.color = new Color(0, 1, 0, 1f);
+                            //     Gizmos.DrawWireCube(worldSpaceP, new float3(1.1f));
+                            // });
+
                             var pointDistanceInput = new PointDistanceInput()
                             {
-                                Position = p,
+                                Position = worldSpaceP,
                                 MaxDistance =
                                     max(worldSpaceBb.Extents.x, max(worldSpaceBb.Extents.y, worldSpaceBb.Extents.z)),
                                 Filter = new CollisionFilter()
@@ -144,46 +138,150 @@ public class BuoyancySystem : SystemBase
                                 }
                             };
                             physicsWorld.CalculateDistance(pointDistanceInput, out var closestHit);
+
                             if (closestHit.Distance < 0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
                             {
-                                voxels.Add(p); // add voxel if it's inside collider
-                                if (p.y + 0.5f * voxelResolution < waterHeight) // hmm
+                                if (voxelsBuffer.IsEmpty)
                                 {
-                                    submergedVoxels.Add(p);
-                                    // GizmoManager.AddGizmoAction(() =>
-                                    // {
-                                    //     Gizmos.color = new Color(0, 1, 0, 1f);
-                                    //     Gizmos.DrawWireCube(p, new float3(voxelResolution));
-                                    // });
+                                    voxelsBuffer = ecb.AddBuffer<VoxelElement>(entityInQueryIndex, entity);
                                 }
+
+                                voxelsBuffer.Add(p);
                             }
                         }
+
                         voxelizationMarker.End();
                     }
                 }
-                
-                var voxelVolume = Mathf.Pow(voxelResolution, 3f) * voxels.Length;
-                var rawVolume = worldSpaceBb.Extents.x * worldSpaceBb.Extents.y * worldSpaceBb.Extents.z;
-                var volume = Mathf.Min(rawVolume, voxelVolume);
-                var density = rcp(pm.InverseMass) / volume;
 
-                const float waterDensity = 1f;
-
-                var archimedesForce = new float3(
-                    0f,
-                    waterDensity * pow(voxelResolution, 3) * abs(PhysicsStep.Default.Gravity.y),
-                    0f);
-                
-                pm.GetImpulseFromForce(archimedesForce, ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
-
-                for (int i = 0; i < submergedVoxels.Length; i++)
+                if (voxelsBuffer.IsEmpty)
                 {
-                    pv.ApplyImpulse(impulseMass, translation, rotation, impulse, submergedVoxels[i]);
+                    return; // voxels not created yet, can't calculate mass
                 }
-                // translation.Value.y = displacement;
-                // pv.ApplyImpulse(pm, translation, rotation, new float3(0f, 10f * deltaTime, 0f), translation.Value);
-                voxels.Dispose();
-                submergedVoxels.Dispose();
+
+                var volume = voxelsBuffer.Length * pow(voxelResolution, 3);
+                var mass = volume * 750f * 0.0001f; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
+                // pm = PhysicsMass.CreateDynamic(new MassProperties
+                //     {
+                //         MassDistribution = new MassDistribution()
+                //         {
+                //             Transform = pm.Transform,
+                //             InertiaTensor = rcp(pm.InverseInertia) / mass
+                //         },
+                //         Volume = volume,
+                //         AngularExpansionFactor = pm.AngularExpansionFactor
+                //     },
+                //     mass);
+                Debug.Log($"Mass: {rcp(pm.InverseMass)}, Inertia: {rcp(pm.InverseInertia)}");
+                ecb.SetComponent(entityInQueryIndex, entity, new PhysicsMass()
+                {
+                    Transform = pm.Transform,
+                    AngularExpansionFactor = pm.AngularExpansionFactor,
+                    InverseInertia = rcp(rcp(pm.InverseInertia) / rcp(pm.InverseMass) * mass), // hmm
+                    InverseMass = rcp(mass),
+                });
+
+            }).Schedule();
+
+        Dependency.Complete();
+        _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
+        
+        var heightMarker = new ProfilerMarker("Height");
+        var depthMarker = new ProfilerMarker("Depth");
+
+        Entities
+            // .WithoutBurst()
+            .WithName("Apply_bouyancy")
+            .WithReadOnly(physicsWorld)
+            .ForEach((ref Translation translation, ref PhysicsVelocity pv, ref PhysicsDamping damping, ref BuoyantComponent buoyant,
+                in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col, in DynamicBuffer<VoxelElement> voxels) =>
+            {
+                // if (tick == 20)
+                // {
+                //     Profiler.enabled = true;
+                //     ProfilerDriver.enabled = true;
+                //     Debug.Log("Starting profiler");
+                // }
+                //
+                // if (tick == 25)
+                // {
+                //     Profiler.enabled = false;
+                //     ProfilerDriver.enabled = false;
+                //     Debug.Log("Finishing profiler");
+                //     Debug.Break();
+                // }
+                // GizmoManager.ClearGizmos();
+                var waterHeightsCache = new NativeHashMap<float2, float>(voxels.Length, Allocator.Temp);
+                var objectExtents = col.Value.Value.CalculateAabb(new RigidTransform(rotation.Value, translation.Value))
+                    .Extents;
+
+                var objectSizeForWaves = min(objectExtents.x, min(objectExtents.y, objectExtents.z));
+                // Debug.Log($"{voxels.Length}");
+                // Debug.Log($"Mass: {rcp(pm.InverseMass)}, Inertia: {rcp(pm.InverseInertia)}");
+                // Debug.Log($"{tick}");
+
+                var submergedVoxelsCount = 0;
+
+                for (int i = 0; i < voxels.Length; i++)
+                {
+                    var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value), voxels[i]);
+
+                    var submerged = false;
+                    var samplePoint = new float2(worldSpaceVoxel.x, worldSpaceVoxel.z);
+                    float waterHeight;
+                    if (waterHeightsCache.TryGetValue(samplePoint, out waterHeight) ||
+                        GerstnerHelpers.TryGetWaterHeight(
+                            (float) elapsedTime,
+                            ref translation.Value,
+                            objectSizeForWaves,
+                            out waterHeight,
+                            spectrum.WindDirectionAngle,
+                            spectrum.Chop,
+                            spectrum.AttenuationInShallows,
+                            physicsWorld,
+                            wavelengthBuffer,
+                            waveAmplitudeBuffer,
+                            waveAngleBuffer,
+                            phaseBuffer, 
+                            heightMarker,
+                            depthMarker))
+                    {
+                        waterHeightsCache[samplePoint] = waterHeight;
+                        if (worldSpaceVoxel.y < waterHeight) // hmm
+                        {
+                            // GizmoManager.AddGizmoAction(() =>
+                            // {
+                            //     Gizmos.color = new Color(0, 1, 0, 1f);
+                            //     Gizmos.DrawWireCube(worldSpaceVoxel, new float3(1.1f));
+                            // });
+
+                            submergedVoxelsCount++;
+                            const float waterDensity = 1000f * 0.0001f; // real density * mass multiplier
+                            var volumeOfDisplacedWater = pow(buoyant.VoxelResolution, 3);
+                            
+                            var archimedesForce = new float3(
+                                0f,
+                                waterDensity * volumeOfDisplacedWater * abs(PhysicsStep.Default.Gravity.y), // 1.1f is voxel res. 0.001f is the global mass multiplier I assumed
+                                0f);
+                                    
+                            pm.GetImpulseFromForce(archimedesForce, ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
+                            
+                            pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceVoxel);
+                        }
+                    }
+                }
+                // var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
+                var percentageSubmerged = submergedVoxelsCount / voxels.Length;
+                var submergedFactor = lerp(buoyant.SubmergedPercentage, percentageSubmerged, 0.25f);
+                buoyant.SubmergedPercentage = submergedFactor;
+                var baseDampingLinear = 0.04f;
+                var baseDampingAngular = 1f;//1.5f;
+                damping = new PhysicsDamping()
+                {
+                    Linear = baseDampingLinear + baseDampingLinear * (percentageSubmerged * 10f),
+                    Angular = baseDampingAngular + baseDampingAngular * (percentageSubmerged * 0.5f)
+                };
+
             }).Schedule();
 
         _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);

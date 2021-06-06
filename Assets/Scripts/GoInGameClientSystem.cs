@@ -26,7 +26,7 @@ public class GoInGameClientSystem : SystemBase
         
         Entities.WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
         {
-            if (prespawnCount != 1)
+            if (prespawnCount < 1/*!= 2*/)
                 return;
 
             Debug.Log($"{buoyantCount} buoyant components");

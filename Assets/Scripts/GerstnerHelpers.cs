@@ -3,6 +3,9 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
+using Unity.Profiling;
+using UnityEngine;
+using UnityEngine.Profiling;
 
 public class GerstnerHelpers
 {
@@ -18,8 +21,11 @@ public class GerstnerHelpers
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
-        DynamicBuffer<PhaseElement> phaseBuffer)
+        DynamicBuffer<PhaseElement> phaseBuffer,
+        ProfilerMarker heightMarker, 
+        ProfilerMarker depthMarker)
     {
+        heightMarker.Begin();
         // FPI - guess should converge to location that displaces to the target position
         var guess = worldPos;
         // 2 iterations was enough to get very close when chop = 1, added 2 more which should be
@@ -40,7 +46,8 @@ public class GerstnerHelpers
                 wavelengthBuffer,
                 waveAmplitudeBuffer,
                 waveAngleBuffer,
-                phaseBuffer);
+                phaseBuffer, 
+                depthMarker);
             i++)
         {
             var error = guess + disp - worldPos;
@@ -63,13 +70,16 @@ public class GerstnerHelpers
             wavelengthBuffer,
             waveAmplitudeBuffer,
             waveAngleBuffer,
-            phaseBuffer))
+            phaseBuffer, 
+            depthMarker))
         {
             height = default;
+            heightMarker.End();
             return false;
         }
 
         height = 0f + displacement.y; // 0 is hard coded sea level
+        heightMarker.End();
         return true;
     }
 
@@ -85,7 +95,8 @@ public class GerstnerHelpers
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
-        DynamicBuffer<PhaseElement> phaseBuffer)
+        DynamicBuffer<PhaseElement> phaseBuffer, 
+        ProfilerMarker depthMarker)
     {
         displacement = new float3();
 
@@ -97,7 +108,9 @@ public class GerstnerHelpers
         var pos = new float2(worldPos.x, worldPos.z);
         float windAngle = windDirAngle;
         float minWavelength = minSpatialLength / 2f;
-        var weight = GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld);
+        depthMarker.Begin();
+        var weight = 1.0f;//GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld);
+        depthMarker.End();
 
         for (int j = 0; j < waveAmplitudeBuffer.Length; j++)
         {

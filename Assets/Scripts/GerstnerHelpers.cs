@@ -9,8 +9,8 @@ using UnityEngine.Profiling;
 
 public class GerstnerHelpers
 {
-    public static bool TryGetWaterHeight(
-        float elapsedTime,
+    // 🔥🔥 very hot path 🔥🔥
+    public static bool TryGetWaterHeight(float elapsedTime,
         ref float3 worldPos,
         float minSpatialLength,
         out float height,
@@ -22,8 +22,9 @@ public class GerstnerHelpers
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
         DynamicBuffer<PhaseElement> phaseBuffer,
-        ProfilerMarker heightMarker, 
-        ProfilerMarker depthMarker)
+        ProfilerMarker heightMarker,
+        ProfilerMarker depthMarker, 
+        float medianWavelength)
     {
         heightMarker.Begin();
         // FPI - guess should converge to location that displaces to the target position
@@ -34,7 +35,7 @@ public class GerstnerHelpers
         // worth trying but is left as future work for now.
         float3 disp;
         for (int i = 0;
-            i < 4 && SampleDisplacement(
+            i < 3 && SampleDisplacement(
                 elapsedTime,
                 ref worldPos,
                 minSpatialLength,
@@ -47,7 +48,8 @@ public class GerstnerHelpers
                 waveAmplitudeBuffer,
                 waveAngleBuffer,
                 phaseBuffer, 
-                depthMarker);
+                depthMarker, 
+                medianWavelength);
             i++)
         {
             var error = guess + disp - worldPos;
@@ -71,7 +73,8 @@ public class GerstnerHelpers
             waveAmplitudeBuffer,
             waveAngleBuffer,
             phaseBuffer, 
-            depthMarker))
+            depthMarker, 
+            medianWavelength))
         {
             height = default;
             heightMarker.End();
@@ -83,6 +86,7 @@ public class GerstnerHelpers
         return true;
     }
 
+    // 🔥🔥🔥 very very hot path 🔥🔥🔥
     private static bool SampleDisplacement(
         float elapsedTime,
         ref float3 worldPos, // not sure why this is ref
@@ -95,12 +99,13 @@ public class GerstnerHelpers
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
-        DynamicBuffer<PhaseElement> phaseBuffer, 
-        ProfilerMarker depthMarker)
+        DynamicBuffer<PhaseElement> phaseBuffer,
+        ProfilerMarker depthMarker, 
+        float medianWavelength)
     {
         displacement = new float3();
 
-        if (waveAmplitudeBuffer.IsEmpty || !waveAmplitudeBuffer.IsCreated)
+        if (waveAmplitudeBuffer.IsEmpty)
         {
             return false;
         }
@@ -109,7 +114,7 @@ public class GerstnerHelpers
         float windAngle = windDirAngle;
         float minWavelength = minSpatialLength / 2f;
         depthMarker.Begin();
-        var weight = 1.0f;//GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld);
+        var weight = GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld, medianWavelength);
         depthMarker.End();
 
         for (int j = 0; j < waveAmplitudeBuffer.Length; j++)
@@ -144,12 +149,9 @@ public class GerstnerHelpers
         float2 worldPos,
         float attenuationInShallows,
         DynamicBuffer<WavelengthElement> wavelengthBuffer,
-        PhysicsWorld physicsWorld)
+        PhysicsWorld physicsWorld,
+        float medianWavelength)
     {
-        var sortedWavelengths = wavelengthBuffer.AsNativeArray();
-        sortedWavelengths.Sort();
-        var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
-
         var rayStart = new float3(worldPos.x, 0f, worldPos.y);
         var raycastInput = new RaycastInput()
         {
@@ -167,7 +169,6 @@ public class GerstnerHelpers
         var maxDepth = 100f;
         var depthNormalized = depth / maxDepth;
         var depth_wt = math.saturate(depthNormalized * medianWavelength / math.PI);
-        sortedWavelengths.Dispose();
         return attenuationInShallows * depth_wt + (1.0f - attenuationInShallows);
     }
 

@@ -13,7 +13,6 @@ using Unity.Physics.Extensions;
 using Unity.Physics.Systems;
 using Unity.Profiling;
 using Unity.Transforms;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Profiling;
 using ForceMode = Unity.Physics.Extensions.ForceMode;
@@ -28,6 +27,7 @@ public class BuoyancySystem : SystemBase
     ExportPhysicsWorld _exportPhysicsWorld;
     EndFramePhysicsSystem _endFramePhysics;
     GhostSimulationSystemGroup _ghostSimulationSystemGroup;
+    private float _initialHeight;
 
     protected override void OnCreate()
     {
@@ -79,7 +79,7 @@ public class BuoyancySystem : SystemBase
         var physicsWorld = _buildPhysicsWorld.PhysicsWorld;
 
         Dependency = JobHandle.CombineDependencies(Dependency, _endFramePhysics.GetOutputDependency());
-        
+
         var voxelizationMarker = new ProfilerMarker(("Voxelization"));
 
         var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
@@ -94,11 +94,17 @@ public class BuoyancySystem : SystemBase
                 in BuoyantComponent buoyant) =>
             {
                 // GizmoManager.ClearGizmos();
-                var voxelResolution = 0.21f; // represents the half size? of a voxel when creating the voxel representation (in world space)
-                ecb.SetComponent(entityInQueryIndex, entity, new BuoyantComponent() { VoxelResolution = voxelResolution});
                 var boundingBox = col.Value.Value.CalculateAabb();
                 var rigidTransform = new RigidTransform(quaternion.identity, translation.Value);
                 var worldSpaceBb = Unity.Physics.Math.TransformAabb(rigidTransform, boundingBox);
+                var voxelResolution = min(0.51f,
+                    min(worldSpaceBb.Extents.x,
+                        min(worldSpaceBb.Extents.y,
+                            worldSpaceBb.Extents
+                                .z))); // represents the half size? of a voxel when creating the voxel representation (in world space)
+                ecb.SetComponent(entityInQueryIndex, entity,
+                    new BuoyantComponent() {VoxelResolution = voxelResolution});
+
                 // DrawBounds(new Bounds(boundingBox.Center, boundingBox.Extents), deltaTime);
                 var bufferCreated = false;
                 DynamicBuffer<VoxelElement> voxelsBuffer = default;
@@ -139,7 +145,8 @@ public class BuoyancySystem : SystemBase
                             };
                             physicsWorld.CalculateDistance(pointDistanceInput, out var closestHit);
 
-                            if (closestHit.Distance < 0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
+                            if (closestHit.Distance <
+                                0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
                             {
                                 if (voxelsBuffer.IsEmpty)
                                 {
@@ -159,8 +166,11 @@ public class BuoyancySystem : SystemBase
                     return; // voxels not created yet, can't calculate mass
                 }
 
+                Debug.Log($"Created {voxelsBuffer.Length} voxels");
+
                 var volume = voxelsBuffer.Length * pow(voxelResolution, 3);
-                var mass = volume * 750f * 0.0001f; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
+                var mass = volume * 700f *
+                           0.0001f; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
                 // pm = PhysicsMass.CreateDynamic(new MassProperties
                 //     {
                 //         MassDistribution = new MassDistribution()
@@ -180,12 +190,11 @@ public class BuoyancySystem : SystemBase
                     InverseInertia = rcp(rcp(pm.InverseInertia) / rcp(pm.InverseMass) * mass), // hmm
                     InverseMass = rcp(mass),
                 });
-
             }).Schedule();
 
         Dependency.Complete();
         _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
-        
+
         var heightMarker = new ProfilerMarker("Height");
         var depthMarker = new ProfilerMarker("Depth");
 
@@ -193,8 +202,10 @@ public class BuoyancySystem : SystemBase
             // .WithoutBurst()
             .WithName("Apply_bouyancy")
             .WithReadOnly(physicsWorld)
-            .ForEach((ref Translation translation, ref PhysicsVelocity pv, ref PhysicsDamping damping, ref BuoyantComponent buoyant,
-                in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col, in DynamicBuffer<VoxelElement> voxels) =>
+            .ForEach((ref Translation translation, ref PhysicsVelocity pv, ref PhysicsDamping damping,
+                ref BuoyantComponent buoyant,
+                in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col,
+                in DynamicBuffer<VoxelElement> voxels) =>
             {
                 // if (tick == 20)
                 // {
@@ -221,6 +232,70 @@ public class BuoyancySystem : SystemBase
                 // Debug.Log($"{tick}");
 
                 var submergedVoxelsCount = 0;
+                var sortedWavelengths = wavelengthBuffer.AsNativeArray();
+                sortedWavelengths.Sort();
+                var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
+
+                var zeroPoint = new float3(10f, 10f, 10f);
+                var zeroPoint2 = new float3(10f, 10f, 10f);
+
+                // Debug.Log($"{_initialHeight}");
+
+                if (tick == 40)
+                {
+                    var timeTest = 0f;
+                    GerstnerHelpers.TryGetWaterHeight(
+                        (float) timeTest,
+                        ref zeroPoint,
+                        objectSizeForWaves,
+                        out var initialHeight,
+                        spectrum.WindDirectionAngle,
+                        spectrum.Chop,
+                        spectrum.AttenuationInShallows,
+                        physicsWorld,
+                        wavelengthBuffer,
+                        waveAmplitudeBuffer,
+                        waveAngleBuffer,
+                        phaseBuffer,
+                        heightMarker,
+                        depthMarker,
+                        medianWavelength);
+                    
+                    // timeTest += 1f;
+
+                    while (true)
+                    {
+                        timeTest += 1 / 60f;
+
+                        GerstnerHelpers.TryGetWaterHeight(
+                            (float) timeTest,
+                            ref zeroPoint2,
+                            objectSizeForWaves,
+                            out var heightNow,
+                            spectrum.WindDirectionAngle,
+                            spectrum.Chop,
+                            spectrum.AttenuationInShallows,
+                            physicsWorld,
+                            wavelengthBuffer,
+                            waveAmplitudeBuffer,
+                            waveAngleBuffer,
+                            phaseBuffer,
+                            heightMarker,
+                            depthMarker,
+                            medianWavelength);
+
+                        if (abs(heightNow - initialHeight) < 0.0001f)
+                        {
+                            Debug.Log($"MATCH at time {timeTest}");
+                            break;
+                        }
+
+                        if (timeTest % 30f < 0.1f)
+                        {
+                            Debug.Log($"{timeTest} passed");
+                        }
+                    }
+                }
 
                 for (int i = 0; i < voxels.Length; i++)
                 {
@@ -242,9 +317,10 @@ public class BuoyancySystem : SystemBase
                             wavelengthBuffer,
                             waveAmplitudeBuffer,
                             waveAngleBuffer,
-                            phaseBuffer, 
+                            phaseBuffer,
                             heightMarker,
-                            depthMarker))
+                            depthMarker,
+                            medianWavelength))
                     {
                         waterHeightsCache[samplePoint] = waterHeight;
                         if (worldSpaceVoxel.y < waterHeight) // hmm
@@ -258,30 +334,35 @@ public class BuoyancySystem : SystemBase
                             submergedVoxelsCount++;
                             const float waterDensity = 1000f * 0.0001f; // real density * mass multiplier
                             var volumeOfDisplacedWater = pow(buoyant.VoxelResolution, 3);
-                            
+
                             var archimedesForce = new float3(
                                 0f,
-                                waterDensity * volumeOfDisplacedWater * abs(PhysicsStep.Default.Gravity.y), // 1.1f is voxel res. 0.001f is the global mass multiplier I assumed
+                                waterDensity * volumeOfDisplacedWater *
+                                abs(PhysicsStep.Default.Gravity
+                                    .y), // 1.1f is voxel res. 0.001f is the global mass multiplier I assumed
                                 0f);
-                                    
-                            pm.GetImpulseFromForce(archimedesForce, ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
-                            
+
+                            pm.GetImpulseFromForce(archimedesForce, ForceMode.Force, deltaTime, out var impulse,
+                                out var impulseMass);
+
                             pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceVoxel);
                         }
                     }
                 }
+
                 // var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
                 var percentageSubmerged = submergedVoxelsCount / voxels.Length;
                 var submergedFactor = lerp(buoyant.SubmergedPercentage, percentageSubmerged, 0.25f);
                 buoyant.SubmergedPercentage = submergedFactor;
                 var baseDampingLinear = 0.04f;
-                var baseDampingAngular = 1f;//1.5f;
+                var baseDampingAngular = 1f; //1.5f;
                 damping = new PhysicsDamping()
                 {
                     Linear = baseDampingLinear + baseDampingLinear * (percentageSubmerged * 10f),
                     Angular = baseDampingAngular + baseDampingAngular * (percentageSubmerged * 0.5f)
                 };
 
+                sortedWavelengths.Dispose();
             }).Schedule();
 
         _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);

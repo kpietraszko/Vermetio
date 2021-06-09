@@ -10,10 +10,9 @@ using UnityEngine.Profiling;
 public class GerstnerHelpers
 {
     // 🔥🔥 very hot path 🔥🔥
-    public static bool TryGetWaterHeight(float elapsedTime,
-        ref float3 worldPos,
+    public static NativeArray<float> GetWaterHeights(float elapsedTime,
+        NativeArray<float2> worldPositions,
         float minSpatialLength,
-        out float height,
         float windDirAngle,
         float chop,
         float attenuationInShallows,
@@ -23,23 +22,30 @@ public class GerstnerHelpers
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
         DynamicBuffer<PhaseElement> phaseBuffer,
         ProfilerMarker heightMarker,
-        ProfilerMarker depthMarker, 
+        ProfilerMarker depthMarker,
         float medianWavelength)
     {
         heightMarker.Begin();
         // FPI - guess should converge to location that displaces to the target position
-        var guess = worldPos;
+        var guesses = new NativeArray<float3>(worldPositions.Length, Allocator.Temp);
+        var positions = new NativeArray<float2>(worldPositions.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+
+        for (int i = 0; i < guesses.Length; i++)
+        {
+            guesses[i] = new float3(worldPositions[i].x, 0f, worldPositions[i].y);
+        }
+        
         // 2 iterations was enough to get very close when chop = 1, added 2 more which should be
         // sufficient for most applications. for high chop values or really stormy conditions there may
         // be some error here. one could also terminate iteration based on the size of the error, this is
         // worth trying but is left as future work for now.
-        float3 disp;
-        for (int i = 0;
-            i < 3 && SampleDisplacement(
+        // var disp = new NativeArray<float3>(worldPositions.Length, Allocator.Temp);
+        for (int step = 0; step < 4; step++)
+        {
+            var disp = SampleDisplacements(
                 elapsedTime,
-                ref worldPos,
+                positions,
                 minSpatialLength,
-                out disp,
                 windDirAngle,
                 chop,
                 attenuationInShallows,
@@ -47,24 +53,28 @@ public class GerstnerHelpers
                 wavelengthBuffer,
                 waveAmplitudeBuffer,
                 waveAngleBuffer,
-                phaseBuffer, 
-                depthMarker, 
+                phaseBuffer,
+                depthMarker,
                 medianWavelength);
-            i++)
-        {
-            var error = guess + disp - worldPos;
-            guess.x -= error.x;
-            guess.z -= error.z;
+
+            for (int i = 0; i < positions.Length; i++)
+            {
+                var guess = guesses[i];
+                var error = guess + disp[i] - new float3(worldPositions[i].x, 0f, worldPositions[i].y); // not sure about the worldPositions, y shouldn't matter ...I think
+                guesses[i] = new float3(guess.x - error.x, guess.y, guess.z - error.z);
+            }
         }
 
-        var undisplacedWorldPos = guess;
-        undisplacedWorldPos.y = 0f; // hardcoded sea level
+        for (int i = 0; i < positions.Length; i++)
+        {
+            positions[i] = new float2(guesses[i].x, guesses[i].z);
+        }
+        
 
-        if (!SampleDisplacement(
+        var displacements = SampleDisplacements(
             elapsedTime,
-            ref undisplacedWorldPos,
+            positions,
             minSpatialLength,
-            out var displacement,
             windDirAngle,
             chop,
             attenuationInShallows,
@@ -72,26 +82,27 @@ public class GerstnerHelpers
             wavelengthBuffer,
             waveAmplitudeBuffer,
             waveAngleBuffer,
-            phaseBuffer, 
-            depthMarker, 
-            medianWavelength))
-        {
-            height = default;
-            heightMarker.End();
-            return false;
-        }
+            phaseBuffer,
+            depthMarker,
+            medianWavelength);
 
-        height = 0f + displacement.y; // 0 is hard coded sea level
+        var heights = new NativeArray<float>(displacements.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+        for (int i = 0; i < heights.Length; i++)
+        {
+            heights[i] = 0f + displacements[i].y; // 0 is hard coded sea level
+        }
         heightMarker.End();
-        return true;
+        guesses.Dispose();
+        positions.Dispose();
+
+        return heights;
     }
 
     // 🔥🔥🔥 very very hot path 🔥🔥🔥
-    private static bool SampleDisplacement(
+    private static NativeArray<float3> SampleDisplacements(
         float elapsedTime,
-        ref float3 worldPos, // not sure why this is ref
+        NativeArray<float2> positions,
         float minSpatialLength,
-        out float3 displacement,
         float windDirAngle,
         float chop,
         float attenuationInShallows,
@@ -100,49 +111,50 @@ public class GerstnerHelpers
         DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
         DynamicBuffer<WaveAngleElement> waveAngleBuffer,
         DynamicBuffer<PhaseElement> phaseBuffer,
-        ProfilerMarker depthMarker, 
+        ProfilerMarker depthMarker,
         float medianWavelength)
     {
-        displacement = new float3();
-
-        if (waveAmplitudeBuffer.IsEmpty)
-        {
-            return false;
-        }
-
-        var pos = new float2(worldPos.x, worldPos.z);
+        var displacements = new NativeArray<float3>(positions.Length, Allocator.Temp);
         float windAngle = windDirAngle;
         float minWavelength = minSpatialLength / 2f;
-        depthMarker.Begin();
-        var weight = GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld, medianWavelength);
-        depthMarker.End();
+        // depthMarker.Begin();
+        var
+            weight = 1f; //GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld, medianWavelength);
+        // depthMarker.End();
 
         for (int j = 0; j < waveAmplitudeBuffer.Length; j++)
         {
+            var wavelength = wavelengthBuffer[j];
             if (waveAmplitudeBuffer[j] <= 0.001f) continue;
-            if (wavelengthBuffer[j] < minWavelength) continue;
+            if (wavelength < minWavelength) continue;
 
-            float C = ComputeWaveSpeed(wavelengthBuffer[j]);
+            float C = ComputeWaveSpeed(wavelength);
 
             // direction
             var D = new float2(math.cos((math.radians(windAngle + waveAngleBuffer[j]))),
                 math.sin((math.radians(windAngle + waveAngleBuffer[j]))));
             // wave number
-            float k = 2f * math.PI / wavelengthBuffer[j];
+            float k = 2f * math.PI / wavelength;
 
-            float x = math.dot(D, pos);
-            float t = k * (x + C * elapsedTime) + phaseBuffer[j];
-            float disp = -chop * math.sin(t);
-            displacement += waveAmplitudeBuffer[j] * new float3(
-                D.x * disp,
-                math.cos(t),
-                D.y * disp
-            );
+            for (int posIndex = 0; posIndex < positions.Length; posIndex++)
+            {
+                float x = math.dot(D, positions[posIndex]);
+                float t = k * (x + C * elapsedTime) + phaseBuffer[j];
+                float disp = -chop * math.sin(t);
+                displacements[posIndex] += waveAmplitudeBuffer[j] * new float3(
+                    D.x * disp,
+                    math.cos(t),
+                    D.y * disp
+                );
+            }
         }
 
-        displacement *= weight;
+        for (int posIndex = 0; posIndex < positions.Length; posIndex++)
+        {
+            displacements[posIndex] *= weight;
+        }
 
-        return true;
+        return displacements;
     }
 
     private static float GetAttenuatedWeight(
@@ -177,11 +189,9 @@ public class GerstnerHelpers
     {
         // wave speed of deep sea ocean waves: https://en.wikipedia.org/wiki/Wind_wave
         // https://en.wikipedia.org/wiki/Dispersion_(water_waves)#Wave_propagation_and_dispersion
-        float g = 9.81f;
         float k = 2f * math.PI / wavelength;
         //float h = max(depth, 0.01);
         //float cp = sqrt(abs(tanh_clamped(h * k)) * g / k);
-        float cp = math.sqrt(g / k);
-        return cp;
+        return math.sqrt(9.81f / k);
     }
 }

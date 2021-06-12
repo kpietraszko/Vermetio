@@ -38,7 +38,7 @@
         },
         {
             "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
-            "OutputDirectory": "D:\\UnityRozne\\VermetioClientBuild"
+            "OutputDirectory": "C:\\Unity\\ClientBuild"
         },
         {
             "$type": "NetCodeConversionSettings, Unity.NetCode.Authoring.Hybrid",

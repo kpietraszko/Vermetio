@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using DefaultNamespace;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -13,12 +15,16 @@ using Unity.Physics.Extensions;
 using Unity.Physics.Systems;
 using Unity.Profiling;
 using Unity.Transforms;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Debug = UnityEngine.Debug;
 using ForceMode = Unity.Physics.Extensions.ForceMode;
 using Math = System.Math;
 using quaternion = Unity.Mathematics.quaternion;
+#if UNITY_EDITOR
+using UnityEditorInternal;
+
+#endif
 
 namespace Vermetio.Server
 {
@@ -45,8 +51,8 @@ namespace Vermetio.Server
             _exportPhysicsWorld = World.GetOrCreateSystem<ExportPhysicsWorld>();
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
             _ghostSimulationSystemGroup = World.GetExistingSystem<GhostSimulationSystemGroup>();
-            
-            // Debug.unityLogger.logEnabled = false; 
+
+            Debug.unityLogger.logEnabled = false;
         }
 
         protected override void OnUpdate()
@@ -58,6 +64,7 @@ namespace Vermetio.Server
             var waveAmplitudeBuffer = EntityManager.GetBuffer<WaveAmplitudeElement>(spectrumEntity);
             var waveAngleBuffer = EntityManager.GetBuffer<WaveAngleElement>(spectrumEntity);
             var phaseBuffer = EntityManager.GetBuffer<PhaseElement>(spectrumEntity);
+            var waveDataBuffer = EntityManager.GetBuffer<GerstnerWaveComponent4>(spectrumEntity);
 
             // var elapsedTime = Time.ElapsedTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
@@ -116,7 +123,7 @@ namespace Vermetio.Server
 
                                 var p = new float3(x, y, z); // + worldSpaceBb.Center;
                                 var worldSpaceP = transform(new RigidTransform(rotation.Value, translation.Value), p);
-                                
+
 
                                 // GizmoManager.AddGizmoAction(() =>
                                 // {
@@ -139,7 +146,8 @@ namespace Vermetio.Server
                                 };
                                 physicsWorld.CalculateDistance(pointDistanceInput, out var closestHit);
 
-                                if (closestHit.Distance < 0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
+                                if (closestHit.Distance <
+                                    0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
                                 {
                                     if (voxelsBuffer.IsEmpty)
                                     {
@@ -162,7 +170,8 @@ namespace Vermetio.Server
                     Debug.Log($"Created {voxelsBuffer.Length} voxels");
 
                     var volume = voxelsBuffer.Length * pow(voxelResolution, 3);
-                    var mass = volume * 650f * 0.0001f; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
+                    var mass = volume * 750f *
+                               0.0001f; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
                     // pm = PhysicsMass.CreateDynamic(new MassProperties
                     //     {
                     //         MassDistribution = new MassDistribution()
@@ -191,27 +200,31 @@ namespace Vermetio.Server
             // var transformVoxelsEcb = new EntityCommandBuffer(Allocator.TempJob);
 
             var allVoxels = new NativeList<float2>(Allocator.Temp);
-            
+
             Entities
                 .WithName("get_all_voxels")
-                .ForEach((Entity entity, in DynamicBuffer<VoxelElement> voxels, in Translation translation, in Rotation rotation) =>
+                .ForEach((Entity entity, in DynamicBuffer<VoxelElement> voxels, in Translation translation,
+                    in Rotation rotation) =>
                 {
                     // var worldSpaceVoxels = new NativeArray<VoxelElement>(voxels.Length, Allocator.Temp);
                     for (int voxelIndex = 0; voxelIndex < voxels.Length; voxelIndex++)
                     {
-                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value), voxels[voxelIndex]);
+                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value),
+                            voxels[voxelIndex]);
                         // worldSpaceVoxels[voxelIndex] = worldSpaceVoxel;
                         allVoxels.Add(worldSpaceVoxel.xz);
                     }
-                    
+
                     // worldSpaceVoxels.Dispose();
                 }).Run();
 
             Debug.Log($"{allVoxels.Length} voxels in total");
-            
+            if (allVoxels.Length == 0)
+                return;
+
             var heightMarker = new ProfilerMarker("Height");
             var depthMarker = new ProfilerMarker("Depth");
-            
+
             var sortedWavelengths = wavelengthBuffer.Reinterpret<float>().AsNativeArray();
             sortedWavelengths.Sort();
             var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
@@ -220,34 +233,24 @@ namespace Vermetio.Server
 
             var elapsedTime = Time.ElapsedTime;
             var elapsedTimeFloat = (float) elapsedTime;
-            
-            var waterHeights = GerstnerHelpers.GetWaterHeights(
-                elapsedTimeFloat,
-                allVoxels,
-                0.5f, //objectSizeForWaves,
-                spectrum.WindDirectionAngle,
-                spectrum.Chop,
-                spectrum.AttenuationInShallows,
-                physicsWorld,
-                wavelengthBuffer,
-                waveAmplitudeBuffer,
-                waveAngleBuffer,
-                phaseBuffer,
-                heightMarker,
-                depthMarker,
-                medianWavelength, 
-                smallestWavelength);
-
             var waterHeightsPerPosition = new NativeHashMap<float2, float>(allVoxels.Length, Allocator.TempJob);
 
-            for (int i = 0; i < allVoxels.Length; i++)
+            var waterHeightsJob = new GetWaterHeightsJob()
             {
-                waterHeightsPerPosition.TryAdd(allVoxels[i], waterHeights[i]);
-            }
+                allVoxels = allVoxels,
+                depthMarker = depthMarker,
+                elapsedTime = (float) elapsedTime,
+                heightMarker = heightMarker,
+                medianWavelength = medianWavelength,
+                physicsWorld = physicsWorld,
+                waveDataBuffer = waveDataBuffer,
+                WaterHeightsPerPosition = waterHeightsPerPosition
+            };
             
+            waterHeightsJob.Run();
+
             allVoxels.Dispose();
-            waterHeights.Dispose();
-            
+
             if (wavelengthBuffer.IsEmpty)
                 return;
 
@@ -346,13 +349,14 @@ namespace Vermetio.Server
                     //
                     // #endregion
 
-                    if ((tick * 1/60f) % 1f < 0.01f)
-                        Debug.Log($"{tick * 1/60f}");
-                    
+                    if ((tick * 1 / 60f) % 1f < 0.01f)
+                        Debug.Log($"{tick * 1 / 60f}");
+
                     for (int voxelIndex = 0; voxelIndex < voxels.Length; voxelIndex++)
                     {
-                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value), voxels[voxelIndex]);
-                        
+                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value),
+                            voxels[voxelIndex]);
+
                         var waterHeight = waterHeightsPerPosition[worldSpaceVoxel.xz];
 
                         // GizmoManager.AddGizmoAction(() =>
@@ -360,23 +364,24 @@ namespace Vermetio.Server
                         //     Gizmos.color = new Color(0, 1, 0, 1f);
                         //     Gizmos.DrawWireSphere(new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z), 0.1f);
                         // });
-                        new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z).DrawCross(0.2f, Color.green, 1/60f);
+                        new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z).DrawCross(0.2f, Color.green,
+                            1 / 60f);
                         if (worldSpaceVoxel.y < waterHeight) // hmm
                         {
                             submergedVoxelsCount++;
                             const float waterDensity = 1000f * 0.0001f; // real density * mass multiplier
                             var volumeOfDisplacedWater = pow(buoyant.VoxelResolution, 3);
-                        
+
                             var archimedesForce = new float3(
                                 0f,
                                 waterDensity * volumeOfDisplacedWater *
                                 abs(PhysicsStep.Default.Gravity
                                     .y), // 1.1f is voxel res. 0.001f is the global mass multiplier I assumed
                                 0f);
-                        
+
                             pm.GetImpulseFromForce(archimedesForce, ForceMode.Force, deltaTime, out var impulse,
                                 out var impulseMass);
-                        
+
                             pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceVoxel);
                         }
                     }
@@ -392,12 +397,13 @@ namespace Vermetio.Server
                         Linear = baseDampingLinear + baseDampingLinear * (percentageSubmerged * 10f),
                         Angular = baseDampingAngular + baseDampingAngular * (percentageSubmerged * 0.5f)
                     };
-                    
                 }).Schedule();
-            
+
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
         }
 
+#if UNITY_EDITOR
+        [Conditional("UNITY_EDITOR")]
         private static void ProfileFewTicks(uint tick)
         {
             if (tick == 20)
@@ -415,6 +421,8 @@ namespace Vermetio.Server
                 Debug.Break();
             }
         }
+
+#endif
 
         void DrawBounds(Bounds b, float delay = 0)
         {

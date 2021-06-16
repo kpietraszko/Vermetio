@@ -619,7 +619,7 @@ MonoBehaviour:
   - 4.105362
   - 4.806173
   - 5.797556
-  _waveBuffers: {fileID: 1526592049}
+  _waveBuffers: {fileID: 1548743128}
 --- !u!4 &744127718
 Transform:
   m_ObjectHideFlags: 0
@@ -646,7 +646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f6cef68e0a8caf499abd29c2daff847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!84 &1526592049
+--- !u!84 &1548743128
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

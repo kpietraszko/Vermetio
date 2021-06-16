@@ -160,7 +160,7 @@ namespace Crest
         // Used to populate data on first frame
         bool _firstUpdate = true;
 
-        struct GerstnerWaveComponent4
+        public struct GerstnerWaveComponent4
         {
             public Vector4 _twoPiOverWavelength;
             public Vector4 _amp;
@@ -172,7 +172,7 @@ namespace Crest
         }
 
         ComputeBuffer _bufWaveData;
-        GerstnerWaveComponent4[] _waveData = new GerstnerWaveComponent4[MAX_WAVE_COMPONENTS / 4];
+        public GerstnerWaveComponent4[] _waveData = new GerstnerWaveComponent4[MAX_WAVE_COMPONENTS / 4];
 
         ComputeShader _shaderGerstner;
         int _krnlGerstner = -1;

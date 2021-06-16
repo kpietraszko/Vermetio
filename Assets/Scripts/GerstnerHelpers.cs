@@ -6,6 +6,7 @@ using Unity.Physics;
 using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.Profiling;
+using static Unity.Mathematics.math;
 
 namespace Vermetio
 {
@@ -14,19 +15,11 @@ namespace Vermetio
         // 🔥🔥 hot path 🔥🔥
         public static NativeArray<float> GetWaterHeights(float elapsedTime,
             NativeArray<float2> worldPositions,
-            float minSpatialLength,
-            float windDirAngle,
-            float chop,
-            float attenuationInShallows,
-            PhysicsWorld physicsWorld,
-            DynamicBuffer<WavelengthElement> wavelengthBuffer,
-            DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
-            DynamicBuffer<WaveAngleElement> waveAngleBuffer,
-            DynamicBuffer<PhaseElement> phaseBuffer,
+            PhysicsWorld physicsWorld, 
+            DynamicBuffer<GerstnerWaveComponent4> waveData, 
             ProfilerMarker heightMarker,
             ProfilerMarker depthMarker,
-            float medianWavelength, 
-            float smallestWavelength)
+            float medianWavelength)
         {
             heightMarker.Begin();
             // FPI - guess should converge to location that displaces to the target position
@@ -38,8 +31,6 @@ namespace Vermetio
                 guesses[i] = new float3(worldPositions[i].x, 0f, worldPositions[i].y);
             }
 
-            var smallestWavespeed = ComputeWaveSpeed(smallestWavelength);
-
             // 2 iterations was enough to get very close when chop = 1, added 2 more which should be
             // sufficient for most applications. for high chop values or really stormy conditions there may
             // be some error here. one could also terminate iteration based on the size of the error, this is
@@ -49,27 +40,17 @@ namespace Vermetio
             {
                 var disp = SampleDisplacements(
                     elapsedTime,
-                    worldPositions,
-                    minSpatialLength,
-                    windDirAngle,
-                    chop,
-                    attenuationInShallows,
-                    physicsWorld,
-                    wavelengthBuffer,
-                    waveAmplitudeBuffer,
-                    waveAngleBuffer,
-                    phaseBuffer,
-                    depthMarker,
-                    medianWavelength, 
-                    smallestWavespeed);
+                    worldPositions, 
+                    waveData, 
+                    physicsWorld, 
+                    depthMarker, 
+                    medianWavelength);
 
                 for (int i = 0; i < worldPositions.Length; i++)
                 {
                     var guess = guesses[i];
                     var error = guess + disp[i] -
-                                new float3(worldPositions[i].x, 0f,
-                                    worldPositions[i]
-                                        .y); // not sure about the worldPositions, y shouldn't matter ...I think
+                                new float3(worldPositions[i].x, 0f, worldPositions[i].y); // not sure about the worldPositions, y shouldn't matter ...I think
                     guesses[i] = new float3(guess.x - error.x, guess.y, guess.z - error.z);
                 }
             }
@@ -82,19 +63,11 @@ namespace Vermetio
 
             var displacements = SampleDisplacements(
                 elapsedTime,
-                undisplacedPositions,
-                minSpatialLength,
-                windDirAngle,
-                chop,
-                attenuationInShallows,
+                undisplacedPositions, 
+                waveData, 
                 physicsWorld,
-                wavelengthBuffer,
-                waveAmplitudeBuffer,
-                waveAngleBuffer,
-                phaseBuffer,
                 depthMarker,
-                medianWavelength, 
-                smallestWavespeed);
+                medianWavelength);
 
             var heights = new NativeArray<float>(displacements.Length, Allocator.Temp,
                 NativeArrayOptions.UninitializedMemory);
@@ -103,9 +76,10 @@ namespace Vermetio
                 heights[i] = 0f + displacements[i].y; // 0 is hard coded sea level
             }
 
-            heightMarker.End();
+            
             guesses.Dispose();
             undisplacedPositions.Dispose();
+            heightMarker.End();
 
             return heights;
         }
@@ -114,63 +88,47 @@ namespace Vermetio
         private static NativeArray<float3> SampleDisplacements(
             float elapsedTime,
             NativeArray<float2> positions,
-            float minSpatialLength,
-            float windDirAngle,
-            float chop,
-            float attenuationInShallows,
+            DynamicBuffer<GerstnerWaveComponent4> waveData,
             PhysicsWorld physicsWorld,
-            DynamicBuffer<WavelengthElement> wavelengthBuffer,
-            DynamicBuffer<WaveAmplitudeElement> waveAmplitudeBuffer,
-            DynamicBuffer<WaveAngleElement> waveAngleBuffer,
-            DynamicBuffer<PhaseElement> phaseBuffer,
             ProfilerMarker depthMarker,
-            float medianWavelength,
-            float smallestWaveSpeed)
+            float medianWavelength)
         {
-            var displacements = new NativeArray<float3>(positions.Length, Allocator.Temp);
-            float windAngle = windDirAngle;
-            float minWavelength = minSpatialLength / 2f;
-            // depthMarker.Begin();
-            var
-                weight = 1f; //GetAttenuatedWeight(pos, attenuationInShallows, wavelengthBuffer, physicsWorld, medianWavelength);
-            // depthMarker.End();
-
-            for (int j = 0; j < waveAmplitudeBuffer.Length; j++)
+            var results = new NativeArray<float3>(positions.Length, Allocator.Temp);
+            for (int fourComponentsIndex = 0; fourComponentsIndex < waveData.Length; fourComponentsIndex++)
             {
-                var wavelength = wavelengthBuffer[j];
-                // if (waveAmplitudeBuffer[j] <= 0.001f) continue;
-                if (wavelength < minWavelength) continue;
-
-                // float C = QuantizeWaveSpeed(ComputeWaveSpeed(wavelength), smallestWaveSpeed);
-                float C = QuantizeWaveSpeed(ComputeWaveSpeed(wavelength), smallestWaveSpeed);
-                // if (elapsedTime < 1f)
-                //     Debug.Log($"Wavelength {wavelength.Value} has quantized speed: {C}");
-
+                var data = waveData[fourComponentsIndex];
                 // direction
-                var D = new float2(math.cos((math.radians(windAngle + waveAngleBuffer[j]))),
-                    math.sin((math.radians(windAngle + waveAngleBuffer[j]))));
-                // wave number
-                float k = 2f * math.PI / wavelength;
+                float4 Dx = data._waveDirX;
+                float4 Dz = data._waveDirZ;
 
-                for (int posIndex = 0; posIndex < positions.Length; posIndex++)
+                // wave number
+                float4 k = data._twoPiOverWavelength;
+
+                float4 kx = k * Dx;
+                float4 kz = k * Dz;
+
+                for (int positionIndex = 0; positionIndex < positions.Length; positionIndex++)
                 {
-                    float x = math.dot(D, positions[posIndex]);
-                    float t = k * (x + C * elapsedTime) + phaseBuffer[j];
-                    float disp = -chop * math.sin(t);
-                    displacements[posIndex] += waveAmplitudeBuffer[j] * new float3(
-                        D.x * disp,
-                        math.cos(t),
-                        D.y * disp
-                    );
+                    // spatial location
+                    float4 x = kx * positions[positionIndex].x + kz * positions[positionIndex].y;
+                    float4 angle = data._phase - data._omega * elapsedTime; // omega was calculated using C that's already quantized in ShapeGerstner.cs
+                    angle += x;
+
+                    // dx and dz could be baked into _ChopAmp
+                    float4 disp = data._chopAmp * sin(angle);
+                    float4 resultx = disp * Dx;
+                    float4 resultz = disp * Dz;
+
+                    float4 resulty = data._amp * cos(angle);
+
+                    // sum the vector results
+                    results[positionIndex] += new float3(
+                        dot(resultx, 1.0f), 
+                        dot(resulty, 1.0f), 
+                        dot(resultz, 1.0f));
                 }
             }
-
-            for (int posIndex = 0; posIndex < positions.Length; posIndex++)
-            {
-                displacements[posIndex] *= weight;
-            }
-
-            return displacements;
+            return results;
         }
 
         private static float GetAttenuatedWeight(
@@ -198,23 +156,6 @@ namespace Vermetio
             var depthNormalized = depth / maxDepth;
             var depth_wt = math.saturate(depthNormalized * medianWavelength / math.PI);
             return attenuationInShallows * depth_wt + (1.0f - attenuationInShallows);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float ComputeWaveSpeed(float wavelength /*, float depth*/)
-        {
-            // wave speed of deep sea ocean waves: https://en.wikipedia.org/wiki/Wind_wave
-            // https://en.wikipedia.org/wiki/Dispersion_(water_waves)#Wave_propagation_and_dispersion
-            float k = 2f * math.PI / wavelength;
-            //float h = max(depth, 0.01);
-            //float cp = sqrt(abs(tanh_clamped(h * k)) * g / k);
-            return math.sqrt(9.81f / k);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float QuantizeWaveSpeed(float waveSpeed, float smallestWaveSpeed)
-        {
-            return ((int) (waveSpeed / smallestWaveSpeed)) * smallestWaveSpeed;
         }
     }
 }

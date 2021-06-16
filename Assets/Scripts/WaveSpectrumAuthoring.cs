@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using Vermetio;
 
 [DisallowMultipleComponent]
 public class WaveSpectrumAuthoring : MonoBehaviour, IConvertGameObjectToEntity
@@ -58,6 +59,7 @@ public class WaveSpectrumAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddBuffer<WaveAmplitudeElement>(entity);
         dstManager.AddBuffer<PhaseElement>(entity);
         dstManager.AddBuffer<WaveAngleElement>(entity);
+        dstManager.AddBuffer<GerstnerWaveComponent4>(entity);
 
         var wavelengthBuffer = dstManager.GetBuffer<WavelengthElement>(entity);
         wavelengthBuffer.AddRange(new NativeArray<WavelengthElement>(gerstner._wavelengths.Select(x => new WavelengthElement { Value =  x}).ToArray(), Allocator.Temp));
@@ -70,6 +72,21 @@ public class WaveSpectrumAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         
         var angleBuffer = dstManager.GetBuffer<WaveAngleElement>(entity);
         angleBuffer.AddRange(new NativeArray<WaveAngleElement>(gerstner._angleDegs.Select(x => new WaveAngleElement { Value =  x}).ToArray(), Allocator.Temp));
+
+        var waveDataBuffer = dstManager.GetBuffer<GerstnerWaveComponent4>(entity);
+        waveDataBuffer.AddRange(new NativeArray<GerstnerWaveComponent4>(gerstner._waveData.Select(x => new GerstnerWaveComponent4()
+        {
+            _twoPiOverWavelength = x._twoPiOverWavelength,
+            _amp = x._amp,
+            _waveDirX = x._waveDirX,
+            _waveDirZ = x._waveDirZ,
+            _omega = x._omega,
+            _phase = x._phase,
+            _chopAmp = x._chopAmp
+        }).ToArray(), 
+            Allocator.Temp));
+
+
     }
     
 }

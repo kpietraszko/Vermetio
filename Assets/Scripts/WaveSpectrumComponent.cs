@@ -1,4 +1,5 @@
 using System;
+using Crest;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -23,3 +24,4 @@ public struct WaveSpectrumComponent : IComponentData
     public float Chop;
     public float AttenuationInShallows;
 }
+

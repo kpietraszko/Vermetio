@@ -408,7 +408,7 @@ namespace Crest
                         //half4 angle = k * (C * _CrestTime + x) + _Phases[vi];
                         float gravityScale = _spectrum._gravityScales[(firstComponent + i) / _componentsPerOctave];
                         float gravity = OceanRenderer.Instance.Gravity * _spectrum._gravityScale;
-                        float C = QuantizeWaveSpeed(Mathf.Sqrt(wl * gravity * gravityScale * one_over_2pi), 0.3235847f);
+                        float C = Mathf.Sqrt(wl * gravity * gravityScale * one_over_2pi);
                         float k = twopi / wl;
                         // Repeat every 2pi to keep angle bounded - helps precision on 16bit platforms
                         UpdateBatchScratchData._phasesBatch[vi][ei] = Mathf.Repeat(_phases[firstComponent + i] + k * C * OceanRenderer.Instance.CurrentTime, Mathf.PI * 2f);
@@ -899,11 +899,6 @@ namespace Crest
             }
 
             return isValid;
-        }
-        
-        private static float QuantizeWaveSpeed(float waveSpeed, float smallestWaveSpeed)
-        {
-            return ((int) (waveSpeed / smallestWaveSpeed)) * smallestWaveSpeed;
         }
     }
 #endif

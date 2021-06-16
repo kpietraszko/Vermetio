@@ -1,0 +1,1106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!641289076 &-2233068856777880295
+AudioBuildInfo:
+  m_IsAudioDisabled: 0
+  m_AudioClipCount: 0
+  m_AudioMixerCount: 0
+--- !u!1125 &1
+BuildReport:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Build_2021-16-cze-15-40-53
+  m_Summary:
+    buildStartTime:
+      serializedVersion: 2
+      ticks: 637594470301873665
+    buildGUID: b0e38d51098ea834f83994b34ad5e71f
+    platformName: Win64
+    platformGroupName: Standalone
+    options: 513
+    assetBundleOptions: 0
+    outputPath: C:/Unity/ServerBuild/VermetioServer.exe
+    crc: 0
+    totalSize: 27970595
+    totalTimeTicks: 6220477303
+    totalErrors: 1
+    totalWarnings: 5
+    buildType: 1
+    buildResult: 3
+  m_Files:
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/RuntimeInitializeOnLoads.json
+    role: GlobalGameManagers
+    id: 0
+    totalSize: 5848
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AIModule.dll
+    role: ManagedEngineAPI
+    id: 1
+    totalSize: 45568
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AIModule.pdb
+    role: DebugInfo
+    id: 2
+    totalSize: 10236
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ARModule.dll
+    role: ManagedEngineAPI
+    id: 3
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ARModule.pdb
+    role: DebugInfo
+    id: 4
+    totalSize: 776
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AccessibilityModule.dll
+    role: ManagedEngineAPI
+    id: 5
+    totalSize: 12800
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AccessibilityModule.pdb
+    role: DebugInfo
+    id: 6
+    totalSize: 1456
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AndroidJNIModule.dll
+    role: ManagedEngineAPI
+    id: 7
+    totalSize: 60928
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AndroidJNIModule.pdb
+    role: DebugInfo
+    id: 8
+    totalSize: 23252
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AnimationModule.dll
+    role: ManagedEngineAPI
+    id: 9
+    totalSize: 150016
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AnimationModule.pdb
+    role: DebugInfo
+    id: 10
+    totalSize: 43204
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AssetBundleModule.dll
+    role: ManagedEngineAPI
+    id: 11
+    totalSize: 22016
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AssetBundleModule.pdb
+    role: DebugInfo
+    id: 12
+    totalSize: 4232
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AudioModule.dll
+    role: ManagedEngineAPI
+    id: 13
+    totalSize: 58368
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.AudioModule.pdb
+    role: DebugInfo
+    id: 14
+    totalSize: 12548
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ClothModule.dll
+    role: ManagedEngineAPI
+    id: 15
+    totalSize: 15360
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ClothModule.pdb
+    role: DebugInfo
+    id: 16
+    totalSize: 1284
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ClusterInputModule.dll
+    role: ManagedEngineAPI
+    id: 17
+    totalSize: 10752
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ClusterInputModule.pdb
+    role: DebugInfo
+    id: 18
+    totalSize: 276
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ClusterRendererModule.dll
+    role: ManagedEngineAPI
+    id: 19
+    totalSize: 11264
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ClusterRendererModule.pdb
+    role: DebugInfo
+    id: 20
+    totalSize: 868
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.CoreModule.dll
+    role: ManagedEngineAPI
+    id: 21
+    totalSize: 1142784
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.CoreModule.pdb
+    role: DebugInfo
+    id: 22
+    totalSize: 369900
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.CrashReportingModule.dll
+    role: ManagedEngineAPI
+    id: 23
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.CrashReportingModule.pdb
+    role: DebugInfo
+    id: 24
+    totalSize: 512
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.DSPGraphModule.dll
+    role: ManagedEngineAPI
+    id: 25
+    totalSize: 18432
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.DSPGraphModule.pdb
+    role: DebugInfo
+    id: 26
+    totalSize: 1428
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.DirectorModule.dll
+    role: ManagedEngineAPI
+    id: 27
+    totalSize: 13824
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.DirectorModule.pdb
+    role: DebugInfo
+    id: 28
+    totalSize: 1432
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.GIModule.dll
+    role: ManagedEngineAPI
+    id: 29
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.GIModule.pdb
+    role: DebugInfo
+    id: 30
+    totalSize: 188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.GameCenterModule.dll
+    role: ManagedEngineAPI
+    id: 31
+    totalSize: 28160
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.GameCenterModule.pdb
+    role: DebugInfo
+    id: 32
+    totalSize: 8400
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.GridModule.dll
+    role: ManagedEngineAPI
+    id: 33
+    totalSize: 14336
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.GridModule.pdb
+    role: DebugInfo
+    id: 34
+    totalSize: 940
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.HotReloadModule.dll
+    role: ManagedEngineAPI
+    id: 35
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.HotReloadModule.pdb
+    role: DebugInfo
+    id: 36
+    totalSize: 188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.IMGUIModule.dll
+    role: ManagedEngineAPI
+    id: 37
+    totalSize: 159744
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.IMGUIModule.pdb
+    role: DebugInfo
+    id: 38
+    totalSize: 66372
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ImageConversionModule.dll
+    role: ManagedEngineAPI
+    id: 39
+    totalSize: 13312
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ImageConversionModule.pdb
+    role: DebugInfo
+    id: 40
+    totalSize: 1348
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.InputLegacyModule.dll
+    role: ManagedEngineAPI
+    id: 41
+    totalSize: 26112
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.InputLegacyModule.pdb
+    role: DebugInfo
+    id: 42
+    totalSize: 5792
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.InputModule.dll
+    role: ManagedEngineAPI
+    id: 43
+    totalSize: 12800
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.InputModule.pdb
+    role: DebugInfo
+    id: 44
+    totalSize: 1488
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.JSONSerializeModule.dll
+    role: ManagedEngineAPI
+    id: 45
+    totalSize: 11264
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.JSONSerializeModule.pdb
+    role: DebugInfo
+    id: 46
+    totalSize: 828
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.LocalizationModule.dll
+    role: ManagedEngineAPI
+    id: 47
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.LocalizationModule.pdb
+    role: DebugInfo
+    id: 48
+    totalSize: 592
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ParticleSystemModule.dll
+    role: ManagedEngineAPI
+    id: 49
+    totalSize: 142336
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ParticleSystemModule.pdb
+    role: DebugInfo
+    id: 50
+    totalSize: 25072
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.PerformanceReportingModule.dll
+    role: ManagedEngineAPI
+    id: 51
+    totalSize: 9728
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.PerformanceReportingModule.pdb
+    role: DebugInfo
+    id: 52
+    totalSize: 208
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.Physics2DModule.dll
+    role: ManagedEngineAPI
+    id: 53
+    totalSize: 107008
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.Physics2DModule.pdb
+    role: DebugInfo
+    id: 54
+    totalSize: 27024
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.PhysicsModule.dll
+    role: ManagedEngineAPI
+    id: 55
+    totalSize: 96768
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.PhysicsModule.pdb
+    role: DebugInfo
+    id: 56
+    totalSize: 22364
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ProfilerModule.dll
+    role: ManagedEngineAPI
+    id: 57
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ProfilerModule.pdb
+    role: DebugInfo
+    id: 58
+    totalSize: 188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll
+    role: ManagedEngineAPI
+    id: 59
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.pdb
+    role: DebugInfo
+    id: 60
+    totalSize: 188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ScreenCaptureModule.dll
+    role: ManagedEngineAPI
+    id: 61
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.ScreenCaptureModule.pdb
+    role: DebugInfo
+    id: 62
+    totalSize: 732
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SharedInternalsModule.dll
+    role: ManagedEngineAPI
+    id: 63
+    totalSize: 21504
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SharedInternalsModule.pdb
+    role: DebugInfo
+    id: 64
+    totalSize: 5184
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SpriteMaskModule.dll
+    role: ManagedEngineAPI
+    id: 65
+    totalSize: 10752
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SpriteMaskModule.pdb
+    role: DebugInfo
+    id: 66
+    totalSize: 292
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SpriteShapeModule.dll
+    role: ManagedEngineAPI
+    id: 67
+    totalSize: 14336
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SpriteShapeModule.pdb
+    role: DebugInfo
+    id: 68
+    totalSize: 1548
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.StreamingModule.dll
+    role: ManagedEngineAPI
+    id: 69
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.StreamingModule.pdb
+    role: DebugInfo
+    id: 70
+    totalSize: 240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SubstanceModule.dll
+    role: ManagedEngineAPI
+    id: 71
+    totalSize: 13824
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SubstanceModule.pdb
+    role: DebugInfo
+    id: 72
+    totalSize: 2412
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SubsystemsModule.dll
+    role: ManagedEngineAPI
+    id: 73
+    totalSize: 24064
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.SubsystemsModule.pdb
+    role: DebugInfo
+    id: 74
+    totalSize: 6408
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TLSModule.dll
+    role: ManagedEngineAPI
+    id: 75
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TLSModule.pdb
+    role: DebugInfo
+    id: 76
+    totalSize: 188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TerrainModule.dll
+    role: ManagedEngineAPI
+    id: 77
+    totalSize: 81920
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TerrainModule.pdb
+    role: DebugInfo
+    id: 78
+    totalSize: 21388
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TerrainPhysicsModule.dll
+    role: ManagedEngineAPI
+    id: 79
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TerrainPhysicsModule.pdb
+    role: DebugInfo
+    id: 80
+    totalSize: 552
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TextCoreModule.dll
+    role: ManagedEngineAPI
+    id: 81
+    totalSize: 187392
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TextCoreModule.pdb
+    role: DebugInfo
+    id: 82
+    totalSize: 75128
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TextRenderingModule.dll
+    role: ManagedEngineAPI
+    id: 83
+    totalSize: 28160
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TextRenderingModule.pdb
+    role: DebugInfo
+    id: 84
+    totalSize: 5868
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TilemapModule.dll
+    role: ManagedEngineAPI
+    id: 85
+    totalSize: 26624
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.TilemapModule.pdb
+    role: DebugInfo
+    id: 86
+    totalSize: 5720
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UIElementsModule.dll
+    role: ManagedEngineAPI
+    id: 87
+    totalSize: 798208
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UIElementsModule.pdb
+    role: DebugInfo
+    id: 88
+    totalSize: 381276
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UIElementsNativeModule.dll
+    role: ManagedEngineAPI
+    id: 89
+    totalSize: 47616
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UIElementsNativeModule.pdb
+    role: DebugInfo
+    id: 90
+    totalSize: 13116
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UIModule.dll
+    role: ManagedEngineAPI
+    id: 91
+    totalSize: 24064
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UIModule.pdb
+    role: DebugInfo
+    id: 92
+    totalSize: 4060
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UNETModule.dll
+    role: ManagedEngineAPI
+    id: 93
+    totalSize: 78848
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UNETModule.pdb
+    role: DebugInfo
+    id: 94
+    totalSize: 21044
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UmbraModule.dll
+    role: ManagedEngineAPI
+    id: 95
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UmbraModule.pdb
+    role: DebugInfo
+    id: 96
+    totalSize: 188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityAnalyticsModule.dll
+    role: ManagedEngineAPI
+    id: 97
+    totalSize: 33792
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityAnalyticsModule.pdb
+    role: DebugInfo
+    id: 98
+    totalSize: 8284
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityConnectModule.dll
+    role: ManagedEngineAPI
+    id: 99
+    totalSize: 11264
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityConnectModule.pdb
+    role: DebugInfo
+    id: 100
+    totalSize: 772
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityCurlModule.dll
+    role: ManagedEngineAPI
+    id: 101
+    totalSize: 10752
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityCurlModule.pdb
+    role: DebugInfo
+    id: 102
+    totalSize: 580
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityTestProtocolModule.dll
+    role: ManagedEngineAPI
+    id: 103
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityTestProtocolModule.pdb
+    role: DebugInfo
+    id: 104
+    totalSize: 188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestAssetBundleModule.dll
+    role: ManagedEngineAPI
+    id: 105
+    totalSize: 12288
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestAssetBundleModule.pdb
+    role: DebugInfo
+    id: 106
+    totalSize: 1596
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll
+    role: ManagedEngineAPI
+    id: 107
+    totalSize: 11776
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestAudioModule.pdb
+    role: DebugInfo
+    id: 108
+    totalSize: 1344
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestModule.dll
+    role: ManagedEngineAPI
+    id: 109
+    totalSize: 44032
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestModule.pdb
+    role: DebugInfo
+    id: 110
+    totalSize: 17504
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll
+    role: ManagedEngineAPI
+    id: 111
+    totalSize: 11264
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestTextureModule.pdb
+    role: DebugInfo
+    id: 112
+    totalSize: 1224
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll
+    role: ManagedEngineAPI
+    id: 113
+    totalSize: 20480
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UnityWebRequestWWWModule.pdb
+    role: DebugInfo
+    id: 114
+    totalSize: 4256
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VFXModule.dll
+    role: ManagedEngineAPI
+    id: 115
+    totalSize: 39936
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VFXModule.pdb
+    role: DebugInfo
+    id: 116
+    totalSize: 7376
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VRModule.dll
+    role: ManagedEngineAPI
+    id: 117
+    totalSize: 15360
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VRModule.pdb
+    role: DebugInfo
+    id: 118
+    totalSize: 1068
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VehiclesModule.dll
+    role: ManagedEngineAPI
+    id: 119
+    totalSize: 13312
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VehiclesModule.pdb
+    role: DebugInfo
+    id: 120
+    totalSize: 1292
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VideoModule.dll
+    role: ManagedEngineAPI
+    id: 121
+    totalSize: 29696
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VideoModule.pdb
+    role: DebugInfo
+    id: 122
+    totalSize: 4188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VirtualTexturingModule.dll
+    role: ManagedEngineAPI
+    id: 123
+    totalSize: 23552
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.VirtualTexturingModule.pdb
+    role: DebugInfo
+    id: 124
+    totalSize: 4188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.WindModule.dll
+    role: ManagedEngineAPI
+    id: 125
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.WindModule.pdb
+    role: DebugInfo
+    id: 126
+    totalSize: 272
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.XRModule.dll
+    role: ManagedEngineAPI
+    id: 127
+    totalSize: 55808
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.XRModule.pdb
+    role: DebugInfo
+    id: 128
+    totalSize: 12880
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.dll
+    role: ManagedEngineAPI
+    id: 129
+    totalSize: 91648
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.pdb
+    role: DebugInfo
+    id: 130
+    totalSize: 476
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Assembly-CSharp.dll
+    role: ManagedLibrary
+    id: 131
+    totalSize: 44544
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Assembly-CSharp.pdb
+    role: DebugInfo
+    id: 132
+    totalSize: 11052
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Transforms.Hybrid.dll
+    role: ManagedLibrary
+    id: 133
+    totalSize: 16896
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Transforms.Hybrid.pdb
+    role: DebugInfo
+    id: 134
+    totalSize: 3496
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Properties.dll
+    role: ManagedLibrary
+    id: 135
+    totalSize: 117760
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Properties.pdb
+    role: DebugInfo
+    id: 136
+    totalSize: 39868
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Serialization.dll
+    role: ManagedLibrary
+    id: 137
+    totalSize: 130048
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Serialization.pdb
+    role: DebugInfo
+    id: 138
+    totalSize: 55124
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Universal.Shaders.dll
+    role: ManagedLibrary
+    id: 139
+    totalSize: 3584
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Universal.Shaders.pdb
+    role: DebugInfo
+    id: 140
+    totalSize: 432
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Properties.Reflection.dll
+    role: ManagedLibrary
+    id: 141
+    totalSize: 12800
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Properties.Reflection.pdb
+    role: DebugInfo
+    id: 142
+    totalSize: 2284
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Crest.dll
+    role: ManagedLibrary
+    id: 143
+    totalSize: 154112
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Crest.pdb
+    role: DebugInfo
+    id: 144
+    totalSize: 54640
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Core.ShaderLibrary.dll
+    role: ManagedLibrary
+    id: 145
+    totalSize: 3584
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Core.ShaderLibrary.pdb
+    role: DebugInfo
+    id: 146
+    totalSize: 444
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UI.dll
+    role: ManagedLibrary
+    id: 147
+    totalSize: 260096
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/UnityEngine.UI.pdb
+    role: DebugInfo
+    id: 148
+    totalSize: 145884
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Networking.Transport.dll
+    role: ManagedLibrary
+    id: 149
+    totalSize: 89600
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Networking.Transport.pdb
+    role: DebugInfo
+    id: 150
+    totalSize: 37136
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Crest.Examples.dll
+    role: ManagedLibrary
+    id: 151
+    totalSize: 21504
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Crest.Examples.pdb
+    role: DebugInfo
+    id: 152
+    totalSize: 5552
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Transforms.Generated.dll
+    role: ManagedLibrary
+    id: 153
+    totalSize: 12800
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Transforms.Generated.pdb
+    role: DebugInfo
+    id: 154
+    totalSize: 3096
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Scenes.dll
+    role: ManagedLibrary
+    id: 155
+    totalSize: 88064
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Scenes.pdb
+    role: DebugInfo
+    id: 156
+    totalSize: 30360
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipeline.Universal.ShaderLibrary.dll
+    role: ManagedLibrary
+    id: 157
+    totalSize: 4096
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipeline.Universal.ShaderLibrary.pdb
+    role: DebugInfo
+    id: 158
+    totalSize: 436
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Mathematics.Extensions.dll
+    role: ManagedLibrary
+    id: 159
+    totalSize: 7168
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Mathematics.Extensions.pdb
+    role: DebugInfo
+    id: 160
+    totalSize: 1660
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Transforms.dll
+    role: ManagedLibrary
+    id: 161
+    totalSize: 38400
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Transforms.pdb
+    role: DebugInfo
+    id: 162
+    totalSize: 15728
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Collections.dll
+    role: ManagedLibrary
+    id: 163
+    totalSize: 385024
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Collections.pdb
+    role: DebugInfo
+    id: 164
+    totalSize: 205684
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Platforms.Common.dll
+    role: ManagedLibrary
+    id: 165
+    totalSize: 7168
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Platforms.Common.pdb
+    role: DebugInfo
+    id: 166
+    totalSize: 1128
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.Authoring.Hybrid.dll
+    role: ManagedLibrary
+    id: 167
+    totalSize: 27648
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.Authoring.Hybrid.pdb
+    role: DebugInfo
+    id: 168
+    totalSize: 7628
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.InternalAPIEngineBridge.002.dll
+    role: ManagedLibrary
+    id: 169
+    totalSize: 37376
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.InternalAPIEngineBridge.002.pdb
+    role: DebugInfo
+    id: 170
+    totalSize: 12156
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.Physics.dll
+    role: ManagedLibrary
+    id: 171
+    totalSize: 9216
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.Physics.pdb
+    role: DebugInfo
+    id: 172
+    totalSize: 2048
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.Generated.dll
+    role: ManagedLibrary
+    id: 173
+    totalSize: 13824
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.Generated.pdb
+    role: DebugInfo
+    id: 174
+    totalSize: 2696
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Physics.dll
+    role: ManagedLibrary
+    id: 175
+    totalSize: 395776
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Physics.pdb
+    role: DebugInfo
+    id: 176
+    totalSize: 174536
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.dll
+    role: ManagedLibrary
+    id: 177
+    totalSize: 222720
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.NetCode.pdb
+    role: DebugInfo
+    id: 178
+    totalSize: 69264
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Overrides.NetCodeGen.dll
+    role: ManagedLibrary
+    id: 179
+    totalSize: 3072
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Overrides.NetCodeGen.pdb
+    role: DebugInfo
+    id: 180
+    totalSize: 384
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Mathematics.Extensions.Hybrid.dll
+    role: ManagedLibrary
+    id: 181
+    totalSize: 4096
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Mathematics.Extensions.Hybrid.pdb
+    role: DebugInfo
+    id: 182
+    totalSize: 548
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Universal.Runtime.dll
+    role: ManagedLibrary
+    id: 183
+    totalSize: 312832
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Universal.Runtime.pdb
+    role: DebugInfo
+    id: 184
+    totalSize: 117164
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Timeline.dll
+    role: ManagedLibrary
+    id: 185
+    totalSize: 111616
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Timeline.pdb
+    role: DebugInfo
+    id: 186
+    totalSize: 46760
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.TextMeshPro.dll
+    role: ManagedLibrary
+    id: 187
+    totalSize: 373760
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.TextMeshPro.pdb
+    role: DebugInfo
+    id: 188
+    totalSize: 150904
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Physics.Hybrid.dll
+    role: ManagedLibrary
+    id: 189
+    totalSize: 160768
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Physics.Hybrid.pdb
+    role: DebugInfo
+    id: 190
+    totalSize: 54536
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Core.Runtime.dll
+    role: ManagedLibrary
+    id: 191
+    totalSize: 219648
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.Core.Runtime.pdb
+    role: DebugInfo
+    id: 192
+    totalSize: 89904
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Entities.dll
+    role: ManagedLibrary
+    id: 193
+    totalSize: 982528
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Entities.pdb
+    role: DebugInfo
+    id: 194
+    totalSize: 356092
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Entities.Hybrid.dll
+    role: ManagedLibrary
+    id: 195
+    totalSize: 110592
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Entities.Hybrid.pdb
+    role: DebugInfo
+    id: 196
+    totalSize: 39188
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.InternalAPIEngineBridge.012.dll
+    role: ManagedLibrary
+    id: 197
+    totalSize: 3584
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.InternalAPIEngineBridge.012.pdb
+    role: DebugInfo
+    id: 198
+    totalSize: 528
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Mathematics.dll
+    role: ManagedLibrary
+    id: 199
+    totalSize: 723968
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Mathematics.pdb
+    role: DebugInfo
+    id: 200
+    totalSize: 309288
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Burst.dll
+    role: ManagedLibrary
+    id: 201
+    totalSize: 163328
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Burst.pdb
+    role: DebugInfo
+    id: 202
+    totalSize: 69916
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Jobs.dll
+    role: ManagedLibrary
+    id: 203
+    totalSize: 9728
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Jobs.pdb
+    role: DebugInfo
+    id: 204
+    totalSize: 2300
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Deformations.dll
+    role: ManagedLibrary
+    id: 205
+    totalSize: 3584
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Deformations.pdb
+    role: DebugInfo
+    id: 206
+    totalSize: 444
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Properties.UI.dll
+    role: ManagedLibrary
+    id: 207
+    totalSize: 10240
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Properties.UI.pdb
+    role: DebugInfo
+    id: 208
+    totalSize: 2600
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll
+    role: ManagedLibrary
+    id: 209
+    totalSize: 3584
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.pdb
+    role: DebugInfo
+    id: 210
+    totalSize: 444
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.ScriptableBuildPipeline.dll
+    role: ManagedLibrary
+    id: 211
+    totalSize: 7168
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.ScriptableBuildPipeline.pdb
+    role: DebugInfo
+    id: 212
+    totalSize: 1808
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Rendering.Hybrid.dll
+    role: ManagedLibrary
+    id: 213
+    totalSize: 181760
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Rendering.Hybrid.pdb
+    role: DebugInfo
+    id: 214
+    totalSize: 59092
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Newtonsoft.Json.dll
+    role: ManagedLibrary
+    id: 215
+    totalSize: 657408
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Collections.LowLevel.ILSupport.dll
+    role: ManagedLibrary
+    id: 216
+    totalSize: 4096
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Unity.Burst.Unsafe.dll
+    role: ManagedLibrary
+    id: 217
+    totalSize: 5632
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Diagnostics.StackTrace.dll
+    role: DependentManagedLibrary
+    id: 218
+    totalSize: 6656
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Globalization.Extensions.dll
+    role: DependentManagedLibrary
+    id: 219
+    totalSize: 6144
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Runtime.Serialization.Xml.dll
+    role: DependentManagedLibrary
+    id: 220
+    totalSize: 7168
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Runtime.dll
+    role: DependentManagedLibrary
+    id: 221
+    totalSize: 12800
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Xml.XPath.XDocument.dll
+    role: DependentManagedLibrary
+    id: 222
+    totalSize: 5120
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/netstandard.dll
+    role: DependentManagedLibrary
+    id: 223
+    totalSize: 84992
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/Mono.Security.dll
+    role: DependentManagedLibrary
+    id: 224
+    totalSize: 310272
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.ComponentModel.Composition.dll
+    role: DependentManagedLibrary
+    id: 225
+    totalSize: 247808
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Configuration.dll
+    role: DependentManagedLibrary
+    id: 226
+    totalSize: 43008
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Core.dll
+    role: DependentManagedLibrary
+    id: 227
+    totalSize: 1057792
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Data.dll
+    role: DependentManagedLibrary
+    id: 228
+    totalSize: 1941504
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Drawing.dll
+    role: DependentManagedLibrary
+    id: 229
+    totalSize: 184320
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.EnterpriseServices.dll
+    role: DependentManagedLibrary
+    id: 230
+    totalSize: 33280
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.IO.Compression.FileSystem.dll
+    role: DependentManagedLibrary
+    id: 231
+    totalSize: 23040
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.IO.Compression.dll
+    role: DependentManagedLibrary
+    id: 232
+    totalSize: 98816
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Net.Http.dll
+    role: DependentManagedLibrary
+    id: 233
+    totalSize: 114688
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Numerics.dll
+    role: DependentManagedLibrary
+    id: 234
+    totalSize: 114176
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Runtime.Serialization.dll
+    role: DependentManagedLibrary
+    id: 235
+    totalSize: 840704
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.ServiceModel.Internals.dll
+    role: DependentManagedLibrary
+    id: 236
+    totalSize: 218112
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Transactions.dll
+    role: DependentManagedLibrary
+    id: 237
+    totalSize: 33280
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Xml.Linq.dll
+    role: DependentManagedLibrary
+    id: 238
+    totalSize: 119296
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.Xml.dll
+    role: DependentManagedLibrary
+    id: 239
+    totalSize: 2414592
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/System.dll
+    role: DependentManagedLibrary
+    id: 240
+    totalSize: 2278400
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/Managed/mscorlib.dll
+    role: DependentManagedLibrary
+    id: 241
+    totalSize: 3906048
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/globalgamemanagers
+    role: GlobalGameManagers
+    id: 242
+    totalSize: 170228
+  - path: C:/Unity/Vermetio/Temp/StagingArea/Data/ScriptingAssemblies.json
+    role: GlobalGameManagers
+    id: 243
+    totalSize: 3911
+  m_BuildSteps:
+  - stepName: Build player
+    durationTicks: 6220477303
+    depth: 0
+    messages:
+    - type: 0
+      content: Building Player was cancelled
+  - stepName: Compile scripts
+    durationTicks: 193643928
+    depth: 1
+    messages:
+    - type: 2
+      content: 'Assets\Scripts\BuoyancySystem.cs(109,25): warning CS0219: The variable
+        ''bufferCreated'' is assigned but its value is never used'
+    - type: 2
+      content: 'Assets\Crest\Crest\Scripts\LodData\Shadows\LodDataMgrShadow.cs(96,26):
+        warning CS0618: ''UniversalRenderPipelineAsset.shadowCascadeOption'' is obsolete:
+        ''This is obsolete, please use shadowCascadeCount instead.'''
+    - type: 2
+      content: 'Assets\Crest\Crest\Scripts\LodData\Shadows\LodDataMgrShadow.cs(96,55):
+        warning CS0618: ''ShadowCascadesOption'' is obsolete: ''This is obsolete,
+        please use shadowCascadeCount instead.'''
+  - stepName: Prepare assets for target platform
+    durationTicks: 2105440
+    depth: 1
+    messages: []
+  - stepName: Building scenes
+    durationTicks: 29681230
+    depth: 1
+    messages: []
+  - stepName: Building scene Assets/Scenes/MainScene/Wave.unity
+    durationTicks: 10670885
+    depth: 2
+    messages: []
+  - stepName: Building scene Assets/Scenes/MainScene.unity
+    durationTicks: 5071967
+    depth: 2
+    messages: []
+  - stepName: Building scene Assets/Scenes/MainScene/Wave.unity
+    durationTicks: 4406813
+    depth: 2
+    messages: []
+  - stepName: Building scene Assets/Scenes/ClientServer.unity
+    durationTicks: 9530796
+    depth: 2
+    messages: []
+  - stepName: burst
+    durationTicks: 1092540415
+    depth: 1
+    messages:
+    - type: 2
+      content: 'Unable to find player assembly: C:\Unity\Vermetio\Temp\StagingArea\Data\Managed\UnityEngine.TestRunner.dll'
+    - type: 2
+      content: 'Unable to find player assembly: C:\Unity\Vermetio\Temp\StagingArea\Data\Managed\Unity.PerformanceTesting.dll'
+  - stepName: Build GlobalGameManagers file
+    durationTicks: 6123622
+    depth: 1
+    messages: []
+  - stepName: Writing asset files
+    durationTicks: 4831429972
+    depth: 1
+    messages: []
+  - stepName: Packaging assets - globalgamemanagers.assets
+    durationTicks: 626314544
+    depth: 2
+    messages: []
+  - stepName: Packaging assets - resources.assets
+    durationTicks: 21225631
+    depth: 2
+    messages: []
+  - stepName: 'Packaging assets - sharedassets0.assets = additional assets for scene
+      0: Assets/Scenes/MainScene/Wave.unity'
+    durationTicks: 1070901
+    depth: 2
+    messages: []
+  - stepName: 'Packaging assets - sharedassets1.assets = additional assets for scene
+      1: Assets/Scenes/MainScene.unity'
+    durationTicks: 4182803451
+    depth: 2
+    messages: []
+  m_Appendices:
+  - {fileID: 862423467021041749}
+  - {fileID: -2233068856777880295}
+--- !u!382020655 &862423467021041749
+PluginBuildInfo:
+  m_RuntimePlugins:
+  - Newtonsoft.Json
+  - Unity.Collections.LowLevel.ILSupport
+  - Unity.Burst.Unsafe
+  - nunit.framework
+  m_EditorPlugins:
+  - Mono.Cecil.Mdb
+  - liblz4
+  - Mono.Cecil.Pdb
+  - Mono.Cecil.Rocks
+  - ICSharpCode.NRefactory
+  - AppleEventIntegration
+  - Mono.Cecil

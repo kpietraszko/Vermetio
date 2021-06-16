@@ -36,7 +36,7 @@ public class WaveSpectrumAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         // For example,
         //   dstManager.AddComponentData(entity, new Unity.Transforms.Scale { Value = scale });
 
-        var gerstner = GetComponent<ShapeGerstnerBatched>();
+        var gerstner = GetComponent<ShapeGerstner>();
         Assert.IsNotNull(gerstner);
         var spectrum = gerstner._spectrum;
         Assert.IsNotNull(spectrum);
@@ -49,7 +49,7 @@ public class WaveSpectrumAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         
         dstManager.AddComponentData(entity, new WaveSpectrumComponent()
         {
-            WindDirectionAngle = gerstner._windDirectionAngle,
+            WindDirectionAngle = gerstner._waveDirectionHeadingAngle,
             Chop = spectrum._chop,
             AttenuationInShallows = attenuationInShallows
         });

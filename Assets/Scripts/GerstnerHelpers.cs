@@ -11,7 +11,7 @@ namespace Vermetio
 {
     public class GerstnerHelpers
     {
-        // 🔥🔥 very hot path 🔥🔥
+        // 🔥🔥 hot path 🔥🔥
         public static NativeArray<float> GetWaterHeights(float elapsedTime,
             NativeArray<float2> worldPositions,
             float minSpatialLength,
@@ -31,8 +31,7 @@ namespace Vermetio
             heightMarker.Begin();
             // FPI - guess should converge to location that displaces to the target position
             var guesses = new NativeArray<float3>(worldPositions.Length, Allocator.Temp);
-            var positions = new NativeArray<float2>(worldPositions.Length, Allocator.Temp,
-                NativeArrayOptions.UninitializedMemory);
+            var undisplacedPositions = new NativeArray<float2>(worldPositions, Allocator.Temp);
 
             for (int i = 0; i < guesses.Length; i++)
             {
@@ -50,7 +49,7 @@ namespace Vermetio
             {
                 var disp = SampleDisplacements(
                     elapsedTime,
-                    positions,
+                    worldPositions,
                     minSpatialLength,
                     windDirAngle,
                     chop,
@@ -64,7 +63,7 @@ namespace Vermetio
                     medianWavelength, 
                     smallestWavespeed);
 
-                for (int i = 0; i < positions.Length; i++)
+                for (int i = 0; i < worldPositions.Length; i++)
                 {
                     var guess = guesses[i];
                     var error = guess + disp[i] -
@@ -75,15 +74,15 @@ namespace Vermetio
                 }
             }
 
-            for (int i = 0; i < positions.Length; i++)
+            for (int i = 0; i < undisplacedPositions.Length; i++)
             {
-                positions[i] = new float2(guesses[i].x, guesses[i].z);
+                undisplacedPositions[i] = new float2(guesses[i].x, guesses[i].z);
             }
 
 
             var displacements = SampleDisplacements(
                 elapsedTime,
-                positions,
+                undisplacedPositions,
                 minSpatialLength,
                 windDirAngle,
                 chop,
@@ -106,12 +105,12 @@ namespace Vermetio
 
             heightMarker.End();
             guesses.Dispose();
-            positions.Dispose();
+            undisplacedPositions.Dispose();
 
             return heights;
         }
 
-        // 🔥🔥🔥 very very hot path 🔥🔥🔥
+        // 🔥🔥🔥 hot path 🔥🔥🔥
         private static NativeArray<float3> SampleDisplacements(
             float elapsedTime,
             NativeArray<float2> positions,
@@ -139,11 +138,13 @@ namespace Vermetio
             for (int j = 0; j < waveAmplitudeBuffer.Length; j++)
             {
                 var wavelength = wavelengthBuffer[j];
-                if (waveAmplitudeBuffer[j] <= 0.001f) continue;
+                // if (waveAmplitudeBuffer[j] <= 0.001f) continue;
                 if (wavelength < minWavelength) continue;
 
                 // float C = QuantizeWaveSpeed(ComputeWaveSpeed(wavelength), smallestWaveSpeed);
                 float C = QuantizeWaveSpeed(ComputeWaveSpeed(wavelength), smallestWaveSpeed);
+                // if (elapsedTime < 1f)
+                //     Debug.Log($"Wavelength {wavelength.Value} has quantized speed: {C}");
 
                 // direction
                 var D = new float2(math.cos((math.radians(windAngle + waveAngleBuffer[j]))),

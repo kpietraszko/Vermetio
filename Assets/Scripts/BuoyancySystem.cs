@@ -13,6 +13,7 @@ using Unity.Physics.Extensions;
 using Unity.Physics.Systems;
 using Unity.Profiling;
 using Unity.Transforms;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Profiling;
 using ForceMode = Unity.Physics.Extensions.ForceMode;
@@ -44,21 +45,13 @@ namespace Vermetio.Server
             _exportPhysicsWorld = World.GetOrCreateSystem<ExportPhysicsWorld>();
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
             _ghostSimulationSystemGroup = World.GetExistingSystem<GhostSimulationSystemGroup>();
+            
+            // Debug.unityLogger.logEnabled = false; 
         }
 
         protected override void OnUpdate()
         {
-            // Assign values to local variables captured in your job here, so that it has
-            // everything it needs to do its work when it runs later.
-            // For example,
-            //     float deltaTime = Time.DeltaTime;
-
-            // This declares a new kind of job, which is a unit of work to do.
-            // The job is declared as an Entities.ForEach with the target components as parameters,
-            // meaning it will process all entities in the world that have both
-            // Translation and Rotation components. Change it to process the component
-            // types you want.
-
+            var deltaTime = Time.DeltaTime;
             var spectrum = GetSingleton<WaveSpectrumComponent>();
             var spectrumEntity = GetSingletonEntity<WaveSpectrumComponent>();
             var wavelengthBuffer = EntityManager.GetBuffer<WavelengthElement>(spectrumEntity);
@@ -66,8 +59,7 @@ namespace Vermetio.Server
             var waveAngleBuffer = EntityManager.GetBuffer<WaveAngleElement>(spectrumEntity);
             var phaseBuffer = EntityManager.GetBuffer<PhaseElement>(spectrumEntity);
 
-            var elapsedTime = Time.ElapsedTime;
-            var deltaTime = Time.DeltaTime;
+            // var elapsedTime = Time.ElapsedTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
 
             // string docPath =
@@ -124,8 +116,7 @@ namespace Vermetio.Server
 
                                 var p = new float3(x, y, z); // + worldSpaceBb.Center;
                                 var worldSpaceP = transform(new RigidTransform(rotation.Value, translation.Value), p);
-
-                                // TODO: check if p is inside collider
+                                
 
                                 // GizmoManager.AddGizmoAction(() =>
                                 // {
@@ -148,8 +139,7 @@ namespace Vermetio.Server
                                 };
                                 physicsWorld.CalculateDistance(pointDistanceInput, out var closestHit);
 
-                                if (closestHit.Distance <
-                                    0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
+                                if (closestHit.Distance < 0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
                                 {
                                     if (voxelsBuffer.IsEmpty)
                                     {
@@ -197,190 +187,198 @@ namespace Vermetio.Server
             Dependency.Complete();
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
 
+
+            // var transformVoxelsEcb = new EntityCommandBuffer(Allocator.TempJob);
+
+            var allVoxels = new NativeList<float2>(Allocator.Temp);
+            
+            Entities
+                .WithName("get_all_voxels")
+                .ForEach((Entity entity, in DynamicBuffer<VoxelElement> voxels, in Translation translation, in Rotation rotation) =>
+                {
+                    // var worldSpaceVoxels = new NativeArray<VoxelElement>(voxels.Length, Allocator.Temp);
+                    for (int voxelIndex = 0; voxelIndex < voxels.Length; voxelIndex++)
+                    {
+                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value), voxels[voxelIndex]);
+                        // worldSpaceVoxels[voxelIndex] = worldSpaceVoxel;
+                        allVoxels.Add(worldSpaceVoxel.xz);
+                    }
+                    
+                    // worldSpaceVoxels.Dispose();
+                }).Run();
+
+            Debug.Log($"{allVoxels.Length} voxels in total");
+            
             var heightMarker = new ProfilerMarker("Height");
             var depthMarker = new ProfilerMarker("Depth");
+            
+            var sortedWavelengths = wavelengthBuffer.Reinterpret<float>().AsNativeArray();
+            sortedWavelengths.Sort();
+            var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
+            var smallestWavelength = sortedWavelengths[0];
+            Debug.Log($"Smallest wavelength: {smallestWavelength}");
+
+            var elapsedTime = Time.ElapsedTime;
+            var elapsedTimeFloat = (float) elapsedTime;
+            
+            var waterHeights = GerstnerHelpers.GetWaterHeights(
+                elapsedTimeFloat,
+                allVoxels,
+                0.5f, //objectSizeForWaves,
+                spectrum.WindDirectionAngle,
+                spectrum.Chop,
+                spectrum.AttenuationInShallows,
+                physicsWorld,
+                wavelengthBuffer,
+                waveAmplitudeBuffer,
+                waveAngleBuffer,
+                phaseBuffer,
+                heightMarker,
+                depthMarker,
+                medianWavelength, 
+                smallestWavelength);
+
+            var waterHeightsPerPosition = new NativeHashMap<float2, float>(allVoxels.Length, Allocator.TempJob);
+
+            for (int i = 0; i < allVoxels.Length; i++)
+            {
+                waterHeightsPerPosition.TryAdd(allVoxels[i], waterHeights[i]);
+            }
+            
+            allVoxels.Dispose();
+            waterHeights.Dispose();
+            
+            if (wavelengthBuffer.IsEmpty)
+                return;
 
             Entities
                 // .WithoutBurst()
                 .WithName("Apply_bouyancy")
-                .WithReadOnly(physicsWorld)
+                // .WithReadOnly(physicsWorld)
+                .WithReadOnly(waterHeightsPerPosition)
+                .WithDisposeOnCompletion(waterHeightsPerPosition)
                 .ForEach((ref Translation translation, ref PhysicsVelocity pv, ref PhysicsDamping damping,
                     ref BuoyantComponent buoyant,
                     in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col,
                     in DynamicBuffer<VoxelElement> voxels) =>
                 {
-                    if (wavelengthBuffer.IsEmpty)
-                        return;
-
-                    // if (tick == 20)
-                    // {
-                    //     Profiler.enabled = true;
-                    //     ProfilerDriver.enabled = true;
-                    //     Debug.Log("Starting profiler");
-                    // }
-                    //
-                    // if (tick == 25)
-                    // {
-                    //     Profiler.enabled = false;
-                    //     ProfilerDriver.enabled = false;
-                    //     Debug.Log("Finishing profiler");
-                    //     Debug.Break();
-                    // }
+                    // ProfileFewTicks(tick);
                     // GizmoManager.ClearGizmos();
-                    var queryPoints = new NativeHashSet<float2>(voxels.Length, Allocator.Temp);
                     var objectExtents = col.Value.Value
                         .CalculateAabb(new RigidTransform(rotation.Value, translation.Value))
                         .Extents;
 
-                    var objectSizeForWaves = min(objectExtents.x, min(objectExtents.y, objectExtents.z));
+                    // var objectSizeForWaves = min(objectExtents.x, min(objectExtents.y, objectExtents.z));
                     // Debug.Log($"{voxels.Length}");
-                    // Debug.Log($"Mass: {rcp(pm.InverseMass)}, Inertia: {rcp(pm.InverseInertia)}");
                     // Debug.Log($"{tick}");
 
                     var submergedVoxelsCount = 0;
-                    var sortedWavelengths = wavelengthBuffer.AsNativeArray();
-                    sortedWavelengths.Sort();
-                    var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
-                    var smallestWavelength = sortedWavelengths[0];
+                    //
+                    // #region TestPeriodicity
+                    //
+                    // var zeroPoints = new NativeArray<float2>(2, Allocator.Temp) {[0] = new float2(10f, 10f), [1] = new float2(97f, 79f)};
+                    // var zeroPoints2 = new NativeArray<float2>(2, Allocator.Temp) {[0] = new float2(10f, 10f), [1] = new float2(97f, 79f)};
+                    //
+                    // // Debug.Log($"{_initialHeight}");
+                    //
+                    // if (tick == 40)
+                    // {
+                    //     for (int i = 0; i < 100; i++)
+                    //     {
+                    //
+                    //         var timeTest = 0f;
+                    //         var tickTest = 0f;
+                    //         var initialHeights = GerstnerHelpers.GetWaterHeights(
+                    //             (float) timeTest,
+                    //             zeroPoints,
+                    //             objectSizeForWaves,
+                    //             spectrum.WindDirectionAngle,
+                    //             spectrum.Chop,
+                    //             spectrum.AttenuationInShallows,
+                    //             physicsWorld,
+                    //             wavelengthBuffer,
+                    //             waveAmplitudeBuffer,
+                    //             waveAngleBuffer,
+                    //             phaseBuffer,
+                    //             heightMarker,
+                    //             depthMarker,
+                    //             medianWavelength,
+                    //             smallestWavelength);
+                    //
+                    //         // timeTest += 1f;
+                    //
+                    //         while (true)
+                    //         {
+                    //             timeTest += 1 / 60f;
+                    //             tickTest++;
+                    //
+                    //             var heightsNow = GerstnerHelpers.GetWaterHeights(
+                    //                 (float) timeTest,
+                    //                 zeroPoints2,
+                    //                 objectSizeForWaves,
+                    //                 spectrum.WindDirectionAngle,
+                    //                 spectrum.Chop,
+                    //                 spectrum.AttenuationInShallows,
+                    //                 physicsWorld,
+                    //                 wavelengthBuffer,
+                    //                 waveAmplitudeBuffer,
+                    //                 waveAngleBuffer,
+                    //                 phaseBuffer,
+                    //                 heightMarker,
+                    //                 depthMarker,
+                    //                 medianWavelength,
+                    //                 smallestWavelength);
+                    //
+                    //             if (abs(heightsNow[0] - initialHeights[0]) < 0.0001f &&
+                    //                 abs(heightsNow[1] - initialHeights[1]) < 0.0001f)
+                    //             {
+                    //                 Debug.Log($"MATCH at time {timeTest} tick {tickTest}");
+                    //                 break;
+                    //             }
+                    //
+                    //             // if (timeTest % 30f < 0.1f)
+                    //             // {
+                    //             //     Debug.Log($"{timeTest} passed");
+                    //             // }
+                    //         }
+                    //     }
+                    // }
+                    //
+                    // #endregion
 
-                    #region TestPeriodicity
-
-                    var zeroPoints = new NativeArray<float2>(1, Allocator.Temp) {[0] = new float2(10f, 10f)};
-                    var zeroPoints2 = new NativeArray<float2>(1, Allocator.Temp) {[0] = new float2(10f, 10f)};
-
-                    // Debug.Log($"{_initialHeight}");
-
-                    if (tick == 40)
+                    if ((tick * 1/60f) % 1f < 0.01f)
+                        Debug.Log($"{tick * 1/60f}");
+                    
+                    for (int voxelIndex = 0; voxelIndex < voxels.Length; voxelIndex++)
                     {
-                        for (int i = 0; i < 100; i++)
-                        {
-
-                            var timeTest = 0f;
-                            float initialHeight = GerstnerHelpers.GetWaterHeights(
-                                (float) timeTest,
-                                zeroPoints,
-                                objectSizeForWaves,
-                                spectrum.WindDirectionAngle,
-                                spectrum.Chop,
-                                spectrum.AttenuationInShallows,
-                                physicsWorld,
-                                wavelengthBuffer,
-                                waveAmplitudeBuffer,
-                                waveAngleBuffer,
-                                phaseBuffer,
-                                heightMarker,
-                                depthMarker,
-                                medianWavelength,
-                                smallestWavelength)[0];
-
-                            // timeTest += 1f;
-
-                            while (true)
-                            {
-                                timeTest += 1 / 60f / 10f;
-
-                                float heightNow = GerstnerHelpers.GetWaterHeights(
-                                    (float) timeTest,
-                                    zeroPoints2,
-                                    objectSizeForWaves,
-                                    spectrum.WindDirectionAngle,
-                                    spectrum.Chop,
-                                    spectrum.AttenuationInShallows,
-                                    physicsWorld,
-                                    wavelengthBuffer,
-                                    waveAmplitudeBuffer,
-                                    waveAngleBuffer,
-                                    phaseBuffer,
-                                    heightMarker,
-                                    depthMarker,
-                                    medianWavelength,
-                                    smallestWavelength)[0];
-
-                                if (abs(heightNow - initialHeight) < 0.0001f)
-                                {
-                                    Debug.Log($"MATCH at time {timeTest}");
-                                    break;
-                                }
-
-                                // if (timeTest % 30f < 0.1f)
-                                // {
-                                //     Debug.Log($"{timeTest} passed");
-                                // }
-                            }
-                        }
-                    }
-
-                    #endregion
-
-                    for (int i = 0; i < voxels.Length; i++)
-                    {
-                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value),
-                            voxels[i]);
-                        var samplePoint = new float2(worldSpaceVoxel.x, worldSpaceVoxel.z);
-                        queryPoints.Add(samplePoint);
-                    }
-
-                    var queryPointsArray = queryPoints.ToNativeArray(Allocator.Temp);
-
-                    var waterHeights = GerstnerHelpers.GetWaterHeights(
-                        (float) elapsedTime,
-                        queryPointsArray,
-                        objectSizeForWaves,
-                        spectrum.WindDirectionAngle,
-                        spectrum.Chop,
-                        spectrum.AttenuationInShallows,
-                        physicsWorld,
-                        wavelengthBuffer,
-                        waveAmplitudeBuffer,
-                        waveAngleBuffer,
-                        phaseBuffer,
-                        heightMarker,
-                        depthMarker,
-                        medianWavelength, 
-                        smallestWavelength); // I need this mapped to float2 query positions
-
-                    var waterHeightsPerPosition =
-                        new NativeHashMap<float2, float>(queryPointsArray.Length, Allocator.Temp);
-
-                    for (int i = 0; i < queryPointsArray.Length; i++)
-                    {
-                        waterHeightsPerPosition.Add(queryPointsArray[i], waterHeights[i]);
-                    }
-
-                    for (int i = 0; i < voxels.Length; i++)
-                    {
-                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value),
-                            voxels[i]);
-
-                        var submerged = false;
-                        var samplePoint = new float2(worldSpaceVoxel.x, worldSpaceVoxel.z);
-
-                        var waterHeight = waterHeightsPerPosition[samplePoint];
+                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value), voxels[voxelIndex]);
                         
+                        var waterHeight = waterHeightsPerPosition[worldSpaceVoxel.xz];
+
                         // GizmoManager.AddGizmoAction(() =>
                         // {
                         //     Gizmos.color = new Color(0, 1, 0, 1f);
                         //     Gizmos.DrawWireSphere(new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z), 0.1f);
                         // });
                         new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z).DrawCross(0.2f, Color.green, 1/60f);
-                        // if (worldSpaceVoxel.y < waterHeight) // hmm
-                        // {
-                        //     submergedVoxelsCount++;
-                        //     const float waterDensity = 1000f * 0.0001f; // real density * mass multiplier
-                        //     var volumeOfDisplacedWater = pow(buoyant.VoxelResolution, 3);
-                        //
-                        //     var archimedesForce = new float3(
-                        //         0f,
-                        //         waterDensity * volumeOfDisplacedWater *
-                        //         abs(PhysicsStep.Default.Gravity
-                        //             .y), // 1.1f is voxel res. 0.001f is the global mass multiplier I assumed
-                        //         0f);
-                        //
-                        //     pm.GetImpulseFromForce(archimedesForce, ForceMode.Force, deltaTime, out var impulse,
-                        //         out var impulseMass);
-                        //
-                        //     pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceVoxel);
-                        // }
+                        if (worldSpaceVoxel.y < waterHeight) // hmm
+                        {
+                            submergedVoxelsCount++;
+                            const float waterDensity = 1000f * 0.0001f; // real density * mass multiplier
+                            var volumeOfDisplacedWater = pow(buoyant.VoxelResolution, 3);
+                        
+                            var archimedesForce = new float3(
+                                0f,
+                                waterDensity * volumeOfDisplacedWater *
+                                abs(PhysicsStep.Default.Gravity
+                                    .y), // 1.1f is voxel res. 0.001f is the global mass multiplier I assumed
+                                0f);
+                        
+                            pm.GetImpulseFromForce(archimedesForce, ForceMode.Force, deltaTime, out var impulse,
+                                out var impulseMass);
+                        
+                            pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceVoxel);
+                        }
                     }
 
                     // var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
@@ -394,15 +392,28 @@ namespace Vermetio.Server
                         Linear = baseDampingLinear + baseDampingLinear * (percentageSubmerged * 10f),
                         Angular = baseDampingAngular + baseDampingAngular * (percentageSubmerged * 0.5f)
                     };
-
-                    sortedWavelengths.Dispose();
-                    queryPoints.Dispose();
-                    queryPointsArray.Dispose();
-                    waterHeights.Dispose();
-                    waterHeightsPerPosition.Dispose();
+                    
                 }).Schedule();
-
+            
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
+        }
+
+        private static void ProfileFewTicks(uint tick)
+        {
+            if (tick == 20)
+            {
+                Profiler.enabled = true;
+                ProfilerDriver.enabled = true;
+                Debug.Log("Starting profiler");
+            }
+
+            if (tick == 25)
+            {
+                Profiler.enabled = false;
+                ProfilerDriver.enabled = false;
+                Debug.Log("Finishing profiler");
+                Debug.Break();
+            }
         }
 
         void DrawBounds(Bounds b, float delay = 0)

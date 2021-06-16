@@ -34,7 +34,7 @@ public class TimeProvider : TimeProviderBase
 #endif
             _delta = value - _previousTime;
             _previousTime = value;
-            return value;
+            return value; // % 159.3360269663185191987552506288f;
         }
     }
 

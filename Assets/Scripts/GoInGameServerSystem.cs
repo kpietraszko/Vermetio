@@ -14,6 +14,7 @@ public class GoInGameServerSystem : SystemBase
     protected override void OnUpdate()
     {
         var ecb = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
+
         Entities.WithNone<SendRpcCommandRequestComponent>().ForEach(
             (Entity reqEnt, ref ConnectionSystem.GoInGameRequest req,
                 ref ReceiveRpcCommandRequestComponent reqSrc) =>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -17,6 +17,7 @@ using Unity.Profiling;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Profiling;
+using BoxCollider = Unity.Physics.BoxCollider;
 using Debug = UnityEngine.Debug;
 using ForceMode = Unity.Physics.Extensions.ForceMode;
 using Math = System.Math;
@@ -52,7 +53,7 @@ namespace Vermetio.Server
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
             _ghostSimulationSystemGroup = World.GetExistingSystem<GhostSimulationSystemGroup>();
 
-            Debug.unityLogger.logEnabled = false;
+            // Debug.unityLogger.logEnabled = false;
         }
 
         protected override void OnUpdate()
@@ -98,7 +99,7 @@ namespace Vermetio.Server
                     var boundingBox = col.Value.Value.CalculateAabb();
                     var rigidTransform = new RigidTransform(quaternion.identity, translation.Value);
                     var worldSpaceBb = Unity.Physics.Math.TransformAabb(rigidTransform, boundingBox);
-                    var voxelResolution = min(0.51f,
+                    var voxelResolution = min(1.1f,
                         min(worldSpaceBb.Extents.x,
                             min(worldSpaceBb.Extents.y,
                                 worldSpaceBb.Extents
@@ -146,8 +147,7 @@ namespace Vermetio.Server
                                 };
                                 physicsWorld.CalculateDistance(pointDistanceInput, out var closestHit);
 
-                                if (closestHit.Distance <
-                                    0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
+                                if (closestHit.Distance < 0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
                                 {
                                     if (voxelsBuffer.IsEmpty)
                                     {
@@ -164,14 +164,15 @@ namespace Vermetio.Server
 
                     if (voxelsBuffer.IsEmpty)
                     {
+                        Debug.Log("No voxels, not setting set mass");
                         return; // voxels not created yet, can't calculate mass
                     }
 
                     Debug.Log($"Created {voxelsBuffer.Length} voxels");
 
                     var volume = voxelsBuffer.Length * pow(voxelResolution, 3);
-                    var mass = volume * 750f *
-                               0.0001f; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
+                    var mass = volume * 800f /**
+                               0.0001f*/; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
                     // pm = PhysicsMass.CreateDynamic(new MassProperties
                     //     {
                     //         MassDistribution = new MassDistribution()
@@ -183,7 +184,7 @@ namespace Vermetio.Server
                     //         AngularExpansionFactor = pm.AngularExpansionFactor
                     //     },
                     //     mass);
-                    Debug.Log($"Mass: {rcp(pm.InverseMass)}, Inertia: {rcp(pm.InverseInertia)}");
+                    Debug.Log($"Mass: {mass}");
                     ecb.SetComponent(entityInQueryIndex, entity, new PhysicsMass()
                     {
                         Transform = pm.Transform,
@@ -218,10 +219,16 @@ namespace Vermetio.Server
                     // worldSpaceVoxels.Dispose();
                 }).Run();
 
-            Debug.Log($"{allVoxels.Length} voxels in total");
-            if (allVoxels.Length == 0)
-                return;
+            // if (tick < 50)
+            //     Debug.Log($"{allVoxels.Length} voxels in total");
 
+            if (allVoxels.Length == 0)
+            {
+                Debug.Log("allVoxels empty, bailing");
+                return;
+            }
+
+            
             var heightMarker = new ProfilerMarker("Height");
             var depthMarker = new ProfilerMarker("Depth");
 
@@ -229,12 +236,14 @@ namespace Vermetio.Server
             sortedWavelengths.Sort();
             var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
             var smallestWavelength = sortedWavelengths[0];
-            Debug.Log($"Smallest wavelength: {smallestWavelength}");
+            // Debug.Log($"Smallest wavelength: {smallestWavelength}");
 
             var elapsedTime = Time.ElapsedTime;
             var elapsedTimeFloat = (float) elapsedTime;
             var waterHeightsPerPosition = new NativeHashMap<float2, float>(allVoxels.Length, Allocator.TempJob);
 
+            var waveData = waveDataBuffer.AsNativeArray();
+            
             var waterHeightsJob = new GetWaterHeightsJob()
             {
                 allVoxels = allVoxels,
@@ -243,16 +252,13 @@ namespace Vermetio.Server
                 heightMarker = heightMarker,
                 medianWavelength = medianWavelength,
                 physicsWorld = physicsWorld,
-                waveDataBuffer = waveDataBuffer,
+                waveData = waveData,
                 WaterHeightsPerPosition = waterHeightsPerPosition
             };
             
             waterHeightsJob.Run();
 
             allVoxels.Dispose();
-
-            if (wavelengthBuffer.IsEmpty)
-                return;
 
             Entities
                 // .WithoutBurst()
@@ -275,7 +281,7 @@ namespace Vermetio.Server
                     // Debug.Log($"{voxels.Length}");
                     // Debug.Log($"{tick}");
 
-                    var submergedVoxelsCount = 0;
+                    var submergedAmount = 0f;
                     //
                     // #region TestPeriodicity
                     //
@@ -349,8 +355,10 @@ namespace Vermetio.Server
                     //
                     // #endregion
 
-                    if ((tick * 1 / 60f) % 1f < 0.01f)
-                        Debug.Log($"{tick * 1 / 60f}");
+                    // if ((tick * 1 / 60f) % 1f < 0.01f)
+                    //     Debug.Log($"{tick * 1 / 60f}");
+                    if (tick % 60 == 0)
+                        Debug.Log($"{tick / 60}");
 
                     for (int voxelIndex = 0; voxelIndex < voxels.Length; voxelIndex++)
                     {
@@ -364,38 +372,44 @@ namespace Vermetio.Server
                         //     Gizmos.color = new Color(0, 1, 0, 1f);
                         //     Gizmos.DrawWireSphere(new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z), 0.1f);
                         // });
-                        new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z).DrawCross(0.2f, Color.green,
-                            1 / 60f);
-                        if (worldSpaceVoxel.y < waterHeight) // hmm
+                        new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z).DrawCross(0.2f, Color.green, 1 / 60f);
+                        if (worldSpaceVoxel.y - buoyant.VoxelResolution < waterHeight) // hmm
                         {
-                            submergedVoxelsCount++;
-                            const float waterDensity = 1000f * 0.0001f; // real density * mass multiplier
+                            const float waterDensity = 1000f /** 0.0001f*/; // real density * mass multiplier
                             var volumeOfDisplacedWater = pow(buoyant.VoxelResolution, 3);
+                            var massOfDisplacedWater = waterDensity * volumeOfDisplacedWater;
 
                             var archimedesForce = new float3(
                                 0f,
-                                waterDensity * volumeOfDisplacedWater *
-                                abs(PhysicsStep.Default.Gravity
-                                    .y), // 1.1f is voxel res. 0.001f is the global mass multiplier I assumed
+                                massOfDisplacedWater *
+                                abs(PhysicsStep.Default.Gravity.y),
                                 0f);
+                            
+                            
+                            const float dampener = 0.01f;
+                            var k = clamp(waterHeight - (worldSpaceVoxel.y - buoyant.VoxelResolution), 0f, 1f);
+                            submergedAmount += k / voxels.Length;
+                            var voxelVelocity = pv.GetLinearVelocity(pm, translation, rotation, worldSpaceVoxel); 
+                            var localDampingForce = dampener * rcp(pm.InverseMass) * -voxelVelocity;
 
-                            pm.GetImpulseFromForce(archimedesForce, ForceMode.Force, deltaTime, out var impulse,
-                                out var impulseMass);
+                            var force = localDampingForce + sqrt(k) * archimedesForce;
+
+                            pm.GetImpulseFromForce(force, ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
 
                             pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceVoxel);
+                            // TODO: change archimedes force by damping factor like in the original script
                         }
                     }
 
                     // var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
-                    var percentageSubmerged = submergedVoxelsCount / voxels.Length;
-                    var submergedFactor = lerp(buoyant.SubmergedPercentage, percentageSubmerged, 0.25f);
+                    var submergedFactor = lerp(buoyant.SubmergedPercentage, submergedAmount, 0.25f);
                     buoyant.SubmergedPercentage = submergedFactor;
                     var baseDampingLinear = 0.04f;
                     var baseDampingAngular = 1f; //1.5f;
                     damping = new PhysicsDamping()
                     {
-                        Linear = baseDampingLinear + baseDampingLinear * (percentageSubmerged * 10f),
-                        Angular = baseDampingAngular + baseDampingAngular * (percentageSubmerged * 0.5f)
+                        Linear = baseDampingLinear + baseDampingLinear * (submergedFactor * 10f),
+                        Angular = baseDampingAngular + baseDampingAngular * (submergedFactor * 0.5f)
                     };
                 }).Schedule();
 

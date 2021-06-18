@@ -18,7 +18,7 @@ namespace DefaultNamespace
         public ProfilerMarker depthMarker;
         public float medianWavelength;
         [ReadOnly] public NativeArray<float2> allVoxels;
-        public DynamicBuffer<GerstnerWaveComponent4> waveDataBuffer;
+        public NativeArray<GerstnerWaveComponent4> waveData;
         public NativeHashMap<float2, float> WaterHeightsPerPosition;
 
         public void Execute()
@@ -27,7 +27,7 @@ namespace DefaultNamespace
                 elapsedTime,
                 allVoxels,
                 physicsWorld,
-                waveDataBuffer,
+                waveData,
                 heightMarker,
                 depthMarker,
                 medianWavelength);

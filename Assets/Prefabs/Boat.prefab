@@ -148,11 +148,11 @@ MonoBehaviour:
     y: 0
     z: 0
   m_GravityFactor: 1
-  m_OverrideDefaultMassDistribution: 0
+  m_OverrideDefaultMassDistribution: 1
   m_CenterOfMass:
-    x: 0
-    y: 0
-    z: 0
+    x: -0.01838971
+    y: 0.456682
+    z: -0.2069854
   m_Orientation:
     Value:
       x: 0

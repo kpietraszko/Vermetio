@@ -16,7 +16,7 @@ namespace Vermetio
         public static NativeArray<float> GetWaterHeights(float elapsedTime,
             NativeArray<float2> worldPositions,
             PhysicsWorld physicsWorld, 
-            DynamicBuffer<GerstnerWaveComponent4> waveData, 
+            NativeArray<GerstnerWaveComponent4> waveData, 
             ProfilerMarker heightMarker,
             ProfilerMarker depthMarker,
             float medianWavelength)
@@ -88,7 +88,7 @@ namespace Vermetio
         private static NativeArray<float3> SampleDisplacements(
             float elapsedTime,
             NativeArray<float2> positions,
-            DynamicBuffer<GerstnerWaveComponent4> waveData,
+            NativeArray<GerstnerWaveComponent4> waveData,
             PhysicsWorld physicsWorld,
             ProfilerMarker depthMarker,
             float medianWavelength)

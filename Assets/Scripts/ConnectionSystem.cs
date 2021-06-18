@@ -39,6 +39,12 @@ public class ConnectionSystem : SystemBase
             var network = world.GetExistingSystem<NetworkStreamReceiveSystem>();
             if (world.GetExistingSystem<ClientSimulationSystemGroup>() != null)
             {
+                // var tickRate = world.EntityManager.CreateEntity();
+                // world.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
+                // {
+                //     SimulationTickRate = 30
+                // });
+                
                 // Client worlds automatically connect to localhost
                 NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4;
                 ep.Port = 7979;
@@ -48,6 +54,12 @@ public class ConnectionSystem : SystemBase
             #if UNITY_EDITOR || UNITY_SERVER
             else if (world.GetExistingSystem<ServerSimulationSystemGroup>() != null)
             {
+                // var tickRate = world.EntityManager.CreateEntity();
+                // world.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
+                // {
+                //     SimulationTickRate = 30
+                // });
+
                 // Server world automatically listens for connections from any host
                 NetworkEndPoint ep = NetworkEndPoint.AnyIpv4;
                 ep.Port = 7979;

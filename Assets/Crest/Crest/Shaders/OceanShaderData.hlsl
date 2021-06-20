@@ -57,6 +57,7 @@ half4 _DepthFogDensity;
 // Normals
 // ----------------------------------------------------------------------------
 
+half _NormalsStrengthOverall;
 #if _APPLYNORMALMAPPING_ON
 half _NormalsStrength;
 half _NormalsScale;

@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fcc1742c5d877741b8e82fe2bb66a75, type: 3}
-  m_Name: SimSettingsAnimatedWaves
+  m_Script: {fileID: 11500000, guid: fef95bc62a1f8de4f963e9edaef6d823, type: 3}
+  m_Name: Sim_Settings_Shadow
   m_EditorClassIdentifier: 
-  _attenuationInShallows: 0.45
-  _collisionSource: 0
-  _maxQueryCount: 4096
-  _pingPongCombinePass: 0
+  _version: 0
+  _jitterDiameterSoft: 15
+  _currentFrameWeightSoft: 0.03
+  _jitterDiameterHard: 0.6
+  _currentFrameWeightHard: 0.15
+  _allowNullLight: 0

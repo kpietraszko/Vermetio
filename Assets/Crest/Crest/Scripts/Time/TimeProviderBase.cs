@@ -2,6 +2,7 @@
 
 // Copyright 2020 Wave Harmonic Ltd
 
+using UnityEditor;
 using UnityEngine;
 
 namespace Crest
@@ -24,4 +25,9 @@ namespace Crest
         public abstract float DeltaTime { get; }
         public abstract float DeltaTimeDynamics { get; }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(TimeProviderBase), editorForChildClasses: true), CanEditMultipleObjects]
+    class TimeProviderBaseEditor : Editor { }
+#endif
 }

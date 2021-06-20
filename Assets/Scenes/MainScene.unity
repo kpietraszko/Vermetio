@@ -195,13 +195,17 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 466947833}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5be4155a909a5ef47bdaaf1422602735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _version: 0
   _type: 0
   _refreshMode: 0
+  _layers:
+    serializedVersion: 2
+    m_Bits: 1
   _layerNames:
   - Terrain
   _resolution: 1024
@@ -372,13 +376,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dde37eff0f7685f41902f400d1de0c6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _version: 0
+  _globalWindSpeed: 150
   _viewpoint: {fileID: 0}
-  _camera: {fileID: 1695907644}
-  _timeProvider: {fileID: 909074733}
+  _camera: {fileID: 0}
+  _timeProvider: {fileID: 0}
   _primaryLight: {fileID: 1442418599}
   _searchForPrimaryLightOnStartup: 1
-  _material: {fileID: 2100000, guid: 172625126a8342742b066c06ee426fc5, type: 2}
-  _layerName: Water
+  _material: {fileID: 2100000, guid: 9def92ac79181fe41b238e91663f0fad, type: 2}
+  _layerName: 
+  _layer: 4
   _gravityMultiplier: 1
   _minTexelsPerWave: 3
   _minScale: 8
@@ -387,21 +394,23 @@ MonoBehaviour:
   _lodDataResolution: 256
   _geometryDownSampleFactor: 2
   _lodCount: 7
-  _simSettingsAnimatedWaves: {fileID: 11400000, guid: f8feaaa7f56619045b5b4d2774d34569, type: 2}
+  _simSettingsAnimatedWaves: {fileID: 0}
   _createSeaFloorDepthData: 1
   _createFoamSim: 1
-  _simSettingsFoam: {fileID: 11400000, guid: a64d5b935728ee240809426e18bfcd09, type: 2}
-  _createDynamicWaveSim: 1
+  _simSettingsFoam: {fileID: 0}
+  _createDynamicWaveSim: 0
   _simSettingsDynamicWaves: {fileID: 0}
-  _createFlowSim: 1
-  _simSettingsFlow: {fileID: 11400000, guid: ca7fe9d2c65f7cf4789fbd3086d82259, type: 2}
-  _createShadowData: 1
-  _simSettingsShadow: {fileID: 11400000, guid: 5e46d7ee1c65a834599b76fccdb4eb50, type: 2}
-  _createClipSurfaceData: 1
+  _createFlowSim: 0
+  _simSettingsFlow: {fileID: 0}
+  _createShadowData: 0
+  _simSettingsShadow: {fileID: 0}
+  _createClipSurfaceData: 0
   _defaultClippingState: 0
   _showOceanProxyPlane: 0
   _editModeFPS: 30
   _followSceneCamera: 1
+  _forceBatchMode: 0
+  _forceNoGPU: 0
   _attachDebugGUI: 0
   _hideOceanTileGameObjects: 1
   _uniformTiles: 0

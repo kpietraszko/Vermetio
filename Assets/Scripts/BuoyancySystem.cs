@@ -220,6 +220,7 @@ namespace Vermetio.Server
                 }).Run();
 
             // if (tick < 50)
+            //     return;
             //     Debug.Log($"{allVoxels.Length} voxels in total");
 
             if (allVoxels.Length == 0)

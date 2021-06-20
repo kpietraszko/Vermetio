@@ -102,7 +102,8 @@ void ApplyCaustics(in const float3 scenePos, in const half3 i_lightCol, in const
 	// could sample from the screen space shadow texture to attenuate this..
 	// underwater caustics - dedicated to P
 	const float3 scenePosUV = WorldToUV(scenePos.xz, cascadeData1, _LD_SliceIndex + 1);
-	half3 disp = 0.;
+
+	float3 disp = 0.0;
 	// this gives height at displaced position, not exactly at query position.. but it helps. i cant pass this from vert shader
 	// because i dont know it at scene pos.
 	SampleDisplacements(_LD_TexArray_AnimatedWaves, scenePosUV, 1.0, disp);
@@ -138,7 +139,7 @@ void ApplyCaustics(in const float3 scenePos, in const half3 i_lightCol, in const
 		// Calculate projected position again as we do not want the fudge factor. If we include the fudge factor, the
 		// caustics will not be aligned with shadows.
 		const float2 shadowSurfacePosXZ = scenePos.xz + i_lightDir.xz * sceneDepth / i_lightDir.y;
-		real2 causticShadow = 0.0;
+		half2 causticShadow = 0.0;
 		// As per the comment for the underwater code in ScatterColour,
 		// LOD_1 data can be missing when underwater
 		if (i_underwater)

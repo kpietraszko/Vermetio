@@ -111,7 +111,7 @@ namespace Vermetio
                 {
                     // spatial location
                     float4 x = kx * positions[positionIndex].x + kz * positions[positionIndex].y;
-                    float4 angle = data._phase - data._omega * elapsedTime; // omega was calculated using C that's already quantized in ShapeGerstner.cs
+                    float4 angle = data._phase - data._omega * elapsedTime;
                     angle += x;
 
                     // dx and dz could be baked into _ChopAmp

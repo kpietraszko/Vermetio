@@ -22,7 +22,7 @@ namespace Crest
         protected override Texture2DArray NullTexture => s_nullTexture;
 
         internal const string MATERIAL_KEYWORD_PROPERTY = "_ClipSurface";
-        internal const string MATERIAL_KEYWORD = MATERIAL_KEYWORD_PREFIX + "_CLIPSURFACE_ON";
+        internal static readonly string MATERIAL_KEYWORD = MATERIAL_KEYWORD_PREFIX + "_CLIPSURFACE_ON";
         internal const string ERROR_MATERIAL_KEYWORD_MISSING = "Clipping must be enabled on the ocean material to enable clipping holes in the water surface.";
         internal const string ERROR_MATERIAL_KEYWORD_MISSING_FIX = "Tick the <i>Enable</i> option in the <i>Clip Surface</i> parameter section on the material currently assigned to the <i>OceanRenderer</i> component.";
         internal const string ERROR_MATERIAL_KEYWORD_ON_FEATURE_OFF = "The clipping feature is disabled on this component but is enabled on the ocean material.";
@@ -92,9 +92,7 @@ namespace Crest
 
         public static void BindNullToGraphicsShaders() => Shader.SetGlobalTexture(ParamIdSampler(), s_nullTexture);
 
-#if UNITY_2019_3_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-#endif
         static void InitStatics()
         {
             // Init here from 2019.3 onwards

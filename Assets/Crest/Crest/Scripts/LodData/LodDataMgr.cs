@@ -31,7 +31,7 @@ namespace Crest
         public const int THREAD_GROUP_SIZE_Y = 8;
 
         // NOTE: This is a temporary solution to keywords having prefixes downstream.
-        internal const string MATERIAL_KEYWORD_PREFIX = "";
+        internal static readonly string MATERIAL_KEYWORD_PREFIX = RenderPipelineHelper.IsHighDefinition ? "CREST" : "";
 
         protected abstract int GetParamIdSampler(bool sourceLod = false);
 
@@ -218,9 +218,7 @@ namespace Crest
             Shader.SetGlobalTexture(GetParamIdSampler(), NullTexture);
         }
 
-#if UNITY_2019_3_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-#endif
         static void InitStatics()
         {
             // Init here from 2019.3 onwards

@@ -354,7 +354,20 @@ namespace Crest
 
                 mesh.SetIndices(null, MeshTopology.Triangles, 0);
                 mesh.vertices = arrV;
+
+                // HDRP needs full data. Do this on a define to keep door open to runtime changing of RP.
+#if CREST_HDRP
+                var norms = new Vector3[verts.Count];
+                for (int i = 0; i < norms.Length; i++) norms[i] = Vector3.up;
+                var tans = new Vector4[verts.Count];
+                for (int i = 0; i < tans.Length; i++) tans[i] = new Vector4(1, 0, 0, 1);
+
+                mesh.normals = norms;
+                mesh.tangents = tans;
+#else
                 mesh.normals = null;
+#endif
+
                 mesh.SetIndices(arrI, MeshTopology.Triangles, 0);
 
                 // recalculate bounds. add a little allowance for snapping. in the chunk renderer script, the bounds will be expanded further
@@ -481,9 +494,19 @@ namespace Crest
                 mr.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
                 mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; // arbitrary - could be turned on if desired
                 mr.receiveShadows = false; // this setting is ignored by unity for the transparent ocean shader
-                mr.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
+
+                // I'm not really convinced that only HDRP should get MVs, but its the one thats had the most testing,
+                // so keeping it this way for now. I'm guessing we'll enable on URP and maybe BIRP in the future.
+                if (RenderPipelineHelper.IsHighDefinition)
+                {
+                    mr.motionVectorGenerationMode = MotionVectorGenerationMode.Camera;
+                }
+                else
+                {
+                    mr.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
+                }
+
                 mr.material = ocean.OceanMaterial;
-                // The rendering layer mask has different purposes per pipeline.
                 mr.renderingLayerMask = OceanRenderer.Instance.RenderingLayerMask;
 
                 // rotate side patches to point the +x side outwards

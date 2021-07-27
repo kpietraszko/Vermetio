@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 744127718}
   - component: {fileID: 744127719}
+  - component: {fileID: 744127717}
   m_Layer: 0
   m_Name: Wave
   m_TagString: Untagged
@@ -140,6 +141,42 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &744127717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744127716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a57126133720c243a7af00a156c9ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _version: 0
+  _windTurbulence: 0.145
+  _spectrum: {fileID: 11400000, guid: a5da66f85191b9b4a84ae36f4642c76e, type: 2}
+  _spectrumFixedAtRuntime: 1
+  _waveDirectionHeadingAngle: 0
+  _overrideGlobalWindSpeed: 0
+  _windSpeed: 20
+  _weight: 1
+  _respectShallowWaterAttenuation: 0
+  _componentsPerOctave: 8
+  _randomSeed: 0
+  _resolution: 16
+  _debugDrawSlicesInEditor: 0
+  _overrideSplineSettings: 0
+  _radius: 50
+  _subdivisions: 1
+  _smoothingIterations: 60
+  _featherWaveStart: 0.1
+  _maxVerticalDisplacement: 10
+  _maxHorizontalDisplacement: 15
+  _enableBakedCollision: 1
+  _timeResolution: 30
+  _smallestWavelengthRequired: 4
+  _timeLoopLength: 32
 --- !u!4 &744127718
 Transform:
   m_ObjectHideFlags: 0

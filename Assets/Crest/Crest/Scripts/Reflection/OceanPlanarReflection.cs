@@ -10,7 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
+#if CREST_URP
 using UnityEngine.Rendering.Universal;
+#endif
 
 namespace Crest
 {
@@ -65,9 +67,7 @@ namespace Crest
                 .Append(new KeyValuePair<int, RenderTexture>(instanceId, reflectionTexture)).ToArray();
         }
 
-#if UNITY_2019_3_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-#endif
         static void InitStatics()
         {
             // Init here from 2019.3 onwards
@@ -95,7 +95,9 @@ namespace Crest
         [SerializeField] LayerMask _reflectionLayers = 1;
         [SerializeField] bool _disableOcclusionCulling = true;
         [SerializeField] bool _disablePixelLights = true;
+#pragma warning disable 414
         [SerializeField] bool _disableShadows = true;
+#pragma warning restore 414
         [SerializeField] int _textureSize = 256;
         [SerializeField] float _clipPlaneOffset = 0.07f;
         [SerializeField] bool _hdr = true;
@@ -130,12 +132,15 @@ namespace Crest
 
         private void OnEnable()
         {
-            RenderPipelineManager.beginCameraRendering += BeginCameraRendering;
+            if (!RenderPipelineHelper.IsHighDefinition)
+            {
+                RenderPipelineManager.beginCameraRendering += BeginCameraRendering;
+            }
         }
 
         private void Start()
         {
-            if (OceanRenderer.Instance == null)
+            if (OceanRenderer.Instance == null || RenderPipelineHelper.IsHighDefinition)
             {
                 enabled = false;
                 return;
@@ -226,7 +231,11 @@ namespace Crest
 
             ForceDistanceCulling(_farClipPlane);
 
+#if CREST_URP
             UniversalRenderPipeline.RenderSingleCamera(context, _camReflections);
+#else
+            // TODO: BIRP code here. HDRP uses the HDRP planar reflection feature.
+#endif
 
             GL.invertCulling = oldCulling;
 
@@ -254,7 +263,6 @@ namespace Crest
         {
             _lastRefreshOnFrame = currentframe;
         }
-
 
         /// <summary>
         /// Limit render distance for reflection camera for first 32 layers
@@ -342,10 +350,16 @@ namespace Crest
                 _camReflectionsSkybox = _camReflections.gameObject.AddComponent<Skybox>();
                 _camReflections.gameObject.AddComponent<FlareLayer>();
                 _camReflections.cameraType = CameraType.Reflection;
-                var additionalCameraData = _camReflections.gameObject.AddComponent<UniversalAdditionalCameraData>();
-                additionalCameraData.renderShadows = !_disableShadows;
-                additionalCameraData.requiresColorTexture = false;
-                additionalCameraData.requiresDepthTexture = false;
+
+#if CREST_URP
+                if (RenderPipelineHelper.IsUniversal)
+                {
+                    var additionalCameraData = _camReflections.gameObject.AddComponent<UniversalAdditionalCameraData>();
+                    additionalCameraData.renderShadows = !_disableShadows;
+                    additionalCameraData.requiresColorTexture = false;
+                    additionalCameraData.requiresDepthTexture = false;
+                }
+#endif
 
                 if (_hideCameraGameobject)
                 {

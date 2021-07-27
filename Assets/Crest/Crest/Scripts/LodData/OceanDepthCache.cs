@@ -4,7 +4,9 @@
 
 using System;
 using UnityEngine;
+#if CREST_URP
 using UnityEngine.Rendering.Universal;
+#endif
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -202,7 +204,10 @@ namespace Crest
                 _camDepthCache.backgroundColor = Color.white * 1000f;
                 _camDepthCache.enabled = false;
                 _camDepthCache.allowMSAA = false;
-                _camDepthCache.allowDynamicResolution = false;
+                if (RenderPipelineHelper.IsUniversal)
+                {
+                    _camDepthCache.allowDynamicResolution = false;
+                }
                 
                 // Stops behaviour from changing in VR. I tried disabling XR before/after camera render but it makes the editor
                 // go bonkers with split windows.
@@ -210,11 +215,16 @@ namespace Crest
                 // I'd prefer to destroy the camera object, but I found sometimes (on first start of editor) it will fail to render.
                 _camDepthCache.gameObject.SetActive(false);
 
-                var additionalCameraData = _camDepthCache.gameObject.AddComponent<UniversalAdditionalCameraData>();
-                additionalCameraData.renderShadows = false;
-                additionalCameraData.requiresColorTexture = false;
-                additionalCameraData.requiresDepthTexture = false;
-                additionalCameraData.renderPostProcessing = false;
+#if CREST_URP
+                if (RenderPipelineHelper.IsUniversal)
+                {
+                    var additionalCameraData = _camDepthCache.gameObject.AddComponent<UniversalAdditionalCameraData>();
+                    additionalCameraData.renderShadows = false;
+                    additionalCameraData.requiresColorTexture = false;
+                    additionalCameraData.requiresDepthTexture = false;
+                    additionalCameraData.renderPostProcessing = false;
+                }
+#endif
             }
 
             if (updateComponents || isDepthCacheCameraCreation)

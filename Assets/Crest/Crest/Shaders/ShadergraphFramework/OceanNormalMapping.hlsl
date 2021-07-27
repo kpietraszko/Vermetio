@@ -21,7 +21,7 @@ half2 SampleNormalMaps
 	const float lodDataGridSize = cascadeData._texelWidth;
 	float2 normalScrollSpeeds = instanceData._normalScrollSpeeds;
 
-#if SHADERGRAPH_PREVIEW
+#ifdef SHADERGRAPH_PREVIEW
 	// sampler_TextureNormals is not defined in shader graph. Silence error.
 	SamplerState sampler_TextureNormals = LODData_linear_clamp_sampler;
 #endif

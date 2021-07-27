@@ -187,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &466947834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,9 +205,8 @@ MonoBehaviour:
   _refreshMode: 0
   _layers:
     serializedVersion: 2
-    m_Bits: 1
-  _layerNames:
-  - Terrain
+    m_Bits: 8
+  _layerNames: []
   _resolution: 1024
   _cameraMaxTerrainHeight: 100
   _forceAlwaysUpdateDebug: 0
@@ -223,7 +222,7 @@ Transform:
   m_GameObject: {fileID: 466947833}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1000, y: 50, z: 1000}
+  m_LocalScale: {x: 1000, y: 1, z: 1000}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
@@ -357,6 +356,7 @@ GameObject:
   - component: {fileID: 909074732}
   - component: {fileID: 909074733}
   - component: {fileID: 909074731}
+  - component: {fileID: 909074734}
   m_Layer: 0
   m_Name: Ocean
   m_TagString: Untagged
@@ -380,7 +380,7 @@ MonoBehaviour:
   _globalWindSpeed: 150
   _viewpoint: {fileID: 0}
   _camera: {fileID: 0}
-  _timeProvider: {fileID: 0}
+  _timeProvider: {fileID: 909074733}
   _primaryLight: {fileID: 1442418599}
   _searchForPrimaryLightOnStartup: 1
   _material: {fileID: 2100000, guid: 9def92ac79181fe41b238e91663f0fad, type: 2}
@@ -394,16 +394,18 @@ MonoBehaviour:
   _lodDataResolution: 256
   _geometryDownSampleFactor: 2
   _lodCount: 7
-  _simSettingsAnimatedWaves: {fileID: 0}
+  _underwaterCullLimit: 0.001
+  _renderingLayerMask: 255
+  _simSettingsAnimatedWaves: {fileID: 11400000, guid: 3728e003960a24b46a070af9046a1e17, type: 2}
   _createSeaFloorDepthData: 1
   _createFoamSim: 1
-  _simSettingsFoam: {fileID: 0}
+  _simSettingsFoam: {fileID: 11400000, guid: b90d8871100c21c4899cce9afbd7d666, type: 2}
   _createDynamicWaveSim: 0
   _simSettingsDynamicWaves: {fileID: 0}
   _createFlowSim: 0
   _simSettingsFlow: {fileID: 0}
-  _createShadowData: 0
-  _simSettingsShadow: {fileID: 0}
+  _createShadowData: 1
+  _simSettingsShadow: {fileID: 11400000, guid: 6e32e00f311f23145b8ff14a38aadbbe, type: 2}
   _createClipSurfaceData: 0
   _defaultClippingState: 0
   _showOceanProxyPlane: 0
@@ -442,6 +444,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3321a8b4cf8f4ac43a43d6509983e7e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &909074734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909074730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecb4eabedc2586f41b2878c2c640ad50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _version: 0
+  _objectWidth: 0
+  _stepSize: 2
+  _steps: 64
+  _useDisplacements: 0
+  _useNormals: 0
 --- !u!1 &1320718952
 GameObject:
   m_ObjectHideFlags: 0

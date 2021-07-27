@@ -1,13 +1,15 @@
 ﻿// Crest Ocean System
 
-// Copyright 2020 Wave Harmonic Ltd
+// This file is subject to the MIT License as seen in the root of this folder structure (LICENSE)
 
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 namespace Crest
 {
     [CreateAssetMenu(fileName = "SimSettingsAnimatedWaves", menuName = "Crest/Animated Waves Sim Settings", order = 10000)]
+    [HelpURL(k_HelpURL)]
     public partial class SimSettingsAnimatedWaves : SimSettingsBase
     {
         /// <summary>
@@ -19,6 +21,8 @@ namespace Crest
         int _version = 0;
 #pragma warning restore 414
 
+        public const string k_HelpURL = Internal.Constants.HELP_URL_BASE_USER + "ocean-simulation.html" + Internal.Constants.HELP_URL_RP + "#animated-waves-settings";
+
         [Tooltip("How much waves are dampened in shallow water."), SerializeField, Range(0f, 1f)]
         float _attenuationInShallows = 0.95f;
         public float AttenuationInShallows { get { return _attenuationInShallows; } }
@@ -28,6 +32,7 @@ namespace Crest
             None,
             GerstnerWavesCPU,
             ComputeShaderQueries,
+            BakedFFT
         }
 
         [Tooltip("Where to obtain ocean shape on CPU for physics / gameplay."), SerializeField]
@@ -42,6 +47,18 @@ namespace Crest
         [Tooltip("Whether to use a graphics shader for combining the wave cascades together. Disabling this uses a compute shader instead which doesn't need to copy back and forth between targets, but it may not work on some GPUs, in particular pre-DX11.3 hardware, which do not support typed UAV loads. The fail behaviour is a flat ocean."), SerializeField]
         bool _pingPongCombinePass = true;
         public bool PingPongCombinePass => _pingPongCombinePass;
+
+        [Tooltip("The render texture format to use for the wave simulation. It should only be changed if you need more precision. See the documentation for information.")]
+        public GraphicsFormat _renderTextureGraphicsFormat = GraphicsFormat.R16G16B16A16_SFloat;
+
+        [Predicated("_collisionSource", true, 3), DecoratedField]
+        public FFTBakedData _bakedFFTData;
+
+        public override void AddToSettingsHash(ref int settingsHash)
+        {
+            base.AddToSettingsHash(ref settingsHash);
+            Hashy.AddInt((int)_renderTextureGraphicsFormat, ref settingsHash);
+        }
 
         /// <summary>
         /// Provides ocean shape to CPU.
@@ -67,6 +84,9 @@ namespace Crest
                     {
                         Debug.LogError("Crest: Compute shader queries not supported in headless/batch mode. To resolve, assign an Animated Wave Settings asset to the OceanRenderer component and set the Collision Source to be a CPU option.");
                     }
+                    break;
+                case CollisionSources.BakedFFT:
+                    result = new CollProviderBakedFFT(_bakedFFTData);
                     break;
             }
 
@@ -122,6 +142,22 @@ namespace Crest
                     FixSetCollisionSourceToCompute
                 );
             }
+            else if (_collisionSource == CollisionSources.BakedFFT)
+            {
+                if (_bakedFFTData != null)
+                {
+                    if (!Mathf.Approximately(_bakedFFTData._parameters._windSpeed * 3.6f, ocean._globalWindSpeed))
+                    {
+                        showMessage
+                        (
+                            $"Wind speed on ocean component {ocean._globalWindSpeed} does not match wind speed of baked FFT data {_bakedFFTData._parameters._windSpeed * 3.6f}, collision shape may not match visual surface.",
+                            $"Set global wind speed on ocean component to {_bakedFFTData._parameters._windSpeed * 3.6f}.",
+                            ValidatedHelper.MessageType.Warning, ocean,
+                            FixOceanWindSpeed
+                        );
+                    }
+                }
+            }
 
             return isValid;
         }
@@ -135,6 +171,36 @@ namespace Crest
                 EditorUtility.SetDirty(OceanRenderer.Instance._simSettingsAnimatedWaves);
             }
         }
+
+        internal static void FixOceanWindSpeed(SerializedObject settingsObject)
+        {
+            if (OceanRenderer.Instance != null
+                && OceanRenderer.Instance._simSettingsAnimatedWaves != null
+                && OceanRenderer.Instance._simSettingsAnimatedWaves._bakedFFTData != null)
+            {
+                Undo.RecordObject(OceanRenderer.Instance._simSettingsAnimatedWaves, "Set global wind speed to match baked data");
+                OceanRenderer.Instance._globalWindSpeed = OceanRenderer.Instance._simSettingsAnimatedWaves._bakedFFTData._parameters._windSpeed * 3.6f;
+                EditorUtility.SetDirty(OceanRenderer.Instance);
+            }
+        }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(SimSettingsAnimatedWaves), true), CanEditMultipleObjects]
+    class SimSettingsAnimatedWavesEditor : SimSettingsBaseEditor
+    {
+        public override void OnInspectorGUI()
+        {
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Open Online Help Page"))
+            {
+                Application.OpenURL(SimSettingsAnimatedWaves.k_HelpURL);
+            }
+            EditorGUILayout.Space();
+
+            base.OnInspectorGUI();
+        }
+    }
+#endif
 #endif
 }

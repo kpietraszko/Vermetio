@@ -1,6 +1,6 @@
 ﻿// Crest Ocean System
 
-// This file is subject to the MIT License as seen in the root of this folder structure (LICENSE)
+// Copyright 2021 Wave Harmonic Ltd
 
 // Generates waves from geometry that is rendered into the water simulation from a top down camera. Expects
 // following data on verts:
@@ -38,7 +38,7 @@ Shader "Crest/Inputs/Animated Waves/Gerstner Geometry"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma enable_d3d11_debug_symbols
+            // #pragma enable_d3d11_debug_symbols
 
             #include "UnityCG.cginc"
 

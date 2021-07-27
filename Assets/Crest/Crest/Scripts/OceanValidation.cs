@@ -124,6 +124,18 @@ namespace Crest
                 return false;
             }
 
+            // TODO:UnderwaterPostProcessValidation
+            // How to get this to work?
+            // var underwaters = FindObjectsOfType<UnderwaterPostProcess>();
+            // foreach (var underwater in underwaters)
+            // {
+            //     if (underwater.GetComponent<Camera>() == null)
+            //     {
+            //         showMessage("Validation: UnderwaterPostProcess script must be attached to a GameObject with a Camera component. Click this message to see the GameObject in question.", MessageType.Error, underwater.gameObject);
+            //         return false;
+            //     }
+            // }
+
             if (!ValidateMaterial(renderer.sharedMaterial, shaderPrefix, gameObject, showMessage))
             {
                 return false;

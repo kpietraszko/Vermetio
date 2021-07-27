@@ -19,7 +19,7 @@ namespace Crest
     /// </summary>
     [ExecuteAlways]
     [AddComponentMenu(Internal.Constants.MENU_PREFIX_SCRIPTS + "Shape Gerstner")]
-    [HelpURL(Internal.Constants.HELP_URL_BASE_USER + "wave-conditions.html" + Internal.Constants.HELP_URL_RP + "#shapegerstner-preview")]
+    [HelpURL(Internal.Constants.HELP_URL_BASE_USER + "wave-conditions.html" + Internal.Constants.HELP_URL_RP)]
     public partial class ShapeGerstner : MonoBehaviour, IFloatingOrigin, LodDataMgrAnimWaves.IShapeUpdatable
         , ISplinePointCustomDataSetup
 #if UNITY_EDITOR
@@ -141,12 +141,12 @@ namespace Crest
         GerstnerBatch[] _batches = null;
 
         // Data for all components
-        public float[] _wavelengths;
-        public float[] _amplitudes;
+        float[] _wavelengths;
+        float[] _amplitudes;
         float[] _amplitudes2;
         float[] _powers;
-        public float[] _angleDegs;
-        public float[] _phases;
+        float[] _angleDegs;
+        float[] _phases;
         float[] _phases2;
 
         [HideInInspector]
@@ -170,7 +170,7 @@ namespace Crest
 
         // Caution - order here impact performance. Rearranging these to match order
         // they're read in the compute shader made it 50% slower..
-        public struct GerstnerWaveComponent4
+        struct GerstnerWaveComponent4
         {
             public Vector4 _twoPiOverWavelength;
             public Vector4 _amp;
@@ -185,7 +185,7 @@ namespace Crest
             public Vector4 _phase2;
         }
         ComputeBuffer _bufWaveData;
-        public GerstnerWaveComponent4[] _waveData = new GerstnerWaveComponent4[MAX_WAVE_COMPONENTS / 4];
+        GerstnerWaveComponent4[] _waveData = new GerstnerWaveComponent4[MAX_WAVE_COMPONENTS / 4];
 
         ComputeShader _shaderGerstner;
         int _krnlGerstner = -1;
@@ -664,20 +664,19 @@ namespace Crest
             {
                 _activeSpectrum = _spectrum;
             }
-#if UNITY_EDITOR
+
             if (_activeSpectrum == null)
             {
                 _activeSpectrum = ScriptableObject.CreateInstance<OceanWaveSpectrum>();
                 _activeSpectrum.name = "Default Waves (auto)";
             }
 
+#if UNITY_EDITOR
             if (EditorApplication.isPlaying && !Validate(OceanRenderer.Instance, ValidatedHelper.DebugLog))
             {
                 enabled = false;
                 return;
             }
-
-            _activeSpectrum.Upgrade();
 #endif
 
             LodDataMgrAnimWaves.RegisterUpdatable(this);

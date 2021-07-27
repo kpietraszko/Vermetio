@@ -5,7 +5,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using Crest.Spline;
-using UnityEngine.Experimental.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -18,7 +17,7 @@ namespace Crest
     /// </summary>
     [ExecuteAlways]
     [AddComponentMenu(Internal.Constants.MENU_PREFIX_SCRIPTS + "Shape FFT")]
-    [HelpURL(Internal.Constants.HELP_URL_BASE_USER + "wave-conditions.html" + Internal.Constants.HELP_URL_RP + "#shapefft-preview")]
+    [HelpURL(Internal.Constants.HELP_URL_BASE_USER + "wave-conditions.html" + Internal.Constants.HELP_URL_RP)]
     public partial class ShapeFFT : MonoBehaviour, LodDataMgrAnimWaves.IShapeUpdatable
 #if UNITY_EDITOR
         , IReceiveSplinePointOnDrawGizmosSelectedMessages
@@ -47,12 +46,14 @@ namespace Crest
 
         [Tooltip("Primary wave direction heading (deg). This is the angle from x axis in degrees that the waves are oriented towards. If a spline is being used to place the waves, this angle is relative ot the spline."), Range(-180, 180)]
         public float _waveDirectionHeadingAngle = 0f;
+        public float WindDirRadForFFT => _meshForDrawingWaves != null ? 0f : _waveDirectionHeadingAngle * Mathf.Deg2Rad;
         public Vector2 PrimaryWaveDirection => new Vector2(Mathf.Cos(Mathf.PI * _waveDirectionHeadingAngle / 180f), Mathf.Sin(Mathf.PI * _waveDirectionHeadingAngle / 180f));
 
         [Tooltip("When true, uses the wind speed on this component rather than the wind speed from the Ocean Renderer component.")]
         public bool _overrideGlobalWindSpeed = false;
         [Tooltip("Wind speed in km/h. Controls wave conditions."), Range(0, 150f, 2f), Predicated("_overrideGlobalWindSpeed")]
         public float _windSpeed = 20f;
+        public float WindSpeedForFFT => (_overrideGlobalWindSpeed ? _windSpeed : OceanRenderer.Instance._globalWindSpeed) / 3.6f;
 
         [Tooltip("Multiplier for these waves to scale up/down."), Range(0f, 1f)]
         public float _weight = 1f;
@@ -96,12 +97,24 @@ namespace Crest
         [Tooltip("Maximum amount a point on the surface will be displaced horizontally by waves from its rest position. Increase this if gaps appear at sides of screen."), SerializeField]
         float _maxHorizontalDisplacement = 15f;
 
-        /// <summary>
-        /// 'Raw', uncombined, wave data. Input for putting into AnimWaves data before combine pass.
-        /// </summary>
-        RenderTexture _waveBuffers;
+        [Header("Collision Data Baking")]
+        [Tooltip("Enable running this FFT with baked data. This makes the FFT periodic (repeating in time).")]
+        public bool _enableBakedCollision = false;
+        [Tooltip("Frames per second of baked data. Larger values generate more frames and increase baked data size."), DecoratedField, Predicated("_enableBakedCollision")]
+        public int _timeResolution = 4;
+        [Tooltip("Smallest wavelength required in collision. To preview disable power sliders in spectrum for smaller values than this number. Smaller values require more resolution and increase baked data size."), DecoratedField, Predicated("_enableBakedCollision")]
+        public float _smallestWavelengthRequired = 2f;
+        [Tooltip("FFT waves will loop with a periodic of this many seconds."), DecoratedField, Predicated("_enableBakedCollision"), Range(4f, 128f), Delayed]
+        public float _timeLoopLength = 32f;
+
+        internal float LoopPeriod => _enableBakedCollision ? _timeLoopLength : -1f;
 
         Mesh _meshForDrawingWaves;
+
+        float _windTurbulenceOld;
+        float _windSpeedOld;
+        float _windDirRadOld;
+        OceanWaveSpectrum _spectrumOld;
 
         public class FFTBatch : ILodDataInput
         {
@@ -148,10 +161,9 @@ namespace Crest
             }
         }
 
-        const int CASCADE_COUNT = 16;
+        public const int CASCADE_COUNT = 16;
 
         FFTBatch[] _batches = null;
-        FFTCompute _compute = null;
 
         // Used to populate data on first frame
         bool _firstUpdate = true;
@@ -164,25 +176,6 @@ namespace Crest
         static readonly int sp_RespectShallowWaterAttenuation = Shader.PropertyToID("_RespectShallowWaterAttenuation");
         static readonly int sp_FeatherWaveStart = Shader.PropertyToID("_FeatherWaveStart");
         readonly int sp_AxisX = Shader.PropertyToID("_AxisX");
-
-        void InitData()
-        {
-            // Raw wave data buffer
-            _waveBuffers = new RenderTexture(_resolution, _resolution, 0, GraphicsFormat.R16G16B16A16_SFloat);
-            _waveBuffers.wrapMode = TextureWrapMode.Repeat;
-            _waveBuffers.antiAliasing = 1;
-            _waveBuffers.filterMode = FilterMode.Bilinear;
-            _waveBuffers.anisoLevel = 0;
-            _waveBuffers.useMipMap = false;
-            _waveBuffers.name = "FFTCascades";
-            _waveBuffers.dimension = TextureDimension.Tex2DArray;
-            _waveBuffers.volumeDepth = CASCADE_COUNT;
-            _waveBuffers.enableRandomWrite = true;
-            _waveBuffers.Create();
-
-            Debug.Assert(Mathf.NextPowerOfTwo(_resolution) == _resolution, "Resolution must be power of 2");
-            _compute = new FFTCompute();
-        }
 
         /// <summary>
         /// Min wavelength for a cascade in the wave buffer. Does not depend on viewpoint.
@@ -201,17 +194,12 @@ namespace Crest
             UpdateEditorOnly();
 #endif
 
-            if (_compute == null || _waveBuffers == null || _resolution != _waveBuffers.width)
-            {
-                InitData();
-            }
-
             var updateDataEachFrame = !_spectrumFixedAtRuntime;
 #if UNITY_EDITOR
             if (!EditorApplication.isPlaying) updateDataEachFrame = true;
 #endif
             // Ensure batches assigned to correct slots
-            if (_firstUpdate || updateDataEachFrame || (_waveBuffers != null))
+            if (_firstUpdate || updateDataEachFrame)
             {
                 InitBatches();
 
@@ -220,17 +208,32 @@ namespace Crest
 
             _matGenerateWaves.SetFloat(sp_RespectShallowWaterAttenuation, _respectShallowWaterAttenuation);
             _matGenerateWaves.SetFloat(sp_FeatherWaveStart, _featherWaveStart);
-            _matGenerateWaves.SetVector(sp_AxisX, PrimaryWaveDirection);
-            // Seems like shader errors cause this to unbind if I don't set it every frame. Could be an editor only issue.
-            _matGenerateWaves.SetTexture(sp_WaveBuffer, _waveBuffers);
+
+            // If using geo, the primary wave dir is used by the input shader to rotate the waves relative
+            // to the geo rotation. If not, the wind direction is already used in the FFT gen.
+            var waveDir = _meshForDrawingWaves != null ? PrimaryWaveDirection : Vector2.right;
+            _matGenerateWaves.SetVector(sp_AxisX, waveDir);
+
+            // If geometry is being used, the ocean input shader will rotate the waves to align to geo
+            var windDirRad = WindDirRadForFFT;
+            var windSpeedMPS = WindSpeedForFFT;
+            float loopPeriod = LoopPeriod;
+
+            // Don't create tons of generators when values are varying. Notify so that existing generators may be adapted.
+            if (_windTurbulenceOld != _windTurbulence || _windDirRadOld != windDirRad || _windSpeedOld != windSpeedMPS || _spectrumOld != _spectrum)
+            {
+                FFTCompute.OnGenerationDataUpdated(_resolution, loopPeriod, _windTurbulenceOld, _windDirRadOld, _windSpeedOld, _spectrumOld, _windTurbulence, windDirRad, windSpeedMPS, _spectrum);
+            }
+
+            var waveData = FFTCompute.GenerateDisplacements(buf, _resolution, loopPeriod, _windTurbulence, windDirRad, windSpeedMPS, OceanRenderer.Instance.CurrentTime, _activeSpectrum, updateDataEachFrame);
+
+            _windTurbulenceOld = _windTurbulence;
+            _windDirRadOld = windDirRad;
+            _windSpeedOld = windSpeedMPS;
+            _spectrumOld = _spectrum;
+            _matGenerateWaves.SetTexture(sp_WaveBuffer, waveData);
 
             ReportMaxDisplacement();
-
-            var windSpeedMPS = (_overrideGlobalWindSpeed ? _windSpeed : OceanRenderer.Instance._globalWindSpeed) / 3.6f;
-            _compute.GenerateDisplacements(buf, _windTurbulence, windSpeedMPS, OceanRenderer.Instance.CurrentTime, _activeSpectrum, updateDataEachFrame, _waveBuffers);
-
-            // Seems to come unbound when editing shaders at runtime, so rebinding here.
-            _matGenerateWaves.SetTexture(sp_WaveBuffer, _waveBuffers);
         }
 
 #if UNITY_EDITOR
@@ -311,20 +314,19 @@ namespace Crest
             {
                 _activeSpectrum = _spectrum;
             }
-#if UNITY_EDITOR
+
             if (_activeSpectrum == null)
             {
                 _activeSpectrum = ScriptableObject.CreateInstance<OceanWaveSpectrum>();
                 _activeSpectrum.name = "Default Waves (auto)";
             }
 
+#if UNITY_EDITOR
             if (EditorApplication.isPlaying && !Validate(OceanRenderer.Instance, ValidatedHelper.DebugLog))
             {
                 enabled = false;
                 return;
             }
-
-            _activeSpectrum.Upgrade();
 #endif
 
             LodDataMgrAnimWaves.RegisterUpdatable(this);
@@ -343,27 +345,6 @@ namespace Crest
                 }
 
                 _batches = null;
-            }
-
-            if (_compute != null)
-            {
-                _compute.Release();
-                _compute = null;
-            }
-
-            if (_waveBuffers != null)
-            {
-#if UNITY_EDITOR
-                if (!EditorApplication.isPlaying)
-                {
-                    DestroyImmediate(_waveBuffers);
-                }
-                else
-#endif
-                {
-                    Destroy(_waveBuffers);
-                }
-                _waveBuffers = null;
             }
         }
 
@@ -384,12 +365,9 @@ namespace Crest
 
         void OnGUI()
         {
-            if (_debugDrawSlicesInEditor && _compute != null)
+            if (_debugDrawSlicesInEditor)
             {
-                OceanDebugGUI.DrawTextureArray(_waveBuffers, 8, 0.5f, 20f);
-                //OceanDebugGUI.DrawTextureArray(_compute.spectrumHeight, 9, 0.5f, 120f);
-
-                _compute.OnGUI();
+                FFTCompute.OnGUI(_resolution, LoopPeriod, _windTurbulence, WindDirRadForFFT, WindSpeedForFFT, _activeSpectrum);
             }
         }
 
@@ -423,6 +401,109 @@ namespace Crest
 
     // Here for the help boxes
     [CustomEditor(typeof(ShapeFFT))]
-    public class ShapeFFTEditor : ValidatedEditor { }
+    public class ShapeFFTEditor : ValidatedEditor
+    {
+        /// <summary>
+        /// Display some validation and statistics about the bake.
+        /// </summary>
+        void BakeHelpBox(ShapeFFT target)
+        {
+            var message = "";
+
+            FFTBaker.ComputeRequiredOctaves(target._spectrum, target._smallestWavelengthRequired, out var smallestOctaveRequired, out var largestOctaveRequired);
+            if (largestOctaveRequired == -1 || smallestOctaveRequired == -1 || smallestOctaveRequired > largestOctaveRequired)
+            {
+                EditorGUILayout.HelpBox("No waves in spectrum. Increase one or more of the spectrum sliders.", MessageType.Error);
+                return;
+            }
+
+            message += $"FFT resolution is {target._resolution}.";
+            message += $" Spectrum power sliders give {largestOctaveRequired - smallestOctaveRequired + 1} active octaves greater than smallest wavelength {target._smallestWavelengthRequired}m.";
+            var scales = largestOctaveRequired - smallestOctaveRequired + 2;
+            message += $" Bake data resolution will be {target._resolution} x {target._resolution} x {scales}.";
+
+            message += "\n\n";
+            message += $"Period is {target._timeLoopLength}s.";
+            message += $" Frames per second setting is {target._timeResolution}.";
+            var frameCount = target._timeLoopLength * target._timeResolution;
+            message += $" Frame count is {target._timeLoopLength} x {target._timeResolution} = {frameCount}.";
+
+            message += "\n\n";
+            var pointsPerFrame = target._resolution * target._resolution * scales;
+            var channelCount = 4;
+            var bytesPerChannel = 4;
+            message += $"Total data size will be {pointsPerFrame * frameCount * channelCount * bytesPerChannel / 1048576f} MB.";
+
+            EditorGUILayout.HelpBox(message, MessageType.Info);
+        }
+
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            var fft = target as ShapeFFT;
+
+            bool bakingEnabled = fft._enableBakedCollision;
+
+            if (bakingEnabled)
+            {
+                if (fft._spectrum == null)
+                {
+                    EditorGUILayout.HelpBox("A spectrum must be assigned to enable collision baking.", MessageType.Error);
+                    return;
+                }
+
+                BakeHelpBox(fft);
+            }
+
+            GUI.enabled = bakingEnabled;
+            OnInspectorGUIBaking();
+            GUI.enabled = true;
+        }
+
+        /// <summary>
+        /// Controls & GUI for baking.
+        /// </summary>
+        void OnInspectorGUIBaking()
+        {
+            var bakeAndAssignLabel = "Bake to asset and assign to current settings";
+            var selectCurrentSettingsLabel = "Select current settings";
+            if (OceanRenderer.Instance._simSettingsAnimatedWaves != null)
+            {
+                if (GUILayout.Button(bakeAndAssignLabel))
+                {
+                    var targetFFT = target as ShapeFFT;
+                    var result = FFTBaker.BakeShapeFFT(targetFFT);
+                    if (result != null)
+                    {
+                        OceanRenderer.Instance._simSettingsAnimatedWaves.CollisionSource = SimSettingsAnimatedWaves.CollisionSources.BakedFFT;
+                        OceanRenderer.Instance._simSettingsAnimatedWaves._bakedFFTData = result;
+                        Selection.activeObject = OceanRenderer.Instance._simSettingsAnimatedWaves;
+
+                        // Rebuild ocean
+                        var ocean = OceanRenderer.Instance;
+                        if (ocean != null)
+                        {
+                            ocean.enabled = false;
+                            ocean.enabled = true;
+                        }
+                    }
+                }
+
+                if (GUILayout.Button(selectCurrentSettingsLabel))
+                {
+                    Selection.activeObject = OceanRenderer.Instance._simSettingsAnimatedWaves;
+                }
+            }
+            else
+            {
+                // No settings available, disable and show tooltip
+                GUI.enabled = false;
+                GUILayout.Button(new GUIContent(bakeAndAssignLabel, "No settings available to apply to. Assign an Animated Waves Sim Settings to the OceanRenderer component."));
+                GUILayout.Button(new GUIContent(selectCurrentSettingsLabel, "No settings available. Assign an Animated Waves Sim Settings to the OceanRenderer component."));
+                GUI.enabled = true;
+            }
+        }
+    }
 #endif
 }

@@ -10,11 +10,16 @@ using UnityEditor.Experimental.SceneManagement;
 #endif
 using UnityEngine;
 using UnityEngine.Rendering;
+#if CREST_URP
 using UnityEngine.Rendering.Universal;
+#endif
+#if CREST_HDRP
+using UnityEngine.Rendering.HighDefinition;
+#endif
 using System.Collections.Generic;
 
-#if !UNITY_2019_4_OR_NEWER
-#error This version of Crest requires Unity 2019.4 or later.
+#if !UNITY_2020_3_OR_NEWER
+#error This version of Crest requires Unity 2020.3 or later.
 #endif
 
 namespace Crest
@@ -38,7 +43,7 @@ namespace Crest
 #pragma warning restore 414
 
         [Tooltip("Base wind speed in km/h. Controls wave conditions. Can be overridden on ShapeGerstner components."), Range(0, 150f, power: 2f)]
-        public float _globalWindSpeed = 150f;
+        public float _globalWindSpeed = 10f;
 
         [Tooltip("The viewpoint which drives the ocean detail. Defaults to the camera."), SerializeField]
         Transform _viewpoint;
@@ -149,7 +154,11 @@ namespace Crest
         public float DeltaTime => TimeProvider.DeltaTime;
         public float DeltaTimeDynamics => TimeProvider.DeltaTimeDynamics;
 
+#if CREST_URP
         [Tooltip("The primary directional light. Required if shadowing is enabled.")]
+#else
+        [Tooltip("The primary directional light.")]
+#endif
         public Light _primaryLight;
         [Tooltip("If Primary Light is not set, search the scene for all directional lights and pick the brightest to use as the sun light.")]
         [SerializeField, Predicated("_primaryLight", true), DecoratedField]
@@ -203,9 +212,29 @@ namespace Crest
         [SerializeField, Tooltip("Number of ocean tile scales/LODs to generate."), Range(2, LodDataMgr.MAX_LOD_COUNT)]
         int _lodCount = 7;
 
+        [SerializeField, Range(UNDERWATER_CULL_LIMIT_MINIMUM, UNDERWATER_CULL_LIMIT_MAXIMUM)]
+        [Tooltip("Proportion of visibility below which ocean will be culled underwater. The larger the number, the closer to the camera the ocean tiles will be culled.")]
+        public float _underwaterCullLimit = 0.001f;
+        internal const float UNDERWATER_CULL_LIMIT_MINIMUM = 0.000001f;
+        internal const float UNDERWATER_CULL_LIMIT_MAXIMUM = 0.01f;
 
-        // The rendering layer mask is not yet used outside of HDRP.
-        public uint RenderingLayerMask => 255;
+#if CREST_HDRP
+        [Header("Rendering Params")]
+
+        [RenderPipeline(RenderPipeline.HighDefinition), DecoratedField]
+        [Tooltip("Layer mask for lights and shadows. Please read the HDRP documentation on light layers for more information."), SerializeField]
+        LightLayerEnum _renderingLayerMask = LightLayerEnum.Everything;
+#else
+        // A 'creative' way to save the value of the _renderingLayerMask enum when SRP is compiled out. Perhaps
+        // a little too creative, but seems to work! Defaults to 0xFF which is 'LightLayerEnum.Everything' - at time
+        // of writing!
+        // LightLayerEnum is in both HDRP and URP package. But LightLayerEnumPropertyDrawer is in HDRP only. It looks
+        // like Unity still needs to reconcile this. EDIT: Only true for 2021.
+        [SerializeField, HideInInspector]
+        uint _renderingLayerMask = 0xFF;
+#endif
+
+        public uint RenderingLayerMask => (uint)_renderingLayerMask;
 
 
         [Header("Simulation Params")]
@@ -293,8 +322,10 @@ namespace Crest
         [HideInInspector, Tooltip("Disable generating a wide strip of triangles at the outer edge to extend ocean to edge of view frustum.")]
         public bool _disableSkirt = false;
 
-        [SerializeField]
+        [SerializeField, RenderPipeline(RenderPipeline.Universal), DecoratedField]
+#pragma warning disable 414
         bool _verifyOpaqueAndDepthTexturesEnabled = true;
+#pragma warning restore 414
 
         /// <summary>
         /// Current ocean scale (changes with viewer altitude).
@@ -335,6 +366,7 @@ namespace Crest
         List<LodDataMgr> _lodDatas = new List<LodDataMgr>();
 
         List<OceanChunkRenderer> _oceanChunkRenderers = new List<OceanChunkRenderer>();
+        public List<OceanChunkRenderer> Tiles => _oceanChunkRenderers;
 
         SampleHeightHelper _sampleHeightHelper = new SampleHeightHelper();
 
@@ -378,6 +410,8 @@ namespace Crest
         static int sp_ForceUnderwater = Shader.PropertyToID("_ForceUnderwater");
         public static int sp_perCascadeInstanceData = Shader.PropertyToID("_CrestPerCascadeInstanceData");
         public static int sp_cascadeData = Shader.PropertyToID("_CrestCascadeData");
+        readonly static int sp_primaryLightDirection = Shader.PropertyToID("_PrimaryLightDirection");
+        readonly static int sp_primaryLightIntensity = Shader.PropertyToID("_PrimaryLightIntensity");
 
         // @Hack: Work around to unity_CameraToWorld._13_23_33 not being set correctly in URP 7.4+
         static readonly int sp_CameraForward = Shader.PropertyToID("_CameraForward");
@@ -428,9 +462,24 @@ namespace Crest
 
         PerCascadeInstanceData[] _perCascadeInstanceData = new PerCascadeInstanceData[LodDataMgr.MAX_LOD_COUNT];
 
+        // When leaving the last prefab stage, OnDisabled will be called but GetCurrentPrefabStage will return nothing
+        // which will fail the prefab check and disable the OceanRenderer in the scene. We need to track it ourselves.
+#pragma warning disable 414
+        static bool s_IsPrefabStage = false;
+#pragma warning restore 414
+
         // Drive state from OnEnable and OnDisable? OnEnable on RegisterLodDataInput seems to get called on script reload
         void OnEnable()
         {
+            // We don't run in "prefab scenes", i.e. when editing a prefab. Bail out if prefab scene is detected.
+#if UNITY_EDITOR
+            if (PrefabStageUtility.GetCurrentPrefabStage() != null)
+            {
+                s_IsPrefabStage = true;
+                return;
+            }
+#endif
+
             // Setup a default time provider, and add the override one (from the inspector)
             _timeProviderStack.Clear();
 
@@ -442,14 +491,6 @@ namespace Crest
             {
                 PushTimeProvider(_timeProvider);
             }
-
-            // We don't run in "prefab scenes", i.e. when editing a prefab. Bail out if prefab scene is detected.
-#if UNITY_EDITOR
-            if (PrefabStageUtility.GetCurrentPrefabStage() != null)
-            {
-                return;
-            }
-#endif
 
             if (!_primaryLight && _searchForPrimaryLightOnStartup)
             {
@@ -533,6 +574,14 @@ namespace Crest
             // We don't run in "prefab scenes", i.e. when editing a prefab. Bail out if prefab scene is detected.
             if (PrefabStageUtility.GetCurrentPrefabStage() != null)
             {
+                // We have just left a prefab scene on the stack and are now in another prefab scene.
+                return;
+            }
+            else if (s_IsPrefabStage)
+            {
+                // We have left the last prefab scene and are now back to a normal scene. We do not want to disable the
+                // OceanRenderer.
+                s_IsPrefabStage = false;
                 return;
             }
 #endif
@@ -729,6 +778,15 @@ namespace Crest
 
         bool VerifyRequirements()
         {
+#if UNITY_EDITOR
+            // If running a build, don't assert any requirements at all. Requirements are for
+            // the runtime, not for making builds.
+            if (BuildPipeline.isBuildingPlayer)
+            {
+                return true;
+            }
+#endif
+
             if (!RunningWithoutGPU)
             {
                 if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -762,13 +820,14 @@ namespace Crest
                 }
             }
 
-            if (!(GraphicsSettings.renderPipelineAsset is UniversalRenderPipelineAsset))
+            if (RenderPipelineHelper.IsHighDefinition && _primaryLight == null)
             {
-                Debug.LogError("Crest requires a Universal Render Pipeline asset to be configured in the graphics settings - please refer to Unity documentation or setup instructions.", this);
+                Debug.LogError("Crest needs to know which light to use as the sun light. Please assign the primary light in the scene to the Primary Light field on the OceanRenderer component. Click this message to select the GameObject with this component.", this);
                 return false;
             }
 
-            if (_verifyOpaqueAndDepthTexturesEnabled)
+#if CREST_URP
+            if (RenderPipelineHelper.IsUniversal && _verifyOpaqueAndDepthTexturesEnabled)
             {
                 if (!(GraphicsSettings.renderPipelineAsset as UniversalRenderPipelineAsset).supportsCameraOpaqueTexture)
                 {
@@ -780,6 +839,7 @@ namespace Crest
                     Debug.LogWarning("To enable transparent water, the 'Depth Texture' option must be ticked on the Universal Render Pipeline asset.", this);
                 }
             }
+#endif
 
             return true;
         }
@@ -792,9 +852,7 @@ namespace Crest
             }
         }
 
-#if UNITY_2019_3_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-#endif
         static void InitStatics()
         {
             // Init here from 2019.3 onwards
@@ -880,8 +938,20 @@ namespace Crest
 
             ValidateViewpoint();
 
+#if CREST_HDRP
+            if (RenderPipelineHelper.IsHighDefinition)
+            {
+                LateUpdatePrimaryLight();
+            }
+#endif
+
 #if UNITY_EDITOR
-            LateUpdateCameraSettings();
+#if CREST_URP
+            if (RenderPipelineHelper.IsUniversal)
+            {
+                LateUpdateCameraSettings();
+            }
+#endif
 #endif
 
             if (_followViewpoint && Viewpoint != null)
@@ -996,6 +1066,21 @@ namespace Crest
             Shader.SetGlobalVector(sp_oceanCenterPosWorld, Root.position);
         }
 
+        void LateUpdatePrimaryLight()
+        {
+            if (_primaryLight == null)
+            {
+                return;
+            }
+
+            var lightDirection = -_primaryLight.transform.forward;
+            var lightIntensity = _primaryLight.color * _primaryLight.intensity;
+            // This matches Unity when the sun is below the horizon. It dims near the horizon and becomes zero.
+            lightIntensity *= Mathf.Clamp01(Vector3.Dot(lightDirection, Vector3.up) * 8f);
+            Shader.SetGlobalVector(sp_primaryLightDirection, lightDirection);
+            Shader.SetGlobalVector(sp_primaryLightIntensity, lightIntensity);
+        }
+
         void LateUpdateScale()
         {
             // reach maximum detail at slightly below sea level. this should combat cases where visual range can be lost
@@ -1050,12 +1135,28 @@ namespace Crest
 
         void LateUpdateTiles()
         {
-            // If there are local bodies of water, this will do overlap tests between the ocean tiles
-            // and the water bodies and turn off any that don't overlap.
-            if (WaterBody.WaterBodies.Count == 0 && _canSkipCulling)
+            var isUnderwaterActive = UnderwaterRenderer.Instance != null && UnderwaterRenderer.Instance.IsActive;
+
+#if CREST_HDRP
+            if (!isUnderwaterActive && RenderPipelineHelper.IsHighDefinition)
             {
-                return;
+                isUnderwaterActive = UnderwaterPostProcessHDRP.Instance != null && UnderwaterPostProcessHDRP.Instance.IsActive();
             }
+#endif
+
+            var definitelyUnderwater = false;
+            var volumeExtinctionLength = 0f;
+
+            if (isUnderwaterActive)
+            {
+                definitelyUnderwater = ViewerHeightAboveWater < -5f;
+                var density = _material.GetVector("_DepthFogDensity");
+                var minimumFogDensity = Mathf.Min(Mathf.Min(density.x, density.y), density.z);
+                var underwaterCullLimit = Mathf.Clamp(_underwaterCullLimit, UNDERWATER_CULL_LIMIT_MINIMUM, UNDERWATER_CULL_LIMIT_MAXIMUM);
+                volumeExtinctionLength = -Mathf.Log(underwaterCullLimit) / minimumFogDensity;
+            }
+
+            var canSkipCulling = WaterBody.WaterBodies.Count == 0 && _canSkipCulling;
 
             foreach (OceanChunkRenderer tile in _oceanChunkRenderers)
             {
@@ -1064,24 +1165,39 @@ namespace Crest
                     continue;
                 }
 
-                var chunkBounds = tile.Rend.bounds;
+                var isCulled = false;
 
-                var overlappingOne = false;
-                foreach (var body in WaterBody.WaterBodies)
+                // If there are local bodies of water, this will do overlap tests between the ocean tiles
+                // and the water bodies and turn off any that don't overlap.
+                if (!canSkipCulling)
                 {
-                    var bounds = body.AABB;
+                    var chunkBounds = tile.Rend.bounds;
 
-                    bool overlapping =
-                        bounds.max.x > chunkBounds.min.x && bounds.min.x < chunkBounds.max.x &&
-                        bounds.max.z > chunkBounds.min.z && bounds.min.z < chunkBounds.max.z;
-                    if (overlapping)
+                    var overlappingOne = false;
+                    foreach (var body in WaterBody.WaterBodies)
                     {
-                        overlappingOne = true;
-                        break;
+                        var bounds = body.AABB;
+
+                        bool overlapping =
+                            bounds.max.x > chunkBounds.min.x && bounds.min.x < chunkBounds.max.x &&
+                            bounds.max.z > chunkBounds.min.z && bounds.min.z < chunkBounds.max.z;
+                        if (overlapping)
+                        {
+                            overlappingOne = true;
+                            break;
+                        }
                     }
+
+                    isCulled = !overlappingOne && WaterBody.WaterBodies.Count > 0;
                 }
 
-                tile.Rend.enabled = overlappingOne || WaterBody.WaterBodies.Count == 0;
+                // Cull tiles the viewer cannot see through the underwater fog.
+                if (!isCulled && isUnderwaterActive)
+                {
+                    isCulled = definitelyUnderwater && (Viewpoint.position - tile.Rend.bounds.ClosestPoint(Viewpoint.position)).magnitude >= volumeExtinctionLength;
+                }
+
+                tile.Rend.enabled = !isCulled;
             }
 
             // Can skip culling next time around if water body count stays at 0
@@ -1231,6 +1347,7 @@ namespace Crest
             }
         }
 
+#if CREST_URP
         // We track these so we can force the depth and opaque textures when the camera or material changes.
         Camera _lastViewCamera;
         Material _lastOceanMaterial;
@@ -1282,7 +1399,8 @@ namespace Crest
                 _lastOceanMaterial = OceanMaterial;
             }
         }
-#endif
+#endif // CREST_URP
+#endif // UNITY_EDITOR
     }
 
 #if UNITY_EDITOR
@@ -1311,12 +1429,16 @@ namespace Crest
                 component.Validate(ocean, ValidatedHelper.DebugLog);
             }
 
+#pragma warning disable 0618
             // UnderwaterEffect
+#if CREST_URP
             var underwaters = FindObjectsOfType<UnderwaterEffect>();
             foreach (var underwater in underwaters)
             {
                 underwater.Validate(ocean, ValidatedHelper.DebugLog);
             }
+#endif
+#pragma warning restore 0618
 
             // OceanDepthCache
             var depthCaches = FindObjectsOfType<OceanDepthCache>();
@@ -1414,13 +1536,12 @@ namespace Crest
                 );
             }
 
-            var hasMaterial = ocean != null && ocean._material != null;
-            var oceanColourIncorrectText = "Ocean colour will be incorrect. ";
-
             // Check lighting. There is an edge case where the lighting data is invalid because settings has changed.
             // We don't need to check anything if the following material options are used.
-            if (hasMaterial && !ocean._material.IsKeywordEnabled("_PROCEDURALSKY_ON"))
+            var hasMaterial = ocean != null && ocean._material != null;
+            if (!RenderPipelineHelper.IsHighDefinition && hasMaterial && !ocean._material.IsKeywordEnabled("_PROCEDURALSKY_ON"))
             {
+                var oceanColourIncorrectText = "Ocean colour will be incorrect. ";
                 var alternativesText = "Alternatively, try the <i>Procedural Sky</i> option on the ocean material.";
 
                 if (RenderSettings.defaultReflectionMode == DefaultReflectionMode.Skybox)
@@ -1594,6 +1715,48 @@ namespace Crest
                         ValidatedHelper.MessageType.Info, ocean);
                 }
             }
+
+#if CREST_HDRP
+            // Validate rendering layer mask property.
+            if (RenderPipelineHelper.IsHighDefinition && _renderingLayerMask != LightLayerEnum.Everything)
+            {
+                // Check that light layers are enabled on pipeline asset.
+                var pipelineAsset = (HDRenderPipelineAsset)GraphicsSettings.renderPipelineAsset;
+                if (pipelineAsset != null)
+                {
+                    if (!pipelineAsset.currentPlatformRenderPipelineSettings.supportLightLayers)
+                    {
+                        showMessage
+                        (
+                            "The rendering layer mask has been set, but light layers have not been enabled on the pipeline asset.",
+                            "Enable light layers on the camera.",
+                            ValidatedHelper.MessageType.Warning, ocean
+                        );
+                    }
+                }
+
+                // Doesn't work in edit mode. The frame settings are not populated.
+                if (Application.isPlaying)
+                {
+                    // Check that light layers are enabled on the camera. Viewpoint might not have a camera so this might be
+                    // skipped. It is also possible another viewpoint has the setting enabled and this will false positive.
+                    var camera = Camera.main;
+                    if (camera != null)
+                    {
+                        var hdCamera = HDCamera.GetOrCreate(camera);
+                        if (!hdCamera.frameSettings.IsEnabled(FrameSettingsField.LightLayers))
+                        {
+                            showMessage
+                            (
+                                "The rendering layer mask has been set, but light layers have not been enabled on the camera.",
+                                "Enable light layers on the camera.",
+                                ValidatedHelper.MessageType.Warning, ocean
+                            );
+                        }
+                    }
+                }
+            }
+#endif
 
             return isValid;
         }

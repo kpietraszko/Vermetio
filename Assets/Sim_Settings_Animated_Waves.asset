@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _version: 0
   _attenuationInShallows: 0.95
-  _collisionSource: 2
+  _collisionSource: 3
   _maxQueryCount: 4096
   _pingPongCombinePass: 1
+  _renderTextureGraphicsFormat: 48
+  _bakedFFTData: {fileID: 11400000, guid: bfa28c59fa54f4744883c7d5e97f95fe, type: 2}

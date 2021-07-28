@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using DefaultNamespace;
+using Crest;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -228,36 +228,33 @@ namespace Vermetio.Server
                 Debug.Log("allVoxels empty, bailing");
                 return;
             }
-
             
-            var heightMarker = new ProfilerMarker("Height");
-            var depthMarker = new ProfilerMarker("Depth");
-
-            var sortedWavelengths = wavelengthBuffer.Reinterpret<float>().AsNativeArray();
-            sortedWavelengths.Sort();
-            var medianWavelength = sortedWavelengths[sortedWavelengths.Length / 2];
-            var smallestWavelength = sortedWavelengths[0];
+            
             // Debug.Log($"Smallest wavelength: {smallestWavelength}");
 
             var elapsedTime = Time.ElapsedTime;
             var elapsedTimeFloat = (float) elapsedTime;
             var waterHeightsPerPosition = new NativeHashMap<float2, float>(allVoxels.Length, Allocator.TempJob);
 
-            var waveData = waveDataBuffer.AsNativeArray();
-            
-            var waterHeightsJob = new GetWaterHeightsJob()
+            var collProvider = OceanRenderer.Instance.CollisionProvider;
+
+            var queryPoints = new Vector3[allVoxels.Length];
+            for (int i = 0; i < queryPoints.Length; i++)
             {
-                allVoxels = allVoxels,
-                depthMarker = depthMarker,
-                elapsedTime = (float) elapsedTime,
-                heightMarker = heightMarker,
-                medianWavelength = medianWavelength,
-                physicsWorld = physicsWorld,
-                waveData = waveData,
-                WaterHeightsPerPosition = waterHeightsPerPosition
-            };
+                queryPoints[i] = new Vector3(allVoxels[i].x, 0f, allVoxels[i].y);
+            }
+
+            var waterHeights = new float[queryPoints.Length];
+
+            if (!collProvider.RetrieveSucceeded(collProvider.Query(GetHashCode(), 0f, queryPoints, waterHeights, null, null)))
+            {
+                Debug.LogError("Height query failed");
+            }
             
-            waterHeightsJob.Run();
+            for (int i = 0; i < allVoxels.Length; i++)
+            {
+                waterHeightsPerPosition.TryAdd(allVoxels[i], waterHeights[i]);
+            }
 
             allVoxels.Dispose();
 
@@ -283,81 +280,7 @@ namespace Vermetio.Server
                     // Debug.Log($"{tick}");
 
                     var submergedAmount = 0f;
-                    //
-                    // #region TestPeriodicity
-                    //
-                    // var zeroPoints = new NativeArray<float2>(2, Allocator.Temp) {[0] = new float2(10f, 10f), [1] = new float2(97f, 79f)};
-                    // var zeroPoints2 = new NativeArray<float2>(2, Allocator.Temp) {[0] = new float2(10f, 10f), [1] = new float2(97f, 79f)};
-                    //
-                    // // Debug.Log($"{_initialHeight}");
-                    //
-                    // if (tick == 40)
-                    // {
-                    //     for (int i = 0; i < 100; i++)
-                    //     {
-                    //
-                    //         var timeTest = 0f;
-                    //         var tickTest = 0f;
-                    //         var initialHeights = GerstnerHelpers.GetWaterHeights(
-                    //             (float) timeTest,
-                    //             zeroPoints,
-                    //             objectSizeForWaves,
-                    //             spectrum.WindDirectionAngle,
-                    //             spectrum.Chop,
-                    //             spectrum.AttenuationInShallows,
-                    //             physicsWorld,
-                    //             wavelengthBuffer,
-                    //             waveAmplitudeBuffer,
-                    //             waveAngleBuffer,
-                    //             phaseBuffer,
-                    //             heightMarker,
-                    //             depthMarker,
-                    //             medianWavelength,
-                    //             smallestWavelength);
-                    //
-                    //         // timeTest += 1f;
-                    //
-                    //         while (true)
-                    //         {
-                    //             timeTest += 1 / 60f;
-                    //             tickTest++;
-                    //
-                    //             var heightsNow = GerstnerHelpers.GetWaterHeights(
-                    //                 (float) timeTest,
-                    //                 zeroPoints2,
-                    //                 objectSizeForWaves,
-                    //                 spectrum.WindDirectionAngle,
-                    //                 spectrum.Chop,
-                    //                 spectrum.AttenuationInShallows,
-                    //                 physicsWorld,
-                    //                 wavelengthBuffer,
-                    //                 waveAmplitudeBuffer,
-                    //                 waveAngleBuffer,
-                    //                 phaseBuffer,
-                    //                 heightMarker,
-                    //                 depthMarker,
-                    //                 medianWavelength,
-                    //                 smallestWavelength);
-                    //
-                    //             if (abs(heightsNow[0] - initialHeights[0]) < 0.0001f &&
-                    //                 abs(heightsNow[1] - initialHeights[1]) < 0.0001f)
-                    //             {
-                    //                 Debug.Log($"MATCH at time {timeTest} tick {tickTest}");
-                    //                 break;
-                    //             }
-                    //
-                    //             // if (timeTest % 30f < 0.1f)
-                    //             // {
-                    //             //     Debug.Log($"{timeTest} passed");
-                    //             // }
-                    //         }
-                    //     }
-                    // }
-                    //
-                    // #endregion
-
-                    // if ((tick * 1 / 60f) % 1f < 0.01f)
-                    //     Debug.Log($"{tick * 1 / 60f}");
+                    
                     if (tick % 60 == 0)
                         Debug.Log($"{tick / 60}");
 

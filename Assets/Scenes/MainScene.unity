@@ -33,7 +33,7 @@ RenderSettings:
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
   m_DefaultReflectionMode: 0
-  m_DefaultReflectionResolution: 128
+  m_DefaultReflectionResolution: 256
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
@@ -70,7 +70,7 @@ LightmapSettings:
     m_FinalGather: 0
     m_FinalGatherFiltering: 1
     m_FinalGatherRayCount: 256
-    m_ReflectionCompression: 2
+    m_ReflectionCompression: 0
     m_MixedBakeMode: 2
     m_BakeBackend: 1
     m_PVRSampling: 1
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 5aef678c33215464f9fa62bdc56738d7, type: 2}
+  m_LightingDataAsset: {fileID: 112000004, guid: 5aef678c33215464f9fa62bdc56738d7, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 9c7270845ba9f994e98ae01d102e363b, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 89539440}
   - component: {fileID: 89539439}
+  - component: {fileID: 89539441}
   m_Layer: 0
   m_Name: PostProcessingVolume
   m_TagString: Untagged
@@ -171,6 +172,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!215 &89539441
+ReflectionProbe:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89539438}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Type: 0
+  m_Mode: 0
+  m_RefreshMode: 0
+  m_TimeSlicingMode: 0
+  m_Resolution: 128
+  m_UpdateFrequency: 0
+  m_BoxSize: {x: 10, y: 10, z: 10}
+  m_BoxOffset: {x: 0, y: 0, z: 0}
+  m_NearClip: 0.3
+  m_FarClip: 1000
+  m_ShadowDistance: 100
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IntensityMultiplier: 1
+  m_BlendDistance: 1
+  m_HDR: 1
+  m_BoxProjection: 0
+  m_RenderDynamicObjects: 0
+  m_UseOcclusionCulling: 1
+  m_Importance: 1
+  m_CustomBakedTexture: {fileID: 0}
 --- !u!1 &466947833
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,7 +493,7 @@ MonoBehaviour:
   _version: 0
   _objectWidth: 0
   _stepSize: 2
-  _steps: 64
+  _steps: 128
   _useDisplacements: 0
   _useNormals: 0
 --- !u!1 &1320718952
@@ -736,8 +770,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695907642}
-  m_LocalRotation: {x: 0.025031317, y: 0.9338853, z: -0.35026848, w: 0.06740768}
-  m_LocalPosition: {x: -48.93, y: 23.26, z: -188.26}
+  m_LocalRotation: {x: 0.0575212, y: 0.8713354, z: -0.10533896, w: 0.47578323}
+  m_LocalPosition: {x: -67.529594, y: 16.395859, z: -199.66098}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

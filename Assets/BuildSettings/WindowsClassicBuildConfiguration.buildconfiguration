@@ -46,13 +46,16 @@
         },
         {
             "$type": "Unity.Build.Common.ScriptingDebuggerSettings, Unity.Build",
-            "WaitForManagedDebugger": true
+            "WaitForManagedDebugger": false
         },
         {
             "$type": "Unity.Build.Classic.ClassicBuildProfile, Unity.Build.Classic",
             "$version": 1,
             "Platform": "win",
             "Configuration": 2
+        },
+        {
+            "$type": "Unity.Build.Classic.EnableHeadlessMode, Unity.Build.Classic"
         }
     ]
 }

@@ -51,8 +51,10 @@
             ]
         },
         {
-            "$type": "Unity.Build.Common.ScriptingDebuggerSettings, Unity.Build",
-            "WaitForManagedDebugger": true
+            "$type": "Unity.Build.Classic.ClassicScriptingSettings, Unity.Build.Classic",
+            "ScriptingBackend": 0,
+            "Il2CppCompilerConfiguration": 1,
+            "UseIncrementalGC": false
         }
     ]
 }

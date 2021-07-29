@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Crest;
 using Unity.Burst;
@@ -39,14 +41,21 @@ namespace Vermetio.Server
         GhostSimulationSystemGroup _ghostSimulationSystemGroup;
         private float _initialHeight;
 
+        private static Vector3[] _queryPoints;
+        private static float[] _waterHeights;
+        private static Vector3[] _normals;
+        private static Vector3[] _velocities;
+
+        private static bool _debugDraw = true;
+
         protected override void OnCreate()
         {
             base.OnCreate();
-            RequireSingletonForUpdate<WaveSpectrumComponent>();
-            RequireSingletonForUpdate<WavelengthElement>();
-            RequireSingletonForUpdate<WaveAmplitudeElement>();
-            RequireSingletonForUpdate<WaveAngleElement>();
-            RequireSingletonForUpdate<PhaseElement>();
+            // RequireSingletonForUpdate<WaveSpectrumComponent>();
+            // RequireSingletonForUpdate<WavelengthElement>();
+            // RequireSingletonForUpdate<WaveAmplitudeElement>();
+            // RequireSingletonForUpdate<WaveAngleElement>();
+            // RequireSingletonForUpdate<PhaseElement>();
 
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
             _exportPhysicsWorld = World.GetOrCreateSystem<ExportPhysicsWorld>();
@@ -59,24 +68,7 @@ namespace Vermetio.Server
         protected override void OnUpdate()
         {
             var deltaTime = Time.DeltaTime;
-            var spectrum = GetSingleton<WaveSpectrumComponent>();
-            var spectrumEntity = GetSingletonEntity<WaveSpectrumComponent>();
-            var wavelengthBuffer = EntityManager.GetBuffer<WavelengthElement>(spectrumEntity);
-            var waveAmplitudeBuffer = EntityManager.GetBuffer<WaveAmplitudeElement>(spectrumEntity);
-            var waveAngleBuffer = EntityManager.GetBuffer<WaveAngleElement>(spectrumEntity);
-            var phaseBuffer = EntityManager.GetBuffer<PhaseElement>(spectrumEntity);
-            var waveDataBuffer = EntityManager.GetBuffer<GerstnerWaveComponent4>(spectrumEntity);
-
-            // var elapsedTime = Time.ElapsedTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
-
-            // string docPath =
-            //     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            //
-            // using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "BuoyancyElapsedTime.csv"), append: true))
-            // {
-            //     outputFile.WriteLine($"{DateTime.Now.Ticks};{elapsedTime}");
-            // }
 
             var physicsWorld = _buildPhysicsWorld.PhysicsWorld;
 
@@ -85,189 +77,68 @@ namespace Vermetio.Server
             var voxelizationMarker = new ProfilerMarker(("Voxelization"));
 
             var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
-
-            Entities
-                .WithName("Voxelization")
-                .WithoutBurst()
-                .WithNone<VoxelElement>()
-                .WithReadOnly(physicsWorld)
-                .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PhysicsVelocity pv,
-                    ref PhysicsMass pm, in Rotation rotation, in PhysicsCollider col,
-                    in BuoyantComponent buoyant) =>
-                {
-                    // GizmoManager.ClearGizmos();
-                    var boundingBox = col.Value.Value.CalculateAabb();
-                    var rigidTransform = new RigidTransform(quaternion.identity, translation.Value);
-                    var worldSpaceBb = Unity.Physics.Math.TransformAabb(rigidTransform, boundingBox);
-                    var voxelResolution = min(1.1f,
-                        min(worldSpaceBb.Extents.x,
-                            min(worldSpaceBb.Extents.y,
-                                worldSpaceBb.Extents
-                                    .z))); // represents the half size? of a voxel when creating the voxel representation (in world space)
-                    ecb.SetComponent(entityInQueryIndex, entity,
-                        new BuoyantComponent() {VoxelResolution = voxelResolution});
-
-                    // DrawBounds(new Bounds(boundingBox.Center, boundingBox.Extents), deltaTime);
-                    var bufferCreated = false;
-                    DynamicBuffer<VoxelElement> voxelsBuffer = default;
-                    // Debug.Log($"{worldSpaceBb.Min}");
-                    for (var ix = boundingBox.Min.x; ix < boundingBox.Max.x; ix += voxelResolution)
-                    {
-                        for (var iz = boundingBox.Min.z; iz < boundingBox.Max.z; iz += voxelResolution)
-                        {
-                            voxelizationMarker.Begin();
-                            for (var iy = boundingBox.Min.y; iy < boundingBox.Max.y; iy += voxelResolution)
-                            {
-                                var x = (voxelResolution * 0.5f) + ix;
-                                var y = (voxelResolution * 0.5f) + iy;
-                                var z = (voxelResolution * 0.5f) + iz;
-
-                                var p = new float3(x, y, z); // + worldSpaceBb.Center;
-                                var worldSpaceP = transform(new RigidTransform(rotation.Value, translation.Value), p);
-
-
-                                // GizmoManager.AddGizmoAction(() =>
-                                // {
-                                //     Gizmos.color = new Color(0, 1, 0, 1f);
-                                //     Gizmos.DrawWireCube(worldSpaceP, new float3(1.1f));
-                                // });
-
-                                var pointDistanceInput = new PointDistanceInput()
-                                {
-                                    Position = worldSpaceP,
-                                    MaxDistance =
-                                        max(worldSpaceBb.Extents.x,
-                                            max(worldSpaceBb.Extents.y, worldSpaceBb.Extents.z)),
-                                    Filter = new CollisionFilter()
-                                    {
-                                        BelongsTo = 1 << 0, // hmm
-                                        CollidesWith = ~0u,
-                                        GroupIndex = 0
-                                    }
-                                };
-                                physicsWorld.CalculateDistance(pointDistanceInput, out var closestHit);
-
-                                if (closestHit.Distance < 0) // works for sphere collider and convex mesh, doesn't seem to work with capsule
-                                {
-                                    if (voxelsBuffer.IsEmpty)
-                                    {
-                                        voxelsBuffer = ecb.AddBuffer<VoxelElement>(entityInQueryIndex, entity);
-                                    }
-
-                                    voxelsBuffer.Add(p);
-                                }
-                            }
-
-                            voxelizationMarker.End();
-                        }
-                    }
-
-                    if (voxelsBuffer.IsEmpty)
-                    {
-                        Debug.Log("No voxels, not setting set mass");
-                        return; // voxels not created yet, can't calculate mass
-                    }
-
-                    Debug.Log($"Created {voxelsBuffer.Length} voxels");
-
-                    var volume = voxelsBuffer.Length * pow(voxelResolution, 3);
-                    var mass = volume * 800f /**
-                               0.0001f*/; //m3 * real density * multiplier // voxel of water is 1000kg but scale it down with a multiplier of 0.0001f 
-                    // pm = PhysicsMass.CreateDynamic(new MassProperties
-                    //     {
-                    //         MassDistribution = new MassDistribution()
-                    //         {
-                    //             Transform = pm.Transform,
-                    //             InertiaTensor = rcp(pm.InverseInertia) / mass
-                    //         },
-                    //         Volume = volume,
-                    //         AngularExpansionFactor = pm.AngularExpansionFactor
-                    //     },
-                    //     mass);
-                    Debug.Log($"Mass: {mass}");
-                    ecb.SetComponent(entityInQueryIndex, entity, new PhysicsMass()
-                    {
-                        Transform = pm.Transform,
-                        AngularExpansionFactor = pm.AngularExpansionFactor,
-                        InverseInertia = rcp(rcp(pm.InverseInertia) / rcp(pm.InverseMass) * mass), // hmm
-                        InverseMass = rcp(mass),
-                    });
-                }).Schedule();
-
-            Dependency.Complete();
-            _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
-
-
-            // var transformVoxelsEcb = new EntityCommandBuffer(Allocator.TempJob);
-
-            var allVoxels = new NativeList<float2>(Allocator.Temp);
-
-            Entities
-                .WithName("get_all_voxels")
-                .ForEach((Entity entity, in DynamicBuffer<VoxelElement> voxels, in Translation translation,
-                    in Rotation rotation) =>
-                {
-                    // var worldSpaceVoxels = new NativeArray<VoxelElement>(voxels.Length, Allocator.Temp);
-                    for (int voxelIndex = 0; voxelIndex < voxels.Length; voxelIndex++)
-                    {
-                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value),
-                            voxels[voxelIndex]);
-                        // worldSpaceVoxels[voxelIndex] = worldSpaceVoxel;
-                        allVoxels.Add(worldSpaceVoxel.xz);
-                    }
-
-                    // worldSpaceVoxels.Dispose();
-                }).Run();
-
-            // if (tick < 50)
-            //     return;
-            //     Debug.Log($"{allVoxels.Length} voxels in total");
-
-            if (allVoxels.Length == 0)
-            {
-                Debug.Log("allVoxels empty, bailing");
-                return;
-            }
             
-            
-            // Debug.Log($"Smallest wavelength: {smallestWavelength}");
+            // _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
 
             var elapsedTime = Time.ElapsedTime;
-            var elapsedTimeFloat = (float) elapsedTime;
-            var waterHeightsPerPosition = new NativeHashMap<float2, float>(allVoxels.Length, Allocator.TempJob);
 
             var collProvider = OceanRenderer.Instance.CollisionProvider;
 
-            var queryPoints = new Vector3[allVoxels.Length];
-            for (int i = 0; i < queryPoints.Length; i++)
+            var numberOfBuoyantObjects = GetEntityQuery(typeof(BuoyantComponent)).CalculateEntityCount();
+            
+            var entities = new NativeArray<Entity>(numberOfBuoyantObjects, Allocator.TempJob);
+            
+            #region AllocateStaticArrays
+            if (_queryPoints?.Length != numberOfBuoyantObjects)
+                _queryPoints = new Vector3[numberOfBuoyantObjects];
+
+            if (_waterHeights?.Length != numberOfBuoyantObjects)
+                _waterHeights = new float[numberOfBuoyantObjects];
+
+            if (_normals?.Length != numberOfBuoyantObjects)
+                _normals = new Vector3[numberOfBuoyantObjects];
+
+            if (_velocities?.Length != numberOfBuoyantObjects)
+                _velocities = new Vector3[numberOfBuoyantObjects];
+            #endregion
+
+            var entityIndex = 0;
+
+            Entities
+                .WithoutBurst()
+                .ForEach((Entity entity, in Translation translation, in BuoyantComponent buoyantComponent) =>
             {
-                queryPoints[i] = new Vector3(allVoxels[i].x, 0f, allVoxels[i].y);
-            }
+                entities[entityIndex] = entity;
+                _queryPoints[entityIndex] = translation.Value;
+                entityIndex++;
+            }).Run();
 
-            var waterHeights = new float[queryPoints.Length];
+            // for (int i = 0; i < queryPoints.Length; i++)
+            // {
+            //     queryPoints[i] = new Vector3(allVoxels[i].x, 0f, allVoxels[i].y);
+            // }
 
-            if (!collProvider.RetrieveSucceeded(collProvider.Query(GetHashCode(), 0f, queryPoints, waterHeights, null, null)))
+            if (!collProvider.RetrieveSucceeded(collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, _normals, _velocities)))
             {
                 Debug.LogError("Height query failed");
             }
-            
-            for (int i = 0; i < allVoxels.Length; i++)
-            {
-                waterHeightsPerPosition.TryAdd(allVoxels[i], waterHeights[i]);
-            }
 
-            allVoxels.Dispose();
+            var waterHeightsPerEntity = new NativeHashMap<Entity, float>(numberOfBuoyantObjects, Allocator.TempJob);
+            // TODO: same for normals and velocities
+
+            for (int i = 0; i < numberOfBuoyantObjects; i++)
+            {
+                waterHeightsPerEntity.TryAdd(entities[i], _waterHeights[i]);
+            }
 
             Entities
                 // .WithoutBurst()
                 .WithName("Apply_bouyancy")
                 // .WithReadOnly(physicsWorld)
-                .WithReadOnly(waterHeightsPerPosition)
-                .WithDisposeOnCompletion(waterHeightsPerPosition)
+                // .WithReadOnly(waterHeightsPerEntity)
                 .ForEach((ref Translation translation, ref PhysicsVelocity pv, ref PhysicsDamping damping,
                     ref BuoyantComponent buoyant,
-                    in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col,
-                    in DynamicBuffer<VoxelElement> voxels) =>
+                    in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col) =>
                 {
                     // ProfileFewTicks(tick);
                     // GizmoManager.ClearGizmos();
@@ -281,48 +152,13 @@ namespace Vermetio.Server
 
                     var submergedAmount = 0f;
                     
-                    if (tick % 60 == 0)
-                        Debug.Log($"{tick / 60}");
-
-                    for (int voxelIndex = 0; voxelIndex < voxels.Length; voxelIndex++)
+                    // if (tick % 60 == 0)
+                    //     Debug.Log($"{tick / 60}");
+                    
+                    if (_debugDraw)
                     {
-                        var worldSpaceVoxel = transform(new RigidTransform(rotation.Value, translation.Value),
-                            voxels[voxelIndex]);
-
-                        var waterHeight = waterHeightsPerPosition[worldSpaceVoxel.xz];
-
-                        // GizmoManager.AddGizmoAction(() =>
-                        // {
-                        //     Gizmos.color = new Color(0, 1, 0, 1f);
-                        //     Gizmos.DrawWireSphere(new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z), 0.1f);
-                        // });
-                        new float3(worldSpaceVoxel.x, waterHeight, worldSpaceVoxel.z).DrawCross(0.2f, Color.green, 1 / 60f);
-                        if (worldSpaceVoxel.y - buoyant.VoxelResolution < waterHeight) // hmm
-                        {
-                            const float waterDensity = 1000f /** 0.0001f*/; // real density * mass multiplier
-                            var volumeOfDisplacedWater = pow(buoyant.VoxelResolution, 3);
-                            var massOfDisplacedWater = waterDensity * volumeOfDisplacedWater;
-
-                            var archimedesForce = new float3(
-                                0f,
-                                massOfDisplacedWater *
-                                abs(PhysicsStep.Default.Gravity.y),
-                                0f);
-                            
-                            
-                            const float dampener = 0.01f;
-                            var k = clamp(waterHeight - (worldSpaceVoxel.y - buoyant.VoxelResolution), 0f, 1f);
-                            submergedAmount += k / voxels.Length;
-                            var voxelVelocity = pv.GetLinearVelocity(pm, translation, rotation, worldSpaceVoxel); 
-                            var localDampingForce = dampener * rcp(pm.InverseMass) * -voxelVelocity;
-
-                            var force = localDampingForce + sqrt(k) * archimedesForce;
-
-                            pm.GetImpulseFromForce(force, ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
-
-                            pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceVoxel);
-                            // TODO: change archimedes force by damping factor like in the original script
-                        }
+                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterSurfaceVel,
+                            new Color(1, 1, 1, 0.6f));
                     }
 
                     // var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
@@ -330,11 +166,11 @@ namespace Vermetio.Server
                     buoyant.SubmergedPercentage = submergedFactor;
                     var baseDampingLinear = 0.04f;
                     var baseDampingAngular = 1f; //1.5f;
-                    damping = new PhysicsDamping()
-                    {
-                        Linear = baseDampingLinear + baseDampingLinear * (submergedFactor * 10f),
-                        Angular = baseDampingAngular + baseDampingAngular * (submergedFactor * 0.5f)
-                    };
+                    // damping = new PhysicsDamping()
+                    // {
+                    //     Linear = baseDampingLinear + baseDampingLinear * (submergedFactor * 10f),
+                    //     Angular = baseDampingAngular + baseDampingAngular * (submergedFactor * 0.5f)
+                    // };
                 }).Schedule();
 
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);

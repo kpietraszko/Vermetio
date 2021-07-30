@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Crest;
-using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using static Unity.Mathematics.math;
 using Unity.NetCode;
 using Unity.Physics;
 using Unity.Physics.Extensions;
@@ -19,11 +13,9 @@ using Unity.Profiling;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Profiling;
-using BoxCollider = Unity.Physics.BoxCollider;
+using static Unity.Mathematics.math;
 using Debug = UnityEngine.Debug;
 using ForceMode = Unity.Physics.Extensions.ForceMode;
-using Math = System.Math;
-using quaternion = Unity.Mathematics.quaternion;
 #if UNITY_EDITOR
 using UnityEditorInternal;
 
@@ -41,12 +33,12 @@ namespace Vermetio.Server
         GhostSimulationSystemGroup _ghostSimulationSystemGroup;
         private float _initialHeight;
 
-        private static Vector3[] _queryPoints;
-        private static float[] _waterHeights;
-        private static Vector3[] _normals;
-        private static Vector3[] _velocities;
+        private static List<Vector3> _queryPoints = new List<Vector3>(512);
+        private static List<float> _waterHeights = new List<float>(512);
+        private static List<Vector3> _normals = new List<Vector3>(512);
+        private static List<Vector3> _velocities = new List<Vector3>(512);
 
-        private static bool _debugDraw = true;
+        private static bool _debugDraw = false;
 
         protected override void OnCreate()
         {
@@ -69,48 +61,31 @@ namespace Vermetio.Server
         {
             var deltaTime = Time.DeltaTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
-
             var physicsWorld = _buildPhysicsWorld.PhysicsWorld;
 
             Dependency = JobHandle.CombineDependencies(Dependency, _endFramePhysics.GetOutputDependency());
 
-            var voxelizationMarker = new ProfilerMarker(("Voxelization"));
-
-            var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
-            
             // _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
 
-            var elapsedTime = Time.ElapsedTime;
-
             var collProvider = OceanRenderer.Instance.CollisionProvider;
-
+            
             var numberOfBuoyantObjects = GetEntityQuery(typeof(BuoyantComponent)).CalculateEntityCount();
-            
+
             var entities = new NativeArray<Entity>(numberOfBuoyantObjects, Allocator.TempJob);
-            
-            #region AllocateStaticArrays
-            if (_queryPoints?.Length != numberOfBuoyantObjects)
-                _queryPoints = new Vector3[numberOfBuoyantObjects];
-
-            if (_waterHeights?.Length != numberOfBuoyantObjects)
-                _waterHeights = new float[numberOfBuoyantObjects];
-
-            if (_normals?.Length != numberOfBuoyantObjects)
-                _normals = new Vector3[numberOfBuoyantObjects];
-
-            if (_velocities?.Length != numberOfBuoyantObjects)
-                _velocities = new Vector3[numberOfBuoyantObjects];
-            #endregion
 
             var entityIndex = 0;
+            
+            _queryPoints.Clear();
+            _waterHeights.Clear();
+            _normals.Clear();
+            _velocities.Clear();
 
             Entities
                 .WithoutBurst()
                 .ForEach((Entity entity, in Translation translation, in BuoyantComponent buoyantComponent) =>
             {
-                entities[entityIndex] = entity;
-                _queryPoints[entityIndex] = translation.Value;
-                entityIndex++;
+                entities[entityIndex++] = entity;
+                _queryPoints.Add(translation.Value);
             }).Run();
 
             // for (int i = 0; i < queryPoints.Length; i++)
@@ -124,20 +99,25 @@ namespace Vermetio.Server
             }
 
             var waterHeightsPerEntity = new NativeHashMap<Entity, float>(numberOfBuoyantObjects, Allocator.TempJob);
-            // TODO: same for normals and velocities
+            var waterNormalsPerEntity = new NativeHashMap<Entity, float3>(numberOfBuoyantObjects, Allocator.TempJob);
+            var waterVelocitiesPerEntity = new NativeHashMap<Entity, float3>(numberOfBuoyantObjects, Allocator.TempJob);
 
             for (int i = 0; i < numberOfBuoyantObjects; i++)
             {
                 waterHeightsPerEntity.TryAdd(entities[i], _waterHeights[i]);
+                waterNormalsPerEntity.TryAdd(entities[i], _normals[i]);
+                waterVelocitiesPerEntity.TryAdd(entities[i], _velocities[i]);
             }
+
+            var debugDraw = _debugDraw;
 
             Entities
                 // .WithoutBurst()
                 .WithName("Apply_bouyancy")
                 // .WithReadOnly(physicsWorld)
                 // .WithReadOnly(waterHeightsPerEntity)
-                .ForEach((ref Translation translation, ref PhysicsVelocity pv, ref PhysicsDamping damping,
-                    ref BuoyantComponent buoyant,
+                .ForEach((Entity entity, ref Translation translation, ref PhysicsVelocity pv,
+                    ref BuoyantComponent buoyant, in LocalToWorld localToWorld, 
                     in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col) =>
                 {
                     // ProfileFewTicks(tick);
@@ -151,26 +131,67 @@ namespace Vermetio.Server
                     // Debug.Log($"{tick}");
 
                     var submergedAmount = 0f;
+                    var waterVelocity = waterVelocitiesPerEntity[entity];
+                    var velocityRelativeToWater = pv.Linear - waterVelocity;
                     
+                    if (debugDraw)
+                    {
+                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterVelocity,
+                            new Color(1, 1, 1, 0.6f));
+                    }
+                    
+                    var height = waterHeightsPerEntity[entity];
+                    var normal = waterNormalsPerEntity[entity];
+                    var raiseObject = 1f; // TODO: PARAMETER
+                    var buoyancyCoeff = 3f; // TODO: PARAMETER
+                    var accelerateDownhill = 0f; // TODO: PARAMETER
+                    var forceHeightOffset = -0.3f; // TODO: PARAMETER
+                    var dragInWaterUp = 3f;  // TODO: PARAMETER
+                    var dragInWaterRight = 2f; // TODO: PARAMETER
+                    var dragInWaterForward = 1f; // TODO: PARAMETER
+                    var bouyancyTorque = 8f; // TODO: PARAMETER
+                    var dragInWaterRotational = 0.2f; // TODO: PARAMETER
+                    var bottomDepth = height - translation.Value.y + raiseObject;
+                    var inWater = bottomDepth > 0f;
+                    if (!inWater)
+                        return;
+                    
+                    var up = new float3(0f, 1f, 0f);
+                    var buoyancy = up * buoyancyCoeff * bottomDepth * bottomDepth * bottomDepth;
+                    // Debug.Log($"pmTransformPos: {pm.Transform.pos}");
+                    pm.GetImpulseFromForce(buoyancy, ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
+                    pv.ApplyLinearImpulse(pm, impulse); // this is fucking 10 times too strong for some reason
+
+                    // // Approximate hydrodynamics of sliding along water
+                    // if (accelerateDownhill > 0f)
+                    // {
+                    //     pm.GetImpulseFromForce(new float3(normal.x, 0f, normal.z) * -PhysicsStep.Default.Gravity.y * accelerateDownhill, ForceMode.Acceleration, deltaTime, out impulse, out impulseMass);
+                    //     pv.ApplyImpulse(impulseMass, translation, rotation, impulse, translation.Value);
+                    // }
+                    
+                    // Apply drag relative to water
+                    var forcePosition = translation.Value + forceHeightOffset * up;
+                    pm.GetImpulseFromForce(up * dot(up, -velocityRelativeToWater) * dragInWaterUp, ForceMode.Acceleration, deltaTime, out impulse, out impulseMass);
+                    pv.ApplyImpulse(impulseMass, translation, rotation, impulse, forcePosition);
+                    // skipping right and forward drag because only vertical velocities are baked
+                    
+                    
+                    // Align to normal
+                    if (debugDraw) 
+                        Debug.DrawLine(translation.Value, translation.Value + 5f * normal, Color.green);
+                    
+                    var torqueWidth = Vector3.Cross(localToWorld.Up, normal);
+                    pv.ApplyAngularImpulse(impulseMass, torqueWidth * bouyancyTorque * deltaTime); // TODO: maybe * deltaTime?
+                    pv.ApplyAngularImpulse(pm, -dragInWaterRotational * pv.Angular * deltaTime); // TODO: maybe * deltaTime?
+
                     // if (tick % 60 == 0)
                     //     Debug.Log($"{tick / 60}");
                     
-                    if (_debugDraw)
+                    if (debugDraw)
                     {
-                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterSurfaceVel,
+                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterVelocity,
                             new Color(1, 1, 1, 0.6f));
                     }
-
-                    // var ecb = _ghostSimulationSystemGroup.PostUpdateCommands.AsParallelWriter();
-                    var submergedFactor = lerp(buoyant.SubmergedPercentage, submergedAmount, 0.25f);
-                    buoyant.SubmergedPercentage = submergedFactor;
-                    var baseDampingLinear = 0.04f;
-                    var baseDampingAngular = 1f; //1.5f;
-                    // damping = new PhysicsDamping()
-                    // {
-                    //     Linear = baseDampingLinear + baseDampingLinear * (submergedFactor * 10f),
-                    //     Angular = baseDampingAngular + baseDampingAngular * (submergedFactor * 0.5f)
-                    // };
                 }).Schedule();
 
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);

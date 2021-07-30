@@ -113,19 +113,19 @@ namespace Crest
             var buoyancy = -Physics.gravity.normalized * _buoyancyCoeff * bottomDepth * bottomDepth * bottomDepth;
             _rb.AddForce(buoyancy, ForceMode.Acceleration);
 
-            // Approximate hydrodynamics of sliding along water
-            if (_accelerateDownhill > 0f)
-            {
-                _rb.AddForce(new Vector3(normal.x, 0f, normal.z) * -Physics.gravity.y * _accelerateDownhill, ForceMode.Acceleration);
-            }
-
+            // // Approximate hydrodynamics of sliding along water
+            // if (_accelerateDownhill > 0f)
+            // {
+            //     _rb.AddForce(new Vector3(normal.x, 0f, normal.z) * -Physics.gravity.y * _accelerateDownhill, ForceMode.Acceleration);
+            // }
+            //
             // Apply drag relative to water
             var forcePosition = _rb.position + _forceHeightOffset * Vector3.up;
             _rb.AddForceAtPosition(Vector3.up * Vector3.Dot(Vector3.up, -velocityRelativeToWater) * _dragInWaterUp, forcePosition, ForceMode.Acceleration);
             _rb.AddForceAtPosition(transform.right * Vector3.Dot(transform.right, -velocityRelativeToWater) * _dragInWaterRight, forcePosition, ForceMode.Acceleration);
             _rb.AddForceAtPosition(transform.forward * Vector3.Dot(transform.forward, -velocityRelativeToWater) * _dragInWaterForward, forcePosition, ForceMode.Acceleration);
 
-            FixedUpdateOrientation(normal);
+            // FixedUpdateOrientation(normal);
 
             UnityEngine.Profiling.Profiler.EndSample();
         }

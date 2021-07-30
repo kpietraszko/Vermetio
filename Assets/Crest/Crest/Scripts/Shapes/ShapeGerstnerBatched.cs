@@ -764,24 +764,25 @@ namespace Crest
             return true;
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, Vector3[] o_resultDisps, Vector3[] o_resultNorms, Vector3[] o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
+            IList<Vector3> o_resultDisps, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
         {
             if (o_resultDisps != null)
             {
-                for (int i = 0; i < o_resultDisps.Length; i++)
+                for (int i = 0; i < o_resultDisps.Count; i++)
                 {
-                    SampleDisplacement(ref i_queryPoints[i], i_minSpatialLength, out o_resultDisps[i]);
+                    SampleDisplacement(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out ((Vector3[])o_resultDisps)[i]);
                 }
             }
 
             if (o_resultNorms != null)
             {
-                for (int i = 0; i < o_resultNorms.Length; i++)
+                for (int i = 0; i < o_resultNorms.Count; i++)
                 {
                     Vector3 undispPos;
-                    if (ComputeUndisplacedPosition(ref i_queryPoints[i], i_minSpatialLength, out undispPos))
+                    if (ComputeUndisplacedPosition(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out undispPos))
                     {
-                        SampleNormal(ref undispPos, i_minSpatialLength, out o_resultNorms[i]);
+                        SampleNormal(ref undispPos, i_minSpatialLength, out ((Vector3[])o_resultNorms)[i]);
                     }
                     else
                     {
@@ -793,24 +794,25 @@ namespace Crest
             return 0;
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, float[] o_resultHeights, Vector3[] o_resultNorms, Vector3[] o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
+            IList<float> o_resultHeights, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
         {
             if (o_resultHeights != null)
             {
-                for (int i = 0; i < o_resultHeights.Length; i++)
+                for (int i = 0; i < o_resultHeights.Count; i++)
                 {
-                    SampleHeight(ref i_queryPoints[i], i_minSpatialLength, out o_resultHeights[i]);
+                    SampleHeight(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out ((float[])o_resultHeights)[i]);
                 }
             }
 
             if (o_resultNorms != null)
             {
-                for (int i = 0; i < o_resultNorms.Length; i++)
+                for (int i = 0; i < o_resultNorms.Count; i++)
                 {
                     Vector3 undispPos;
-                    if (ComputeUndisplacedPosition(ref i_queryPoints[i], i_minSpatialLength, out undispPos))
+                    if (ComputeUndisplacedPosition(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out undispPos))
                     {
-                        SampleNormal(ref undispPos, i_minSpatialLength, out o_resultNorms[i]);
+                        SampleNormal(ref undispPos, i_minSpatialLength, out ((Vector3[])o_resultNorms)[i]);
                     }
                     else
                     {
@@ -821,9 +823,9 @@ namespace Crest
 
             if (o_resultVels != null)
             {
-                for (int i = 0; i < o_resultVels.Length; i++)
+                for (int i = 0; i < o_resultVels.Count; i++)
                 {
-                    GetSurfaceVelocity(ref i_queryPoints[i], i_minSpatialLength, out o_resultVels[i]);
+                    GetSurfaceVelocity(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out ((Vector3[])o_resultVels)[i]);
                 }
             }
 

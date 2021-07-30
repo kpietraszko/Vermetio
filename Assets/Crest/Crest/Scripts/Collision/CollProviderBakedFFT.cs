@@ -2,6 +2,7 @@
 
 // This file is subject to the MIT License as seen in the root of this folder structure (LICENSE)
 
+using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -33,7 +34,8 @@ namespace Crest
             _data = data;
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, Vector3[] o_resultDisps, Vector3[] o_resultNorms, Vector3[] o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
+            IList<Vector3> o_resultDisps, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
         {
             if (_data == null || _data._framesFlattenedNative.Length == 0)
                 return (int)QueryStatus.DataMissing;
@@ -41,12 +43,12 @@ namespace Crest
             var t = OceanRenderer.Instance.CurrentTime;
 
             // Queries processed in groups of 4 for SIMD - 'quads'
-            var numQueryQuads = (o_resultDisps.Length + 3) / 4;
+            var numQueryQuads = (o_resultDisps.Count + 3) / 4;
             var queryPointsX = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.ClearMemory);
             var queryPointsZ = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.ClearMemory);
 
             // Copy input data. Could be avoided if query api is changed to use NAs.
-            for (int i = 0; i < i_queryPoints.Length; i++)
+            for (int i = 0; i < i_queryPoints.Count; i++)
             {
                 var quadIdx = i / 4;
                 var xQuad = queryPointsX[quadIdx];
@@ -81,11 +83,9 @@ namespace Crest
                 }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
 
                 // Copy results to output. Could be avoided if query api was changed to NAs.
-                for (int i = 0; i < o_resultDisps.Length; i++)
+                for (int i = 0; i < o_resultDisps.Count; i++)
                 {
-                    o_resultDisps[i].x = resultsX[i / 4][i % 4];
-                    o_resultDisps[i].y = resultsY[i / 4][i % 4];
-                    o_resultDisps[i].z = resultsZ[i / 4][i % 4];
+                    o_resultDisps[i] = new Vector3(resultsX[i / 4][i % 4], resultsY[i / 4][i % 4], resultsZ[i / 4][i % 4]);
                 }
 
                 resultsX.Dispose();
@@ -113,7 +113,7 @@ namespace Crest
                 }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
 
                 // Copy results to output. Could be avoided if query api was changed to NAs.
-                for (int i = 0; i < o_resultNorms.Length; i++)
+                for (int i = 0; i < o_resultNorms.Count; i++)
                 {
                     var quad = i / 4;
                     var quadComp = i % 4;
@@ -147,11 +147,9 @@ namespace Crest
                 }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
 
                 // Copy results to output. Could be avoided if query api was changed to NAs.
-                for (int i = 0; i < o_resultVels.Length; i++)
+                for (int i = 0; i < o_resultVels.Count; i++)
                 {
-                    o_resultVels[i].y = results[i / 4][i % 4];
-
-                    o_resultVels[i].x = o_resultVels[i].z = 0f;
+                    o_resultVels[i] = new Vector3(0f, results[i / 4][i % 4], 0f);
                 }
 
                 results.Dispose();
@@ -164,14 +162,12 @@ namespace Crest
             return (int)QueryStatus.Success;
         }
 
-        public int Query(
-            int i_ownerHash,
+        public int Query(int i_ownerHash,
             float i_minSpatialLength,
-            Vector3[] i_queryPoints,
-            float[] o_resultHeights,
-            Vector3[] o_resultNorms,
-            Vector3[] o_resultVels
-            )
+            IList<Vector3> i_queryPoints,
+            IList<float> o_resultHeights,
+            IList<Vector3> o_resultNorms,
+            IList<Vector3> o_resultVels)
         {
             if (_data == null || _data._framesFlattenedNative.Length == 0)
                 return (int)QueryStatus.DataMissing;
@@ -180,12 +176,12 @@ namespace Crest
             var seaLevel = OceanRenderer.Instance.SeaLevel;
 
             // Queries processed in groups of 4 for SIMD - 'quads'
-            var numQueryQuads = (o_resultHeights.Length + 3) / 4;
+            var numQueryQuads = (i_queryPoints.Count + 3) / 4;
             var queryPointsX = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.ClearMemory);
             var queryPointsZ = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.ClearMemory);
 
             // Copy input data. Could be avoided if query api is changed to use NAs.
-            for (var i = 0; i < i_queryPoints.Length; i++)
+            for (var i = 0; i < i_queryPoints.Count; i++)
             {
                 var quadIdx = i / 4;
                 var xQuad = queryPointsX[quadIdx];
@@ -217,9 +213,14 @@ namespace Crest
                 }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
 
                 // Copy results to output. Could be avoided if query api was changed to NAs.
-                for (int i = 0; i < o_resultHeights.Length; i++)
+                for (int i = 0; i < i_queryPoints.Count; i++)
                 {
-                    o_resultHeights[i] = results[i / 4][i % 4];
+                    if (o_resultHeights is float[])
+                    {
+                        o_resultHeights[i] = results[i / 4][i % 4];
+                        continue;
+                    }
+                    o_resultHeights.Add(results[i / 4][i % 4]);
                 }
 
                 results.Dispose();
@@ -245,7 +246,7 @@ namespace Crest
                 }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
 
                 // Copy results to output. Could be avoided if query api was changed to NAs.
-                for (int i = 0; i < o_resultNorms.Length; i++)
+                for (int i = 0; i < i_queryPoints.Count; i++)
                 {
                     var quad = i / 4;
                     var quadComp = i % 4;
@@ -254,7 +255,13 @@ namespace Crest
                     norm.x = normalX[quad][quadComp];
                     norm.y = normalY[quad][quadComp];
                     norm.z = normalZ[quad][quadComp];
-                    o_resultNorms[i] = norm;
+
+                    if (o_resultNorms is Vector3[])
+                    {
+                        o_resultNorms[i] = norm;
+                        continue;
+                    }
+                    o_resultNorms.Add(norm);
                 }
 
                 normalX.Dispose();
@@ -279,11 +286,14 @@ namespace Crest
                 }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
 
                 // Copy results to output. Could be avoided if query api was changed to NAs.
-                for (int i = 0; i < o_resultVels.Length; i++)
+                for (int i = 0; i < i_queryPoints.Count; i++)
                 {
-                    o_resultVels[i].y = results[i / 4][i % 4];
-
-                    o_resultVels[i].x = o_resultVels[i].z = 0f;
+                    if (o_resultVels is Vector3[])
+                    {
+                        o_resultVels[i] = new Vector3(0f, results[i / 4][i % 4], 0f);
+                        continue;
+                    }
+                    o_resultVels.Add(new Vector3(0f, results[i / 4][i % 4], 0f));
                 }
 
                 results.Dispose();

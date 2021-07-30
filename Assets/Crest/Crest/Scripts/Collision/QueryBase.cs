@@ -560,23 +560,24 @@ namespace Crest
             _segmentRegistrarRingBuffer.ClearAll();
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, Vector3[] o_resultDisps, Vector3[] o_resultNorms, Vector3[] o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
+            IList<Vector3> o_resultDisps, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
         {
             var result = (int)QueryStatus.OK;
 
-            if (!UpdateQueryPoints(i_ownerHash, i_minSpatialLength, i_queryPoints, o_resultNorms != null ? i_queryPoints : null))
+            if (!UpdateQueryPoints(i_ownerHash, i_minSpatialLength, (Vector3[]) i_queryPoints, (Vector3[]) (o_resultNorms != null ? i_queryPoints : null)))
             {
                 result |= (int)QueryStatus.PostFailed;
             }
 
-            if (!RetrieveResults(i_ownerHash, o_resultDisps, null, o_resultNorms))
+            if (!RetrieveResults(i_ownerHash, (Vector3[]) o_resultDisps, null, (Vector3[]) o_resultNorms))
             {
                 result |= (int)QueryStatus.RetrieveFailed;
             }
 
             if (o_resultVels != null)
             {
-                result |= CalculateVelocities(i_ownerHash, o_resultVels);
+                result |= CalculateVelocities(i_ownerHash, (Vector3[]) o_resultVels);
             }
 
             return result;

@@ -22,7 +22,7 @@ public class GoInGameClientSystem : SystemBase
         var ecb = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
         
         var prespawnCount = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<PreSpawnedGhostId>()).CalculateEntityCount();
-        var buoyantCount = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<BuoyantComponent>()).CalculateEntityCount();
+        var buoyantCount = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<SimpleBuoyantComponent>()).CalculateEntityCount();
         
         Entities.WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
         {

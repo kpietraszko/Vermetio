@@ -69,7 +69,7 @@ namespace Vermetio.Server
 
             var collProvider = OceanRenderer.Instance.CollisionProvider;
             
-            var numberOfBuoyantObjects = GetEntityQuery(typeof(BuoyantComponent)).CalculateEntityCount();
+            var numberOfBuoyantObjects = GetEntityQuery(typeof(SimpleBuoyantComponent)).CalculateEntityCount();
 
             var entities = new NativeArray<Entity>(numberOfBuoyantObjects, Allocator.TempJob);
 
@@ -82,7 +82,7 @@ namespace Vermetio.Server
 
             Entities
                 .WithoutBurst()
-                .ForEach((Entity entity, in Translation translation, in BuoyantComponent buoyantComponent) =>
+                .ForEach((Entity entity, in Translation translation, in SimpleBuoyantComponent buoyantComponent) =>
             {
                 entities[entityIndex++] = entity;
                 _queryPoints.Add(translation.Value);
@@ -97,17 +97,18 @@ namespace Vermetio.Server
             {
                 Debug.LogError("Height query failed");
             }
-
-            var waterHeightsPerEntity = new NativeHashMap<Entity, float>(numberOfBuoyantObjects, Allocator.TempJob);
-            var waterNormalsPerEntity = new NativeHashMap<Entity, float3>(numberOfBuoyantObjects, Allocator.TempJob);
-            var waterVelocitiesPerEntity = new NativeHashMap<Entity, float3>(numberOfBuoyantObjects, Allocator.TempJob);
+            
+            var waterDataPerEntity = new NativeHashMap<Entity, EntityWaterData>(numberOfBuoyantObjects, Allocator.TempJob);
 
             for (int i = 0; i < numberOfBuoyantObjects; i++)
             {
-                waterHeightsPerEntity.TryAdd(entities[i], _waterHeights[i]);
-                waterNormalsPerEntity.TryAdd(entities[i], _normals[i]);
-                waterVelocitiesPerEntity.TryAdd(entities[i], _velocities[i]);
-            }
+                waterDataPerEntity.TryAdd(entities[i], new EntityWaterData()
+                {
+                    Height = _waterHeights[i],
+                    Normal = _normals[i],
+                    Velocity = _velocities[i]
+                });
+            };
 
             var debugDraw = _debugDraw;
 
@@ -117,7 +118,7 @@ namespace Vermetio.Server
                 // .WithReadOnly(physicsWorld)
                 // .WithReadOnly(waterHeightsPerEntity)
                 .ForEach((Entity entity, ref Translation translation, ref PhysicsVelocity pv,
-                    ref BuoyantComponent buoyant, in LocalToWorld localToWorld, 
+                    ref SimpleBuoyantComponent buoyant, in LocalToWorld localToWorld, 
                     in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col) =>
                 {
                     // ProfileFewTicks(tick);
@@ -131,65 +132,54 @@ namespace Vermetio.Server
                     // Debug.Log($"{tick}");
 
                     var submergedAmount = 0f;
-                    var waterVelocity = waterVelocitiesPerEntity[entity];
-                    var velocityRelativeToWater = pv.Linear - waterVelocity;
+                    var waterData = waterDataPerEntity[entity];
+                    var velocityRelativeToWater = pv.Linear - waterData.Velocity;
                     
                     if (debugDraw)
                     {
-                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterVelocity,
+                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterData.Velocity,
                             new Color(1, 1, 1, 0.6f));
                     }
                     
-                    var height = waterHeightsPerEntity[entity];
-                    var normal = waterNormalsPerEntity[entity];
-                    var raiseObject = 1f; // TODO: PARAMETER
-                    var buoyancyCoeff = 3f; // TODO: PARAMETER
-                    var accelerateDownhill = 0f; // TODO: PARAMETER
-                    var forceHeightOffset = -0.3f; // TODO: PARAMETER
-                    var dragInWaterUp = 3f;  // TODO: PARAMETER
-                    var dragInWaterRight = 2f; // TODO: PARAMETER
-                    var dragInWaterForward = 1f; // TODO: PARAMETER
-                    var bouyancyTorque = 8f; // TODO: PARAMETER
-                    var dragInWaterRotational = 0.2f; // TODO: PARAMETER
-                    var bottomDepth = height - translation.Value.y + raiseObject;
+                    var bottomDepth = waterData.Height - translation.Value.y + buoyant.RaiseObject;
                     var inWater = bottomDepth > 0f;
                     if (!inWater)
                         return;
                     
                     var up = new float3(0f, 1f, 0f);
-                    var buoyancy = up * buoyancyCoeff * bottomDepth * bottomDepth * bottomDepth;
+                    var buoyancy = up * buoyant.BuoyancyCoeff * bottomDepth * bottomDepth * bottomDepth;
                     // Debug.Log($"pmTransformPos: {pm.Transform.pos}");
                     pm.GetImpulseFromForce(buoyancy, ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
                     pv.ApplyLinearImpulse(pm, impulse); // this is fucking 10 times too strong for some reason
 
-                    // // Approximate hydrodynamics of sliding along water
-                    // if (accelerateDownhill > 0f)
-                    // {
-                    //     pm.GetImpulseFromForce(new float3(normal.x, 0f, normal.z) * -PhysicsStep.Default.Gravity.y * accelerateDownhill, ForceMode.Acceleration, deltaTime, out impulse, out impulseMass);
-                    //     pv.ApplyImpulse(impulseMass, translation, rotation, impulse, translation.Value);
-                    // }
+                    // Approximate hydrodynamics of sliding along water
+                    if (buoyant.AccelerateDownhill > 0f)
+                    {
+                        pm.GetImpulseFromForce(new float3(waterData.Normal.x, 0f, waterData.Normal.z) * -PhysicsStep.Default.Gravity.y * buoyant.AccelerateDownhill, ForceMode.Acceleration, deltaTime, out impulse, out impulseMass);
+                        pv.ApplyImpulse(impulseMass, translation, rotation, impulse, translation.Value);
+                    }
                     
                     // Apply drag relative to water
-                    var forcePosition = translation.Value + forceHeightOffset * up;
-                    pm.GetImpulseFromForce(up * dot(up, -velocityRelativeToWater) * dragInWaterUp, ForceMode.Acceleration, deltaTime, out impulse, out impulseMass);
+                    var forcePosition = translation.Value + buoyant.ForceHeightOffset * up;
+                    pm.GetImpulseFromForce(up * dot(up, -velocityRelativeToWater) * buoyant.DragInWaterUp, ForceMode.Acceleration, deltaTime, out impulse, out impulseMass);
                     pv.ApplyImpulse(impulseMass, translation, rotation, impulse, forcePosition);
                     // skipping right and forward drag because only vertical velocities are baked
                     
                     
                     // Align to normal
                     if (debugDraw) 
-                        Debug.DrawLine(translation.Value, translation.Value + 5f * normal, Color.green);
+                        Debug.DrawLine(translation.Value, translation.Value + 5f * waterData.Normal, Color.green);
                     
-                    var torqueWidth = Vector3.Cross(localToWorld.Up, normal);
-                    pv.ApplyAngularImpulse(impulseMass, torqueWidth * bouyancyTorque * deltaTime); // TODO: maybe * deltaTime?
-                    pv.ApplyAngularImpulse(pm, -dragInWaterRotational * pv.Angular * deltaTime); // TODO: maybe * deltaTime?
+                    var torqueWidth = Vector3.Cross(localToWorld.Up, waterData.Normal);
+                    pv.ApplyAngularImpulse(impulseMass, torqueWidth * buoyant.BouyancyTorque * deltaTime); // TODO: maybe * deltaTime?
+                    pv.ApplyAngularImpulse(pm, -buoyant.DragInWaterRotational * pv.Angular * deltaTime); // TODO: maybe * deltaTime?
 
                     // if (tick % 60 == 0)
                     //     Debug.Log($"{tick / 60}");
                     
                     if (debugDraw)
                     {
-                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterVelocity,
+                        Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterData.Velocity,
                             new Color(1, 1, 1, 0.6f));
                     }
                 }).Schedule();
@@ -249,5 +239,12 @@ namespace Vermetio.Server
             Debug.DrawLine(p3, p7, Color.green, delay);
             Debug.DrawLine(p4, p8, Color.cyan, delay);
         }
+    }
+    
+    internal struct EntityWaterData
+    {
+        internal float Height;
+        internal float3 Normal;
+        internal float3 Velocity;
     }
 }

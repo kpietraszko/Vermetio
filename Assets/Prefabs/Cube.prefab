@@ -341,5 +341,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f662c797119a714b983870d337cbe2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VoxelResolution: 0
-  SubmergedPercentage: 0
+  RaiseObject: 1
+  BuoyancyCoeff: 3
+  AccelerateDownhill: 0
+  ForceHeightOffset: -0.3
+  DragInWaterUp: 3
+  DragInWaterRight: 2
+  DragInWaterForward: 1
+  BouyancyTorque: 8
+  DragInWaterRotational: 0.2

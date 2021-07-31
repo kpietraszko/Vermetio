@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sim_Settings_Animated_Waves
   m_EditorClassIdentifier: 
   _version: 0
-  _attenuationInShallows: 0.95
+  _attenuationInShallows: 0
   _collisionSource: 3
   _maxQueryCount: 4096
   _pingPongCombinePass: 1

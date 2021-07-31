@@ -195,13 +195,18 @@ namespace Crest
                 queryPointsZ[quadIdx] = zQuad;
             }
 
+            JobHandle heightHandle = default;
+            JobHandle normalHandle = default;
+            JobHandle velocityHandle = default;
+
+            NativeArray<float4> results = default;
+
             if (o_resultHeights != null)
             {
                 // One thread per quad - per group of 4 queries
-                var results = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-
-                // Run job synchronously
-                new JobSampleHeight
+                results = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                
+                heightHandle = new JobSampleHeight
                 {
                     _queryPointsX = queryPointsX,
                     _queryPointsZ = queryPointsZ,
@@ -210,30 +215,20 @@ namespace Crest
                     _params = _data._parameters,
                     _seaLevel = seaLevel,
                     _output = results,
-                }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
-
-                // Copy results to output. Could be avoided if query api was changed to NAs.
-                for (int i = 0; i < i_queryPoints.Count; i++)
-                {
-                    if (o_resultHeights is float[])
-                    {
-                        o_resultHeights[i] = results[i / 4][i % 4];
-                        continue;
-                    }
-                    o_resultHeights.Add(results[i / 4][i % 4]);
-                }
-
-                results.Dispose();
+                }.Schedule(numQueryQuads, s_jobBatchSize);
             }
+            
+            NativeArray<float4> normalX = default;
+            NativeArray<float4> normalY = default;
+            NativeArray<float4> normalZ = default;
 
             if (o_resultNorms != null)
             {
-                var normalX = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-                var normalY = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-                var normalZ = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-
-                // Run job synchronously
-                new JobComputeNormal
+                normalX = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                normalY = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                normalZ = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                
+                normalHandle = new JobComputeNormal
                 {
                     _queryPointsX = queryPointsX,
                     _queryPointsZ = queryPointsZ,
@@ -243,8 +238,48 @@ namespace Crest
                     _outputNormalZ = normalZ,
                     _t = t,
                     _params = _data._parameters,
-                }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
+                }.Schedule(numQueryQuads, s_jobBatchSize);
+            }
 
+            NativeArray<float4> velocities = default;
+
+            if (o_resultVels != null)
+            {
+                // One thread per quad - per group of 4 queries
+                velocities = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                
+                velocityHandle = new JobComputeVerticalVelocity
+                {
+                    _queryPointsX = queryPointsX,
+                    _queryPointsZ = queryPointsZ,
+                    _framesFlattened = _data._framesFlattenedNative,
+                    _t = t,
+                    _params = _data._parameters,
+                    _output = velocities,
+                }.Schedule(numQueryQuads, s_jobBatchSize);
+            }
+            
+            JobHandle.CombineDependencies(heightHandle, normalHandle, velocityHandle).Complete();
+
+            if (o_resultHeights != null)
+            {
+                // Copy results to output. Could be avoided if query api was changed to NAs.
+                for (int i = 0; i < i_queryPoints.Count; i++)
+                {
+                    if (o_resultHeights is float[])
+                    {
+                        o_resultHeights[i] = results[i / 4][i % 4];
+                        continue;
+                    }
+
+                    o_resultHeights.Add(results[i / 4][i % 4]);
+                }
+
+                results.Dispose();
+            }
+
+            if (o_resultNorms != null)
+            {
                 // Copy results to output. Could be avoided if query api was changed to NAs.
                 for (int i = 0; i < i_queryPoints.Count; i++)
                 {
@@ -261,6 +296,7 @@ namespace Crest
                         o_resultNorms[i] = norm;
                         continue;
                     }
+
                     o_resultNorms.Add(norm);
                 }
 
@@ -271,32 +307,19 @@ namespace Crest
 
             if (o_resultVels != null)
             {
-                // One thread per quad - per group of 4 queries
-                var results = new NativeArray<float4>(numQueryQuads, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-
-                // Run job synchronously
-                new JobComputeVerticalVelocity
-                {
-                    _queryPointsX = queryPointsX,
-                    _queryPointsZ = queryPointsZ,
-                    _framesFlattened = _data._framesFlattenedNative,
-                    _t = t,
-                    _params = _data._parameters,
-                    _output = results,
-                }.Schedule(numQueryQuads, s_jobBatchSize).Complete();
-
                 // Copy results to output. Could be avoided if query api was changed to NAs.
                 for (int i = 0; i < i_queryPoints.Count; i++)
                 {
                     if (o_resultVels is Vector3[])
                     {
-                        o_resultVels[i] = new Vector3(0f, results[i / 4][i % 4], 0f);
+                        o_resultVels[i] = new Vector3(0f, velocities[i / 4][i % 4], 0f);
                         continue;
                     }
-                    o_resultVels.Add(new Vector3(0f, results[i / 4][i % 4], 0f));
+
+                    o_resultVels.Add(new Vector3(0f, velocities[i / 4][i % 4], 0f));
                 }
 
-                results.Dispose();
+                velocities.Dispose();
             }
 
             // Clean up query points

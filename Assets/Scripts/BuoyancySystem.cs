@@ -171,8 +171,8 @@ namespace Vermetio.Server
                         Debug.DrawLine(translation.Value, translation.Value + 5f * waterData.Normal, Color.green);
                     
                     var torqueWidth = Vector3.Cross(localToWorld.Up, waterData.Normal);
-                    pv.ApplyAngularImpulse(impulseMass, torqueWidth * buoyant.BouyancyTorque * deltaTime); // TODO: maybe * deltaTime?
-                    pv.ApplyAngularImpulse(pm, -buoyant.DragInWaterRotational * pv.Angular * deltaTime); // TODO: maybe * deltaTime?
+                    pv.ApplyAngularImpulse(impulseMass, torqueWidth * buoyant.BouyancyTorque * deltaTime);
+                    pv.ApplyAngularImpulse(pm, -buoyant.DragInWaterRotational * pv.Angular * deltaTime);
 
                     // if (tick % 60 == 0)
                     //     Debug.Log($"{tick / 60}");

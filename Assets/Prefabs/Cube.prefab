@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RaiseObject: 1
   BuoyancyCoeff: 3
-  AccelerateDownhill: 0
+  AccelerateDownhill: 0.222
   ForceHeightOffset: -0.3
   DragInWaterUp: 3
   DragInWaterRight: 2

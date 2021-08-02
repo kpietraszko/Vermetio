@@ -1135,7 +1135,7 @@ namespace Crest
 
         void LateUpdateTiles()
         {
-            var isUnderwaterActive = UnderwaterRenderer.Instance != null && UnderwaterRenderer.Instance.IsActive;
+            var isUnderwaterActive = false;
 
 #if CREST_HDRP
             if (!isUnderwaterActive && RenderPipelineHelper.IsHighDefinition)

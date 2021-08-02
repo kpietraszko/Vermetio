@@ -33,11 +33,10 @@ namespace Vermetio.Server
         GhostSimulationSystemGroup _ghostSimulationSystemGroup;
         private float _initialHeight;
 
-        private static List<Vector3> _queryPoints = new List<Vector3>(512);
-        private static List<float> _waterHeights = new List<float>(512);
-        private static List<Vector3> _normals = new List<Vector3>(512);
-        private static List<Vector3> _velocities = new List<Vector3>(512);
-
+        private static Vector3[] _queryPoints = new Vector3[0];
+        private static float[] _waterHeights = new float[0];
+        private static Vector3[] _normals = new Vector3[0];
+        private static Vector3[] _velocities = new Vector3[0];
         private static bool _debugDraw = false;
 
         protected override void OnCreate()
@@ -73,19 +72,23 @@ namespace Vermetio.Server
 
             var entities = new NativeArray<Entity>(numberOfBuoyantObjects, Allocator.TempJob);
 
-            var entityIndex = 0;
+            if (_queryPoints?.Length != numberOfBuoyantObjects)
+            {
+                _queryPoints = new Vector3[numberOfBuoyantObjects];
+                _waterHeights = new float[numberOfBuoyantObjects];
+                _normals = new Vector3[numberOfBuoyantObjects];
+                _velocities = new Vector3[numberOfBuoyantObjects];
+            }
             
-            _queryPoints.Clear();
-            _waterHeights.Clear();
-            _normals.Clear();
-            _velocities.Clear();
+            var entityIndex = 0;
 
             Entities
                 .WithoutBurst()
                 .ForEach((Entity entity, in Translation translation, in SimpleBuoyantComponent buoyantComponent) =>
             {
-                entities[entityIndex++] = entity;
-                _queryPoints.Add(translation.Value);
+                entities[entityIndex] = entity;
+                _queryPoints[entityIndex] = translation.Value;
+                entityIndex++;
             }).Run();
 
             // for (int i = 0; i < queryPoints.Length; i++)
@@ -93,9 +96,11 @@ namespace Vermetio.Server
             //     queryPoints[i] = new Vector3(allVoxels[i].x, 0f, allVoxels[i].y);
             // }
 
-            if (!collProvider.RetrieveSucceeded(collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, _normals, _velocities)))
+            var status = collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, _normals, _velocities);
+            if (!collProvider.RetrieveSucceeded(status))
             {
-                Debug.LogError("Height query failed");
+                Debug.LogWarning($"Height query failed: {(CollProviderBakedFFT.QueryStatus)status}");
+                return;
             }
             
             var waterDataPerEntity = new NativeHashMap<Entity, EntityWaterData>(numberOfBuoyantObjects, Allocator.TempJob);

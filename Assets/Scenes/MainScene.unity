@@ -15,7 +15,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.809, g: 0.809, b: 0.7871351, a: 1}
+  m_FogColor: {r: 0.67616475, g: 0.7551718, b: 0.80784315, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.0002
   m_LinearFogStart: 0
@@ -957,8 +957,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695907642}
-  m_LocalRotation: {x: 0.21610253, y: -0.35625833, z: 0.08506358, w: 0.90506566}
-  m_LocalPosition: {x: 153.26717, y: 82.758415, z: -301.39413}
+  m_LocalRotation: {x: 0.2911067, y: 0.32821658, z: -0.10708785, w: 0.8922236}
+  m_LocalPosition: {x: -53.420258, y: 30.162514, z: -227.73343}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

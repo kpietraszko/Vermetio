@@ -37,6 +37,8 @@ namespace Overrides.NetCodeGen
                 fields = fields.ToArray()
             };
             
+            
+
         }
 
         public void ModifyAlwaysIncludedAssembly(HashSet<string> alwaysIncludedAssemblies)

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5983388429863408326}
   - component: {fileID: 3655054901516781711}
   - component: {fileID: 6252602317288172114}
-  - component: {fileID: 8329249050524344364}
   - component: {fileID: 6478657461735102899}
   - component: {fileID: 9214445237988180827}
   - component: {fileID: 8080581829221530458}
@@ -100,18 +99,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8329249050524344364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8520222691718690185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c941d046360ef384cad8546735c18092, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6478657461735102899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,9 +311,13 @@ MonoBehaviour:
   Importance: 1
   prefabId: dbb88a7fe23bdbd4ca8cddd2b83f0dff
   Name: 
-  RefGameObjects: []
-  ComponentNames: []
-  PrefabTypeOverrides: []
+  RefGameObjects:
+  - {fileID: 8520222691718690185}
+  ComponentNames:
+  - Unity.Physics.PhysicsCollider
+  PrefabTypeOverrides:
+  - Value: 7
+    OverrideIndex: 0
   SendTypeOverrides: []
   VariantOverrides: []
 --- !u!114 &895779231170848824

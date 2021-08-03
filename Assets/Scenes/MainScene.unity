@@ -534,7 +534,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 909074730}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ecb4eabedc2586f41b2878c2c640ad50, type: 3}
   m_Name: 
@@ -542,7 +542,7 @@ MonoBehaviour:
   _version: 0
   _objectWidth: 0
   _stepSize: 2
-  _steps: 128
+  _steps: 20
   _useDisplacements: 0
   _useNormals: 0
 --- !u!1 &1320718952
@@ -988,7 +988,7 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 0}
   m_RenderPostProcessing: 1
   m_Antialiasing: 2
-  m_AntialiasingQuality: 1
+  m_AntialiasingQuality: 0
   m_StopNaN: 1
   m_Dithering: 0
   m_ClearDepth: 1
@@ -1008,15 +1008,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b0c0a69611596146aceb2f60532940c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _version: 0
-  _filterOceanData: 13
-  _meniscus: 1
-  _copyOceanMaterialParamsEachFrame: 1
-  _farPlaneMultiplier: 0.68
-  _useHorizonSafetyMarginMultiplier: 0
-  _horizonSafetyMarginMultiplier: 0.01
-  _scaleSafetyMarginWithDynamicResolution: 1
-  _debug:
-    _viewOceanMask: 0
-    _disableOceanMask: 0
-    _disableHeightAboveWaterOptimization: 0

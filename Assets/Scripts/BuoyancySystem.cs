@@ -74,6 +74,7 @@ namespace Vermetio.Server
 
             if (_queryPoints?.Length != numberOfBuoyantObjects)
             {
+                Debug.Log("Array size mismatch - reallocating");
                 _queryPoints = new Vector3[numberOfBuoyantObjects];
                 _waterHeights = new float[numberOfBuoyantObjects];
                 _normals = new Vector3[numberOfBuoyantObjects];
@@ -100,6 +101,7 @@ namespace Vermetio.Server
             if (!collProvider.RetrieveSucceeded(status))
             {
                 Debug.LogWarning($"Height query failed: {(CollProviderBakedFFT.QueryStatus)status}");
+                Debug.Log($"Fail at {tick}");
                 return;
             }
             

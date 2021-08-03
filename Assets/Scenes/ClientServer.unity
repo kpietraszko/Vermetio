@@ -6854,17 +6854,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 895779231170848824, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
-      propertyPath: BouyancyTorque
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 895779231170848824, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
-      propertyPath: DragInWaterRotational
-      value: 0.34
-      objectReference: {fileID: 0}
     - target: {fileID: 8520222691718690185, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_Name
       value: Cube (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8520222691718690185, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8863730947970231035, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_RootOrder

@@ -43,7 +43,7 @@ namespace Crest
 
         Vector3[] _samplePositions;
 
-        void FixedUpdate()
+        void Update()
         {
             if (OceanRenderer.Instance == null || OceanRenderer.Instance.CollisionProvider == null)
             {

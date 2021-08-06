@@ -24,7 +24,7 @@ public class GoInGameClientSystem : SystemBase
         var prespawnCount = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<PreSpawnedGhostId>()).CalculateEntityCount();
         var buoyantCount = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<SimpleBuoyantComponent>()).CalculateEntityCount();
         
-        Entities.WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
+        Entities.WithoutBurst().WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
         {
             if (prespawnCount < 1/*!= 2*/)
                 return;

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Sim_Settings_Shadow
   m_EditorClassIdentifier: 
   _version: 0
-  _jitterDiameterSoft: 15
+  _jitterDiameterSoft: 6.4
   _currentFrameWeightSoft: 0.03
   _jitterDiameterHard: 0.6
-  _currentFrameWeightHard: 0.15
+  _currentFrameWeightHard: 0.094
   _allowNullLight: 0

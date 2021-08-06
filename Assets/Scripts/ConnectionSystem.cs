@@ -33,33 +33,19 @@ public class ConnectionSystem : SystemBase
         // Destroy singleton to prevent system from running again
         EntityManager.DestroyEntity(GetSingletonEntity<InitGameComponent>());
         
-        foreach (var world in World.All)
+        
+        var serverWorld = GetWorldWith<ServerSimulationSystemGroup>(World.All);
+
+        if (serverWorld != null)
         {
-            // Debug.Log($"World: {world.Name}");
-            var network = world.GetExistingSystem<NetworkStreamReceiveSystem>();
-            if (world.GetExistingSystem<ClientSimulationSystemGroup>() != null)
-            {
-                var tickRate = world.EntityManager.CreateEntity();
-                world.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
-                {
-                    SimulationTickRate = 30,
-                    NetworkTickRate = 30
-                });
-                
-                // Client worlds automatically connect to localhost
-                NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4;
-                ep.Port = 7979;
-                Debug.Log("Connecting...");
-                network.Connect(ep);
-            }
             #if UNITY_EDITOR || UNITY_SERVER
-            else if (world.GetExistingSystem<ServerSimulationSystemGroup>() != null)
-            {
-                var tickRate = world.EntityManager.CreateEntity();
-                world.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
+            var network = serverWorld.GetExistingSystem<NetworkStreamReceiveSystem>();
+            var tickRate = serverWorld.EntityManager.CreateEntity();
+            serverWorld.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
                 {
                     SimulationTickRate = 30,
-                    NetworkTickRate = 30
+                    NetworkTickRate = 30,
+                    MaxSimulationStepsPerFrame = 1
                 });
 
                 // Server world automatically listens for connections from any host
@@ -67,8 +53,40 @@ public class ConnectionSystem : SystemBase
                 ep.Port = 7979;
                 Debug.Log("Listening...");
                 network.Listen(ep);
-            }
             #endif
         }
+
+        var clientWorld = GetWorldWith<ClientSimulationSystemGroup>(World.All);
+        if (clientWorld != null)
+        {
+            var network = clientWorld.GetExistingSystem<NetworkStreamReceiveSystem>();
+            var tickRate = clientWorld.EntityManager.CreateEntity();
+            clientWorld.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
+            {
+                SimulationTickRate = 30,
+                NetworkTickRate = 30, 
+                MaxSimulationStepsPerFrame = 1
+            });
+                
+            // Client worlds automatically connect to localhost
+            NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4;
+            ep.Port = 7979;
+            Debug.Log("Connecting...");
+            var entity = network.Connect(ep);
+            #if UNITY_EDITOR
+            EntityManager.SetName(entity, "Connection");
+            #endif
+        }
+    }
+
+    private World GetWorldWith<T>(World.NoAllocReadOnlyCollection<World> worlds) where T : ComponentSystemBase
+    {
+        foreach (var world in worlds)
+        {
+            if (world.GetExistingSystem<T>() != null)
+                return world;
+        }
+
+        return null;
     }
 }

@@ -73,6 +73,7 @@ namespace Crest
                     {
                         // Query count does not match segment - remove it. The segment will be recreated below.
                         _segmentRegistry[segmentsToWriteThisFrame].Remove(ownerHash);
+                        Debug.Log("Query count does not match segment");
                     }
                 }
 
@@ -84,6 +85,8 @@ namespace Crest
                         Debug.LogError("Out of query data space. Try calling Compact() to reorganise query segments.");
                         return (int)QueryStatus.TooManyQueries;
                     }
+                    
+                    // Debug.Log("!segmentRetrieved");
 
                     querySegment = new int2(_lastQueryQuadIndex, _lastQueryQuadIndex + numQuads);
                     _segmentRegistry[segmentsToWriteThisFrame].Add(ownerHash, querySegment);
@@ -175,6 +178,9 @@ namespace Crest
                 }
                 return true;
             }
+
+            Debug.Log($"{_queryDataHeights._segmentRegistry[0].Count}{_queryDataHeights._segmentRegistry[0].Count}");
+                
             return false;
         }
 
@@ -543,15 +549,16 @@ namespace Crest
             // Flip data being used by queries vs data being processed by jobs
             _dataToWriteThisFrame = 1 - _dataToWriteThisFrame;
             _segmentsToWriteThisFrame = 1 - _segmentsToWriteThisFrame;
+            // Debug.Log("Flip");
 
             // Prepare for next batch of queries. Clear so that if something
             // stops querying, its allocated segment of the array is removed
-            _queryDataHeights._segmentRegistry[_segmentsToWriteThisFrame].Clear();
+            // _queryDataHeights._segmentRegistry[_segmentsToWriteThisFrame].Clear();
 
             // Line up jobs
             ScheduleJobs();
 
-            _queryDataHeights._lastQueryQuadIndex = 0;
+            // _queryDataHeights._lastQueryQuadIndex = 0;
         }
 
         public void CleanUp()

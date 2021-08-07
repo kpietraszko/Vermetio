@@ -24,14 +24,11 @@ using UnityEditorInternal;
 namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostSimulationSystemGroup))]
-    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
-    public class BuoyancySystem : SystemBase
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // probably redundant
+    public class SimpleBuoyancySystem : SystemBase
     {
         BuildPhysicsWorld _buildPhysicsWorld;
-        ExportPhysicsWorld _exportPhysicsWorld;
         EndFramePhysicsSystem _endFramePhysics;
-        GhostSimulationSystemGroup _ghostSimulationSystemGroup;
-        private float _initialHeight;
 
         private static Vector3[] _queryPoints = new Vector3[0];
         private static float[] _waterHeights = new float[0];
@@ -42,26 +39,18 @@ namespace Vermetio.Server
         protected override void OnCreate()
         {
             base.OnCreate();
-            // RequireSingletonForUpdate<WaveSpectrumComponent>();
-            // RequireSingletonForUpdate<WavelengthElement>();
-            // RequireSingletonForUpdate<WaveAmplitudeElement>();
-            // RequireSingletonForUpdate<WaveAngleElement>();
-            // RequireSingletonForUpdate<PhaseElement>();
 
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
-            _exportPhysicsWorld = World.GetOrCreateSystem<ExportPhysicsWorld>();
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
-            _ghostSimulationSystemGroup = World.GetExistingSystem<GhostSimulationSystemGroup>();
 
             // Debug.unityLogger.logEnabled = false;
         }
 
         protected override void OnUpdate()
         {
-            Debug.Log("BuoyancySystem OnUpdate");
+            Debug.Log("SimpleBuoyancySystem OnUpdate");
             var deltaTime = Time.DeltaTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
-            var physicsWorld = _buildPhysicsWorld.PhysicsWorld;
 
             Dependency = JobHandle.CombineDependencies(Dependency, _endFramePhysics.GetOutputDependency());
 
@@ -75,7 +64,7 @@ namespace Vermetio.Server
 
             if (_queryPoints?.Length != numberOfBuoyantObjects)
             {
-                Debug.Log("Array size mismatch - reallocating");
+                Debug.Log("Simple array size mismatch - reallocating");
                 _queryPoints = new Vector3[numberOfBuoyantObjects];
                 _waterHeights = new float[numberOfBuoyantObjects];
                 _normals = new Vector3[numberOfBuoyantObjects];
@@ -93,15 +82,10 @@ namespace Vermetio.Server
                 entityIndex++;
             }).Run();
 
-            // for (int i = 0; i < queryPoints.Length; i++)
-            // {
-            //     queryPoints[i] = new Vector3(allVoxels[i].x, 0f, allVoxels[i].y);
-            // }
-
             var status = collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, _normals, _velocities);
             if (!collProvider.RetrieveSucceeded(status))
             {
-                Debug.LogWarning($"Height query failed: {(CollProviderBakedFFT.QueryStatus)status}");
+                Debug.LogWarning($"Simple query failed: {(CollProviderBakedFFT.QueryStatus)status}");
                 Debug.Log($"Fail at {tick}");
                 return;
             }
@@ -122,7 +106,7 @@ namespace Vermetio.Server
 
             Entities
                 // .WithoutBurst()
-                .WithName("Apply_bouyancy")
+                .WithName("Apply_simple_buoyancy")
                 // .WithReadOnly(physicsWorld)
                 // .WithReadOnly(waterHeightsPerEntity)
                 .ForEach((Entity entity, ref Translation translation, ref PhysicsVelocity pv,
@@ -158,7 +142,7 @@ namespace Vermetio.Server
                     var buoyancy = up * buoyant.BuoyancyCoeff * bottomDepth * bottomDepth * bottomDepth;
                     // Debug.Log($"pmTransformPos: {pm.Transform.pos}");
                     pm.GetImpulseFromForce(buoyancy, ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
-                    pv.ApplyLinearImpulse(pm, impulse); // this is fucking 10 times too strong for some reason
+                    pv.ApplyLinearImpulse(pm, impulse);
 
                     // Approximate hydrodynamics of sliding along water
                     if (buoyant.AccelerateDownhill > 0f)
@@ -196,6 +180,10 @@ namespace Vermetio.Server
         }
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// Used for deep profiling when Profiler is unresponsive and you can't stop recording
+        /// </summary>
+        /// <param name="tick"></param>
         [Conditional("UNITY_EDITOR")]
         private static void ProfileFewTicks(uint tick)
         {
@@ -247,12 +235,12 @@ namespace Vermetio.Server
             Debug.DrawLine(p3, p7, Color.green, delay);
             Debug.DrawLine(p4, p8, Color.cyan, delay);
         }
-    }
-    
-    internal struct EntityWaterData
-    {
-        internal float Height;
-        internal float3 Normal;
-        internal float3 Velocity;
+        
+        private struct EntityWaterData
+        {
+            internal float Height;
+            internal float3 Normal;
+            internal float3 Velocity;
+        }
     }
 }

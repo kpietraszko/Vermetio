@@ -75,8 +75,17 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
             EngineBias = EngineBias, 
             TurnBias = TurnBias
         });
+
+        dstManager.AddBuffer<ForcePoint>(entity);
+        var forcePointsBuffer = dstManager.GetBuffer<ForcePoint>(entity);
+        
+        for (int i = 0; i < ForcePoints.Length; i++)
+        {
+            forcePointsBuffer.Add(ForcePoints[i]);
+        }
     }
 
+    #if UNITY_EDITOR
     public void OnDrawGizmos()
     {
         Handles.zTest = CompareFunction.Disabled;
@@ -94,4 +103,5 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
         Handles.color = originalColor;
         Handles.zTest = CompareFunction.Always;
     }
+    #endif
 }

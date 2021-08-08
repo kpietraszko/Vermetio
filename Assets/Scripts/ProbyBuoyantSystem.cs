@@ -50,17 +50,25 @@ namespace Vermetio.Server
 
             // _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
 
-            var collProvider = OceanRenderer.Instance.CollisionProvider;
-            var forcePointsCount = 0;
-
-            Entities.ForEach((in DynamicBuffer<ForcePoint> forcePoints) =>
+            var collProvider = OceanRenderer.Instance.CollisionProvider as CollProviderBakedFFT;
+            if (collProvider == null)
             {
-                forcePointsCount += forcePoints.Length;
+                Debug.Log("Collision type is not baked");
+                return;
+            }
+            var forcePointsCount = 0;
+            var forcePointsCountArray = new NativeArray<int>(1, Allocator.TempJob);
+
+            Entities.WithoutBurst().ForEach((in DynamicBuffer<ForcePoint> forcePoints) =>
+            {
+                forcePointsCountArray[0] += forcePoints.Length;
             }).Run();
 
-            // var entities = new NativeArray<Entity>(numberOfBuoyantObjects, Allocator.TempJob);
+            forcePointsCount = forcePointsCountArray[0];
+            forcePointsCountArray.Dispose();
 
-            if (_queryPoints?.Length != forcePointsCount)
+            // var entities = new NativeArray<Entity>(numberOfBuoyantObjects, Allocator.TempJob);
+            if (_queryPoints == null || _queryPoints.Length != forcePointsCount)
             {
                 Debug.Log("Proby array size mismatch - reallocating");
                 _queryPoints = new Vector3[forcePointsCount];
@@ -70,8 +78,11 @@ namespace Vermetio.Server
 
             var queryPointIndex = 0;
             var entitiesStartingIndex = new NativeHashMap<Entity, int>(512, Allocator.TempJob);
+            
+            var queryPointsWorldSpace = new NativeArray<Vector3>(forcePointsCount, Allocator.Temp);
 
             Entities
+                .WithName("Prepare_query_points")
                 .WithoutBurst() // rethink, this will be slow
                 .ForEach((Entity entity, in Translation translation, in Rotation rotation, in ProbyBuoyantComponent buoyantComponent, in DynamicBuffer<ForcePoint> forcePoints) =>
                 {
@@ -82,7 +93,7 @@ namespace Vermetio.Server
                     entitiesStartingIndex.Add(entity, queryPointIndex);
                     queryPointIndex += forcePoints.Length;
                 }).Run();
-
+            
             var status = collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, null, _velocities);
             if (!collProvider.RetrieveSucceeded(status))
             {
@@ -90,12 +101,12 @@ namespace Vermetio.Server
                 Debug.Log($"Fail at {tick}");
                 return;
             }
-
+            
             var waterHeights = new NativeArray<float>(_waterHeights, Allocator.TempJob);
             var waterVelocities = new NativeArray<Vector3>(_velocities, Allocator.TempJob).Reinterpret<float3>();
-
+            
             var debugDraw = _debugDraw;
-
+            
             Entities
                 .WithName("Apply_proby_buoyancy")
                 .WithReadOnly(waterHeights)
@@ -112,14 +123,14 @@ namespace Vermetio.Server
                     
                     var archimedesForceMagnitude = WATER_DENSITY * Mathf.Abs(Physics.gravity.y);
                     var totalWeight = 0f;
-
+            
                     for (int i = 0; i < forcePoints.Length; i++)
                     {
                         totalWeight += forcePoints[i].Weight;
                     }
-
+            
                     var startingIndex = entitiesStartingIndex[entity];
-
+            
                     // Apply buoyancy on force points
                     for (int i = 0; i < forcePoints.Length; i++)
                     {

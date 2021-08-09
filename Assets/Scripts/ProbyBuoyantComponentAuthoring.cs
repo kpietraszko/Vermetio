@@ -46,8 +46,8 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
 
     [Header("Drag")]
     public float DragInWaterUp;
-    public float DragInWaterRight;
-    public float DragInWaterForward;
+    // public float DragInWaterRight;
+    // public float DragInWaterForward;
     
     [Header("Control")]
     public float _enginePower = 7;
@@ -70,8 +70,8 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
             MinSpatialLength = MinSpatialLength, 
             TurningHeel = TurningHeel, 
             DragInWaterUp = DragInWaterUp, 
-            DragInWaterRight = DragInWaterRight, 
-            DragInWaterForward = DragInWaterForward, 
+            // DragInWaterRight = DragInWaterRight, 
+            // DragInWaterForward = DragInWaterForward, 
             EngineBias = EngineBias, 
             TurnBias = TurnBias
         });
@@ -97,7 +97,7 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
         {
             Handles.color = new Color(1f, 0, 0, forcePoint.Weight);
             // Gizmos.DrawSphere(transform.TransformPoint(forcePoint.Offset), 0.2f);
-            Handles.DrawWireCube(transform.TransformPoint(forcePoint.Offset), new Vector3(0.2f, 0.2f, 0.2f));
+            Handles.DrawWireCube(transform.TransformPoint(forcePoint.Offset + new float3(0f, CenterOfMass.y, 0f)), new Vector3(0.2f, 0.2f, 0.2f));
         }
 
         Handles.color = originalColor;

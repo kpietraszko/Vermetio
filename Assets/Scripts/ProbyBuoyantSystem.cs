@@ -39,7 +39,6 @@ namespace Vermetio.Server
 
         protected override void OnUpdate()
         {
-            Debug.Log("ProbyBuoyancySystem OnUpdate");
 
             var deltaTime = Time.DeltaTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
@@ -59,7 +58,7 @@ namespace Vermetio.Server
             var forcePointsCount = 0;
             var forcePointsCountArray = new NativeArray<int>(1, Allocator.TempJob);
 
-            Entities.WithoutBurst().ForEach((in DynamicBuffer<ForcePoint> forcePoints) =>
+            Entities.ForEach((in DynamicBuffer<ForcePoint> forcePoints) =>
             {
                 forcePointsCountArray[0] += forcePoints.Length;
             }).Run();
@@ -88,7 +87,8 @@ namespace Vermetio.Server
                 {
                     for (int i = 0; i < forcePoints.Length; i++)
                     {
-                        _queryPoints[queryPointIndex + i] = math.transform(new RigidTransform(rotation.Value, translation.Value), forcePoints[i].Offset);
+                        _queryPoints[queryPointIndex + i] = math.transform(new RigidTransform(rotation.Value, translation.Value), 
+                            forcePoints[i].Offset + new float3(0f, buoyantComponent.CenterOfMass.y, 0f));
                     }
                     entitiesStartingIndex.Add(entity, queryPointIndex);
                     queryPointIndex += forcePoints.Length;
@@ -109,6 +109,7 @@ namespace Vermetio.Server
             
             Entities
                 .WithName("Apply_proby_buoyancy")
+                // .WithoutBurst()
                 .WithReadOnly(waterHeights)
                 .WithReadOnly(waterVelocities)
                 .WithDisposeOnCompletion(waterHeights)
@@ -135,10 +136,15 @@ namespace Vermetio.Server
                     for (int i = 0; i < forcePoints.Length; i++)
                     {
                         var waterHeight = waterHeights[startingIndex + i];
-                        var worldSpaceForcePoint = math.transform(new RigidTransform(rotation.Value, translation.Value), forcePoints[i].Offset);
+                        var worldSpaceForcePoint = math.transform(new RigidTransform(rotation.Value, translation.Value), 
+                            forcePoints[i].Offset + new float3(0f, buoyant.CenterOfMass.y, 0f));
+                        
+                        worldSpaceForcePoint.DrawCross(0.2f, Color.green, 1/30f);
+                        new float3(worldSpaceForcePoint.x, waterHeight, worldSpaceForcePoint.z).DrawCross(0.2f, Color.red, 1/30f);
                         var heightDiff = waterHeight - worldSpaceForcePoint.y; // TODO: query point or force point?
                         if (heightDiff > 0)
                         {
+                            // Debug.Log($"worldSpaceForcePoint: {worldSpaceForcePoint} translation: {translation.Value} rotation: {rotation.Value}");
                             pm.GetImpulseFromForce(archimedesForceMagnitude * heightDiff * Vector3.up * forcePoints[i].Weight * buoyant.ForceMultiplier / totalWeight, 
                                 ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
                             pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceForcePoint); // TODO: transform to world space?
@@ -150,7 +156,7 @@ namespace Vermetio.Server
                     var forcePosition = math.transform(new RigidTransform(rotation.Value, translation.Value), buoyant.ForceHeightOffset * up); // should be ok?
                     pm.GetImpulseFromForce(up * math.dot(up, -velocityRelativeToWater) * buoyant.DragInWaterUp, ForceMode.Acceleration, deltaTime, out var dragImpulse, out var dragImpulseMass);
                     pv.ApplyImpulse(dragImpulseMass, translation, rotation, dragImpulse, forcePosition);
-                }).Schedule();
+                }).Run();
             
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
         }

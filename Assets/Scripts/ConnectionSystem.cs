@@ -45,7 +45,7 @@ public class ConnectionSystem : SystemBase
                 {
                     SimulationTickRate = 30,
                     NetworkTickRate = 30,
-                    MaxSimulationStepsPerFrame = 1
+                    MaxSimulationStepsPerFrame = 4
                 });
 
                 // Server world automatically listens for connections from any host
@@ -65,7 +65,7 @@ public class ConnectionSystem : SystemBase
             {
                 SimulationTickRate = 30,
                 NetworkTickRate = 30, 
-                MaxSimulationStepsPerFrame = 1
+                MaxSimulationStepsPerFrame = 4
             });
                 
             // Client worlds automatically connect to localhost

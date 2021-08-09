@@ -34,6 +34,10 @@ public class TimeProvider : TimeProviderBase
 #endif
             _delta = value - _previousTime;
             _previousTime = value;
+            // if (Math.Abs(value % 1) < DeltaTime / 2f)
+            // {
+            //     Debug.Log($"TP: {value} U: {Time.time}");
+            // }
             return value;
         }
     }

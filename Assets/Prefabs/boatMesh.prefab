@@ -240,50 +240,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccbf43655a1610946b24a03a69901a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CenterOfMass: {x: 0, y: 0.55, z: 0}
+  CenterOfMass: {x: 0, y: 0.31, z: 0}
   ForcePoints:
   - Weight: 1
     Offset:
       x: 0.47
-      y: 0.11
-      z: 1.79
+      y: 0.51
+      z: 1.54
   - Weight: 1
     Offset:
       x: -0.47
-      y: 0.11
-      z: 1.79
+      y: 0.51
+      z: 1.54
   - Weight: 1
     Offset:
       x: 0.47
-      y: 0.11
-      z: 0.78
+      y: 0.51
+      z: 0.58
   - Weight: 1
     Offset:
       x: -0.47
-      y: 0.11
-      z: 0.78
+      y: 0.51
+      z: 0.58
   - Weight: 1
     Offset:
       x: 0.47
-      y: 0.11
-      z: -0.51
+      y: 0.51
+      z: -0.54
   - Weight: 1
     Offset:
       x: -0.47
-      y: 0.11
-      z: -0.51
+      y: 0.51
+      z: -0.54
   - Weight: 1
     Offset:
       x: 0.47
-      y: 0.11
+      y: 0.51
       z: -1.57
   - Weight: 1
     Offset:
       x: -0.47
-      y: 0.11
+      y: 0.51
       z: -1.57
   ForceHeightOffset: 0
-  ForceMultiplier: 8
+  ForceMultiplier: 6
   MinSpatialLength: 8
   TurningHeel: 0.35
   DragInWaterUp: 3

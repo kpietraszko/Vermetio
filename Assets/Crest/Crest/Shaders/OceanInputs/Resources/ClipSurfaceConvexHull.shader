@@ -18,6 +18,7 @@ Shader "Crest/Inputs/Clip Surface/Convex Hull"
 			CGPROGRAM
 			#pragma vertex Vert
 			#pragma fragment Frag
+			#pragma multi_compile _ DOTS_INSTANCING_ON
 
 			#include "UnityCG.cginc"
 			#include "../../OceanGlobals.hlsl"
@@ -78,6 +79,7 @@ Shader "Crest/Inputs/Clip Surface/Convex Hull"
 			CGPROGRAM
 			#pragma vertex Vert
 			#pragma fragment Frag
+			#pragma multi_compile _ DOTS_INSTANCING_ON
 
 			#include "UnityCG.cginc"
 			#include "../../OceanGlobals.hlsl"

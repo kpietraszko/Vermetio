@@ -8,22 +8,53 @@ using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateInGroup(typeof(ServerSimulationSystemGroup))]
-public class GoInGameServerSystem : SystemBase
+namespace Vermetio.Server
 {
-    protected override void OnUpdate()
+    [UpdateInGroup(typeof(ServerSimulationSystemGroup))]
+    public class GoInGameServerSystem : SystemBase
     {
-        var ecb = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<ConnectionSystem.GoInGameRequest>(), ComponentType.ReadOnly<ReceiveRpcCommandRequestComponent>()));
+        }
 
-        Entities.WithNone<SendRpcCommandRequestComponent>().ForEach(
-            (Entity reqEnt, ref ConnectionSystem.GoInGameRequest req,
-                ref ReceiveRpcCommandRequestComponent reqSrc) =>
+        protected override void OnUpdate()
+        {
+            var ecb = new EntityCommandBuffer(Allocator.Temp);
+
+            var boatPrefab = GetGhostPrefab<ProbyBuoyantComponent>();
+            var networkIdFromEntity = GetComponentDataFromEntity<NetworkIdComponent>(true);
+
+            Entities
+                .WithReadOnly(networkIdFromEntity)
+                .WithNone<SendRpcCommandRequestComponent>()
+                .ForEach((Entity reqEnt, ref ConnectionSystem.GoInGameRequest req,
+                    ref ReceiveRpcCommandRequestComponent reqSrc) =>
+                {
+                    ecb.AddComponent<NetworkStreamInGame>(reqSrc.SourceConnection);
+                    Debug.Log(String.Format("Server setting connection {0} to in game", GetComponent<NetworkIdComponent>(reqSrc.SourceConnection).Value));
+                    var player = ecb.Instantiate(boatPrefab);
+                    ecb.SetComponent(player, new GhostOwnerComponent { NetworkId = networkIdFromEntity[reqSrc.SourceConnection].Value});
+                    ecb.AddBuffer<BoatInput>(player);
+                    ecb.SetComponent(reqSrc.SourceConnection, new CommandTargetComponent {targetEntity = player});
+                    ecb.DestroyEntity(reqEnt);
+                }).Run();
+
+            ecb.Playback(EntityManager);
+        }
+
+        private Entity GetGhostPrefab<T>() where T : struct
+        {
+            var ghostCollection = GetSingletonEntity<GhostPrefabCollectionComponent>();
+            var prefabs = EntityManager.GetBuffer<GhostPrefabBuffer>(ghostCollection);
+            for (int ghostId = 0; ghostId < prefabs.Length; ++ghostId)
             {
-                ecb.AddComponent<NetworkStreamInGame>(reqSrc.SourceConnection);
-                Debug.Log(String.Format("Server setting connection {0} to in game",
-                    GetComponent<NetworkIdComponent>(reqSrc.SourceConnection).Value));
-                ecb.DestroyEntity(reqEnt);
-            }).Run();
-        
+                if (EntityManager.HasComponent<T>(prefabs[ghostId].Value))
+                    return prefabs[ghostId].Value;
+            }
+
+            return Entity.Null;
+        }
     }
 }

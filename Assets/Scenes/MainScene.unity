@@ -1019,7 +1019,7 @@ MonoBehaviour:
   _simSettingsFlow: {fileID: 0}
   _createShadowData: 1
   _simSettingsShadow: {fileID: 11400000, guid: 6e32e00f311f23145b8ff14a38aadbbe, type: 2}
-  _createClipSurfaceData: 0
+  _createClipSurfaceData: 1
   _defaultClippingState: 0
   _showOceanProxyPlane: 0
   _editModeFPS: 30
@@ -1913,7 +1913,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &5373299075013654257
 MonoBehaviour:
   m_ObjectHideFlags: 0

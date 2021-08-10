@@ -25,6 +25,7 @@ namespace Vermetio.Server
 
             var boatPrefab = GetGhostPrefab<ProbyBuoyantComponent>();
             var networkIdFromEntity = GetComponentDataFromEntity<NetworkIdComponent>(true);
+            var rnd = new Unity.Mathematics.Random((uint)DateTime.Now.Millisecond * 1500000000u);
 
             Entities
                 .WithReadOnly(networkIdFromEntity)
@@ -35,6 +36,10 @@ namespace Vermetio.Server
                     ecb.AddComponent<NetworkStreamInGame>(reqSrc.SourceConnection);
                     Debug.Log(String.Format("Server setting connection {0} to in game", GetComponent<NetworkIdComponent>(reqSrc.SourceConnection).Value));
                     var player = ecb.Instantiate(boatPrefab);
+                    var y = GetComponent<Translation>(boatPrefab).Value.y;
+                    var randomPosition = rnd.NextFloat3(new float3(-215, y, -331), new float3(280, y, -107)); //new float3(rnd.NextFloat(-215, 280), y, rnd.NextFloat(-331, -107));
+                    Debug.Log($"{randomPosition}");
+                    ecb.SetComponent(player, new Translation() {Value = randomPosition});
                     ecb.SetComponent(player, new GhostOwnerComponent { NetworkId = networkIdFromEntity[reqSrc.SourceConnection].Value});
                     ecb.AddBuffer<BoatInput>(player);
                     ecb.SetComponent(reqSrc.SourceConnection, new CommandTargetComponent {targetEntity = player});

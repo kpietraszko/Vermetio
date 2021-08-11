@@ -10,6 +10,7 @@ public class DummyProxyHybridAuthoring : MonoBehaviour, IConvertGameObjectToEnti
     {
         // #if UNITY_CLIENT
         conversionSystem.AddHybridComponent(this);
+        Debug.Log("Added dummy proxy hybrid component");
         // #endif
     }
 }

@@ -83,18 +83,18 @@ namespace Vermetio.Server
             Entities
                 .WithName("Prepare_query_points")
                 .WithoutBurst() // rethink, this will be slow
-                .ForEach((Entity entity, in Translation translation, in Rotation rotation, in ProbyBuoyantComponent buoyantComponent, in DynamicBuffer<ForcePoint> forcePoints) =>
+                .ForEach((Entity entity, in LocalToWorld localToWorld, in ProbyBuoyantComponent buoyantComponent, in DynamicBuffer<ForcePoint> forcePoints) =>
                 {
                     for (int i = 0; i < forcePoints.Length; i++)
                     {
-                        _queryPoints[queryPointIndex + i] = math.transform(new RigidTransform(rotation.Value, translation.Value), 
+                        _queryPoints[queryPointIndex + i] = math.transform(localToWorld.Value, 
                             forcePoints[i].Offset + new float3(0f, buoyantComponent.CenterOfMass.y, 0f));
                     }
                     
                     entitiesStartingIndex.Add(entity, queryPointIndex);
                     queryPointIndex += forcePoints.Length;
                     
-                    _queryPoints[queryPointIndex] = math.transform(new RigidTransform(rotation.Value, translation.Value), buoyantComponent.CenterOfMass);
+                    _queryPoints[queryPointIndex] = math.transform(localToWorld.Value, buoyantComponent.CenterOfMass);
                     queryPointIndex++;
                 }).Run();
             
@@ -140,7 +140,7 @@ namespace Vermetio.Server
                     for (int i = 0; i < forcePoints.Length; i++)
                     {
                         var waterHeight = waterHeights[startingIndex + i];
-                        var worldSpaceForcePoint = math.transform(new RigidTransform(rotation.Value, translation.Value), 
+                        var worldSpaceForcePoint = math.transform(localToWorld.Value, 
                             forcePoints[i].Offset + new float3(0f, buoyant.CenterOfMass.y, 0f));
 
                         if (debugDraw)
@@ -161,8 +161,13 @@ namespace Vermetio.Server
                     }
                     
                     // Apply drag relative to water
-                    var velocityRelativeToWater = pv.Linear - waterVelocities[startingIndex + forcePoints.Length]; // uses last force point, which is COM - see Prepare_query_points
-                    var forcePosition = math.transform(new RigidTransform(rotation.Value, translation.Value), buoyant.ForceHeightOffset * up); // should be ok?
+                    var lastForcePointIndex = startingIndex + forcePoints.Length; // this is actually COM
+                    var waterHeightAtCom = waterHeights[lastForcePointIndex];
+                    if (math.transform(localToWorld.Value, buoyant.CenterOfMass).y > waterHeightAtCom)
+                        return; // don't apply drag if COM is above water, might be weird, but it should be rare
+                    
+                    var velocityRelativeToWater = pv.Linear - waterVelocities[lastForcePointIndex]; // uses last force point, which is COM - see Prepare_query_points
+                    var forcePosition = math.transform(localToWorld.Value, buoyant.ForceHeightOffset * up); // should be ok?
                     pm.GetImpulseFromForce(up * math.dot(up, -velocityRelativeToWater) * buoyant.DragInWaterUp, ForceMode.Acceleration, deltaTime, out var dragImpulse, out var dragImpulseMass);
                     pv.ApplyImpulse(dragImpulseMass, translation, rotation, dragImpulse, forcePosition);
                 }).Run();

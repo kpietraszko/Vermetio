@@ -13,9 +13,11 @@ public class SyncPlayerPositionToProxySystem : SystemBase
     protected override void OnUpdate()
     {
         float3 playerPosition = default;
-        var thisClientNetworkId = GetSingleton<NetworkIdComponent>().Value;
+        if (!TryGetSingleton<NetworkIdComponent>(out var thisClientNetworkId))
+            return;
+        
         Entities.ForEach((ref Translation translation, in GhostOwnerComponent ghostOwner) => {
-            if (ghostOwner.NetworkId == thisClientNetworkId)
+            if (ghostOwner.NetworkId == thisClientNetworkId.Value)
             {
                 playerPosition = translation.Value;
                 // Debug.Log($"Retrieved {playerPosition}");

@@ -48,7 +48,6 @@ namespace Vermetio.Server
 
         protected override void OnUpdate()
         {
-            Debug.Log("SimpleBuoyancySystem OnUpdate");
             var deltaTime = Time.DeltaTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
 

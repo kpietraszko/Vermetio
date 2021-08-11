@@ -60,7 +60,7 @@ namespace Vermetio.Server
 
             Entities.ForEach((in DynamicBuffer<ForcePoint> forcePoints) =>
             {
-                forcePointsCountArray[0] += forcePoints.Length;
+                forcePointsCountArray[0] += forcePoints.Length + 1; // 1 because I'm also adding Translation (or COM?) as an additional force point
             }).Run();
 
             forcePointsCount = forcePointsCountArray[0];
@@ -90,8 +90,12 @@ namespace Vermetio.Server
                         _queryPoints[queryPointIndex + i] = math.transform(new RigidTransform(rotation.Value, translation.Value), 
                             forcePoints[i].Offset + new float3(0f, buoyantComponent.CenterOfMass.y, 0f));
                     }
+                    
                     entitiesStartingIndex.Add(entity, queryPointIndex);
                     queryPointIndex += forcePoints.Length;
+                    
+                    _queryPoints[queryPointIndex] = math.transform(new RigidTransform(rotation.Value, translation.Value), buoyantComponent.CenterOfMass);
+                    queryPointIndex++;
                 }).Run();
             
             var status = collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, null, _velocities);
@@ -147,12 +151,13 @@ namespace Vermetio.Server
                             // Debug.Log($"worldSpaceForcePoint: {worldSpaceForcePoint} translation: {translation.Value} rotation: {rotation.Value}");
                             pm.GetImpulseFromForce(archimedesForceMagnitude * heightDiff * Vector3.up * forcePoints[i].Weight * buoyant.ForceMultiplier / totalWeight, 
                                 ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
+                            Debug.DrawLine(worldSpaceForcePoint, worldSpaceForcePoint + (impulse/6f));
                             pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceForcePoint); // TODO: transform to world space?
                         }
                     }
                     
                     // Apply drag relative to water
-                    var velocityRelativeToWater = pv.Linear - waterVelocities[startingIndex]; // note: this means drag depends on velocity at first force point
+                    var velocityRelativeToWater = pv.Linear - waterVelocities[startingIndex + forcePoints.Length]; // uses last force point, which is COM - see Prepare_query_points
                     var forcePosition = math.transform(new RigidTransform(rotation.Value, translation.Value), buoyant.ForceHeightOffset * up); // should be ok?
                     pm.GetImpulseFromForce(up * math.dot(up, -velocityRelativeToWater) * buoyant.DragInWaterUp, ForceMode.Acceleration, deltaTime, out var dragImpulse, out var dragImpulseMass);
                     pv.ApplyImpulse(dragImpulseMass, translation, rotation, dragImpulse, forcePosition);

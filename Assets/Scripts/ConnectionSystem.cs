@@ -51,7 +51,7 @@ public class ConnectionSystem : SystemBase
                 // Server world automatically listens for connections from any host
                 NetworkEndPoint ep = NetworkEndPoint.AnyIpv4;
                 ep.Port = 7979;
-                Debug.Log("Listening...");
+                Debug.Log("Listening... DSGFDOSGMJOFIS");
                 network.Listen(ep);
             #endif
         }

@@ -25,7 +25,7 @@ namespace Vermetio.Server
         private static Vector3[] _queryPoints = new Vector3[0];
         private static float[] _waterHeights = new float[0];
         private static Vector3[] _velocities = new Vector3[0];
-        private static bool _debugDraw = false;
+        private static bool _debugDraw = true;
         
         private const float WATER_DENSITY = 1000;
 
@@ -135,23 +135,27 @@ namespace Vermetio.Server
                     }
             
                     var startingIndex = entitiesStartingIndex[entity];
-            
+
                     // Apply buoyancy on force points
                     for (int i = 0; i < forcePoints.Length; i++)
                     {
                         var waterHeight = waterHeights[startingIndex + i];
                         var worldSpaceForcePoint = math.transform(new RigidTransform(rotation.Value, translation.Value), 
                             forcePoints[i].Offset + new float3(0f, buoyant.CenterOfMass.y, 0f));
+
+                        if (debugDraw)
+                        {
+                            worldSpaceForcePoint.DrawCross(0.2f, Color.green, 1/30f);
+                            new float3(worldSpaceForcePoint.x, waterHeight, worldSpaceForcePoint.z).DrawCross(0.2f, Color.red, 1/30f);
+                        }
                         
-                        worldSpaceForcePoint.DrawCross(0.2f, Color.green, 1/30f);
-                        new float3(worldSpaceForcePoint.x, waterHeight, worldSpaceForcePoint.z).DrawCross(0.2f, Color.red, 1/30f);
                         var heightDiff = waterHeight - worldSpaceForcePoint.y; // TODO: query point or force point?
                         if (heightDiff > 0)
                         {
                             // Debug.Log($"worldSpaceForcePoint: {worldSpaceForcePoint} translation: {translation.Value} rotation: {rotation.Value}");
                             pm.GetImpulseFromForce(archimedesForceMagnitude * heightDiff * Vector3.up * forcePoints[i].Weight * buoyant.ForceMultiplier / totalWeight, 
                                 ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
-                            Debug.DrawLine(worldSpaceForcePoint, worldSpaceForcePoint + (impulse/6f));
+                            // Debug.DrawLine(worldSpaceForcePoint, worldSpaceForcePoint + (impulse/6f));
                             pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceForcePoint); // TODO: transform to world space?
                         }
                     }

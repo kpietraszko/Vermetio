@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4605250775463491147}
-  - component: {fileID: 919132148771463698}
-  - component: {fileID: 919132148771463697}
   - component: {fileID: 1474948108}
   - component: {fileID: 1870413638185650884}
   - component: {fileID: -7507076930631550000}
+  - component: {fileID: 7080100710320042896}
+  - component: {fileID: 6342971183704470345}
   m_Layer: 0
   m_Name: boatMesh
   m_TagString: Untagged
@@ -36,7 +36,127 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &919132148771463698
+--- !u!114 &1474948108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3792861578683460849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccbf43655a1610946b24a03a69901a44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CenterOfMass: {x: 0, y: 0.25, z: 0}
+  ForcePoints:
+  - Weight: 1
+    Offset:
+      x: 0.9
+      y: 0
+      z: 1.93
+  - Weight: 1
+    Offset:
+      x: -0.9
+      y: 0
+      z: 1.93
+  - Weight: 1
+    Offset:
+      x: 0.9
+      y: 0
+      z: 0.58
+  - Weight: 1
+    Offset:
+      x: -0.9
+      y: 0
+      z: 0.58
+  - Weight: 1
+    Offset:
+      x: 0.9
+      y: 0
+      z: -0.68
+  - Weight: 1
+    Offset:
+      x: -0.9
+      y: 0
+      z: -0.68
+  - Weight: 1
+    Offset:
+      x: 0.9
+      y: 0
+      z: -1.99
+  - Weight: 1
+    Offset:
+      x: -0.9
+      y: 0
+      z: -1.99
+  - Weight: 1
+    Offset:
+      x: 0
+      y: 0
+      z: 1.93
+  - Weight: 1
+    Offset:
+      x: 0
+      y: 0
+      z: 0.58
+  - Weight: 1
+    Offset:
+      x: 0
+      y: 0
+      z: -0.68
+  - Weight: 1
+    Offset:
+      x: 0
+      y: 0
+      z: -1.99
+  ForceHeightOffset: 0
+  ForceMultiplier: 6
+  MinSpatialLength: 4
+  TurningHeel: 0.35
+  DragInWaterUp: 3
+  _enginePower: 5
+  _turnPower: 0.5
+  _playerControlled: 1
+  EngineBias: 0
+  TurnBias: 0
+--- !u!114 &1870413638185650884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3792861578683460849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c79d771cedb4794bf100ce60df5f764, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ForcePrefabConversion: 0
+  DefaultGhostMode: 0
+  SupportedGhostModes: 3
+  OptimizationMode: 0
+  Importance: 1
+  prefabId: cab6b01cb88e7b84a87d274192e818e2
+  Name: 
+  RefGameObjects: []
+  ComponentNames: []
+  PrefabTypeOverrides: []
+  SendTypeOverrides: []
+  VariantOverrides: []
+--- !u!114 &-7507076930631550000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3792861578683460849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1fea7091bb9848b191c018d3718ec0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7080100710320042896
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -52,7 +172,7 @@ MonoBehaviour:
   m_Smoothing: 0
   m_Mass: 5000
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 2
   m_InitialLinearVelocity:
     x: 0
     y: 0
@@ -86,7 +206,7 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
---- !u!114 &919132148771463697
+--- !u!114 &6342971183704470345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,12 +221,12 @@ MonoBehaviour:
   m_ShapeType: 1
   m_PrimitiveCenter:
     x: 0
-    y: 1.14
+    y: 0.76
     z: 0
   m_PrimitiveSize:
-    x: 2.4611895
-    y: 2.4611895
-    z: 5.9747806
+    x: 1.76
+    y: 1.76
+    z: 4.833164
   m_PrimitiveOrientation:
     Value:
       x: 0
@@ -114,21 +234,21 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 5.9747806
-    Radius: 1.2305948
+    Height: 4.833164
+    Radius: 0.88
     Axis: 2
   m_Cylinder:
-    Height: 5.9747806
-    Radius: 1.2305948
+    Height: 4.833164
+    Radius: 0.88
     Axis: 2
   m_CylinderSideCount: 20
-  m_SphereRadius: 2.9873903
+  m_SphereRadius: 2.416582
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.015
     m_BevelRadius: 0.05
     m_MinimumAngle: 2.5000002
-  m_CustomMesh: {fileID: 8536425139288874787, guid: 3bf353e1376429c438073f0214e9fff1, type: 3}
+  m_CustomMesh: {fileID: 0}
   m_ForceUnique: 0
   m_Material:
     m_SupportsTemplate: 1
@@ -229,106 +349,6 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
---- !u!114 &1474948108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3792861578683460849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccbf43655a1610946b24a03a69901a44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CenterOfMass: {x: 0, y: 0.31, z: 0}
-  ForcePoints:
-  - Weight: 1
-    Offset:
-      x: 1.3
-      y: 0.51
-      z: 2.39
-  - Weight: 1
-    Offset:
-      x: -1.3
-      y: 0.51
-      z: 2.39
-  - Weight: 1
-    Offset:
-      x: 1.3
-      y: 0.51
-      z: 0.58
-  - Weight: 1
-    Offset:
-      x: -1.3
-      y: 0.51
-      z: 0.58
-  - Weight: 1
-    Offset:
-      x: 1.3
-      y: 0.51
-      z: -0.54
-  - Weight: 1
-    Offset:
-      x: -1.3
-      y: 0.51
-      z: -0.54
-  - Weight: 1
-    Offset:
-      x: 1.3
-      y: 0.51
-      z: -1.99
-  - Weight: 1
-    Offset:
-      x: -1.3
-      y: 0.51
-      z: -1.99
-  ForceHeightOffset: 0
-  ForceMultiplier: 6
-  MinSpatialLength: 8
-  TurningHeel: 0.35
-  DragInWaterUp: 2
-  _enginePower: 7
-  _turnPower: 0.5
-  _playerControlled: 1
-  EngineBias: 0
-  TurnBias: 0
---- !u!114 &1870413638185650884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3792861578683460849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c79d771cedb4794bf100ce60df5f764, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ForcePrefabConversion: 0
-  DefaultGhostMode: 0
-  SupportedGhostModes: 3
-  OptimizationMode: 0
-  Importance: 1
-  prefabId: cab6b01cb88e7b84a87d274192e818e2
-  Name: 
-  RefGameObjects: []
-  ComponentNames: []
-  PrefabTypeOverrides: []
-  SendTypeOverrides: []
-  VariantOverrides: []
---- !u!114 &-7507076930631550000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3792861578683460849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1fea7091bb9848b191c018d3718ec0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6209344250265291949
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,13 +374,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6209344250265291949}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0.03275172, z: -0.027600665}
-  m_LocalScale: {x: 1.3691181, y: 1.3691181, z: 1.3691181}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4605250775463491147}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &2652032056578392906
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.NetCode;
+using Unity.Transforms;
 using UnityEngine;
 
 public class CopyPlayerPositionToProxy : MonoBehaviour
@@ -13,7 +15,24 @@ public class CopyPlayerPositionToProxy : MonoBehaviour
         if (world == null)
             return;
 
-        world.EntityManager.CreateEntityQuery(typeof(NetworkIdComponent)).ToComponentDataArray<NetworkIdComponent>()
+        var networkIdComponents = world.EntityManager.CreateEntityQuery(typeof(NetworkIdComponent))
+            .ToComponentDataArray<NetworkIdComponent>(Allocator.Temp);
+
+        if (networkIdComponents.Length != 1)
+            return;
+
+        var entities = world.EntityManager.CreateEntityQuery(typeof(Translation), typeof(GhostOwnerComponent))
+            .ToEntityArray(Allocator.Temp);
+
+        for (int i = 0; i < entities.Length; i++)
+        {
+            if (world.EntityManager.GetComponentData<GhostOwnerComponent>(entities[i]).NetworkId != networkIdComponents[0].Value) // if this isn't the current client's boat
+                continue;
+
+            var playerPosition = world.EntityManager.GetComponentData<Translation>(entities[i]).Value;
+            transform.position = playerPosition;
+            return;
+        }
     }
     
     private World GetWorldWith<T>(World.NoAllocReadOnlyCollection<World> worlds) where T : ComponentSystemBase

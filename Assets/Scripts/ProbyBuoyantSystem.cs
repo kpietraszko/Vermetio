@@ -77,8 +77,6 @@ namespace Vermetio.Server
 
             var queryPointIndex = 0;
             var entitiesStartingIndex = new NativeHashMap<Entity, int>(512, Allocator.TempJob);
-            
-            var queryPointsWorldSpace = new NativeArray<Vector3>(forcePointsCount, Allocator.Temp);
 
             Entities
                 .WithName("Prepare_query_points")
@@ -103,6 +101,7 @@ namespace Vermetio.Server
             {
                 Debug.LogWarning($"Proby query failed: {(CollProviderBakedFFT.QueryStatus) status}");
                 Debug.Log($"Fail at {tick}");
+                entitiesStartingIndex.Dispose();
                 return;
             }
             
@@ -116,8 +115,10 @@ namespace Vermetio.Server
                 // .WithoutBurst()
                 .WithReadOnly(waterHeights)
                 .WithReadOnly(waterVelocities)
+                .WithReadOnly(entitiesStartingIndex)
                 .WithDisposeOnCompletion(waterHeights)
                 .WithDisposeOnCompletion(waterVelocities)
+                .WithDisposeOnCompletion(entitiesStartingIndex)
                 .ForEach((Entity entity, ref Translation translation, ref PhysicsVelocity pv,
                     ref ProbyBuoyantComponent buoyant, ref PhysicsMass pm, in LocalToWorld localToWorld, 
                     in Rotation rotation, in DynamicBuffer<ForcePoint> forcePoints) =>

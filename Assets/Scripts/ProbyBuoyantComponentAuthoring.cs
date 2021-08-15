@@ -19,6 +19,8 @@ public struct ProbyBuoyantComponent : IComponentData
     public float DragInWaterUp;
     public float DragInWaterRight;
     public float DragInWaterForward;
+    public float EnginePower;
+    public float TurnPower;
     public float EngineBias;
     public float TurnBias;
 }
@@ -50,9 +52,9 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
     // public float DragInWaterForward;
     
     [Header("Control")]
-    public float _enginePower = 7;
-    public float _turnPower = 0.5f;
-    public bool _playerControlled = true;
+    public float EnginePower = 7;
+    public float TurnPower = 0.5f;
+    public bool PlayerControlled = true;
     
     [Tooltip("Used to automatically add throttle input")]
     public float EngineBias;
@@ -72,6 +74,8 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
             DragInWaterUp = DragInWaterUp, 
             // DragInWaterRight = DragInWaterRight, 
             // DragInWaterForward = DragInWaterForward, 
+            EnginePower = EnginePower, 
+            TurnPower = TurnPower, 
             EngineBias = EngineBias, 
             TurnBias = TurnBias
         });

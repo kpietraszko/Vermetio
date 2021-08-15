@@ -14,6 +14,8 @@ public class CopyPlayerPositionToProxy : MonoBehaviour
         var world = GetWorldWith<ClientSimulationSystemGroup>(World.All);
         if (world == null)
             return;
+        
+        // TODO: cache both queries, because creating them allocates 0.5 kB (might not matter) 
 
         var networkIdComponents = world.EntityManager.CreateEntityQuery(typeof(NetworkIdComponent))
             .ToComponentDataArray<NetworkIdComponent>(Allocator.Temp);

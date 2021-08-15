@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -7507076930631550000}
   - component: {fileID: 7080100710320042896}
   - component: {fileID: 6342971183704470345}
+  - component: {fileID: -4777543087066076531}
   m_Layer: 0
   m_Name: boatMesh
   m_TagString: Untagged
@@ -48,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccbf43655a1610946b24a03a69901a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CenterOfMass: {x: 0, y: 0.25, z: 0}
+  CenterOfMass: {x: 0, y: -0.25, z: 0}
   ForcePoints:
   - Weight: 1
     Offset:
@@ -115,9 +116,9 @@ MonoBehaviour:
   MinSpatialLength: 4
   TurningHeel: 0.35
   DragInWaterUp: 3
-  _enginePower: 5
-  _turnPower: 0.5
-  _playerControlled: 1
+  EnginePower: 1
+  TurnPower: 0.5
+  PlayerControlled: 1
   EngineBias: 0
   TurnBias: 0
 --- !u!114 &1870413638185650884
@@ -221,11 +222,11 @@ MonoBehaviour:
   m_ShapeType: 1
   m_PrimitiveCenter:
     x: 0
-    y: 0.76
+    y: 0
     z: 0
   m_PrimitiveSize:
-    x: 1.76
-    y: 1.76
+    x: 1.0627494
+    y: 1.0627494
     z: 4.833164
   m_PrimitiveOrientation:
     Value:
@@ -235,11 +236,11 @@ MonoBehaviour:
     RotationOrder: 4
   m_Capsule:
     Height: 4.833164
-    Radius: 0.88
+    Radius: 0.5313747
     Axis: 2
   m_Cylinder:
     Height: 4.833164
-    Radius: 0.88
+    Radius: 0.5313747
     Axis: 2
   m_CylinderSideCount: 20
   m_SphereRadius: 2.416582
@@ -349,6 +350,18 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
+--- !u!114 &-4777543087066076531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3792861578683460849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f82709671fa0841468b8d229c9e80c1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6209344250265291949
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,7 +388,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6209344250265291949}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0.03275172, z: -0.027600665}
+  m_LocalPosition: {x: -0, y: -0.5472483, z: -0.027600665}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4605250775463491147}

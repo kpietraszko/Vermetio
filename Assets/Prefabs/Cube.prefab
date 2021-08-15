@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 9214445237988180827}
   - component: {fileID: 8080581829221530458}
   - component: {fileID: 895779231170848824}
+  - component: {fileID: -5937910058129836100}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -335,3 +336,15 @@ MonoBehaviour:
   DragInWaterForward: 1
   BouyancyTorque: 8
   DragInWaterRotational: 0.2
+--- !u!114 &-5937910058129836100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8520222691718690185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c941d046360ef384cad8546735c18092, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

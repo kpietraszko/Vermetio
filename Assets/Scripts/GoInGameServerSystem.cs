@@ -41,7 +41,7 @@ namespace Vermetio.Server
                     Debug.Log($"{randomPosition}");
                     ecb.SetComponent(player, new Translation() {Value = randomPosition});
                     ecb.SetComponent(player, new GhostOwnerComponent { NetworkId = networkIdFromEntity[reqSrc.SourceConnection].Value});
-                    ecb.AddBuffer<BoatInput>(player);
+                    ecb.AddBuffer<BoatKeyboardInput>(player);
                     ecb.SetComponent(reqSrc.SourceConnection, new CommandTargetComponent {targetEntity = player});
                     ecb.DestroyEntity(reqEnt);
                 }).Run();

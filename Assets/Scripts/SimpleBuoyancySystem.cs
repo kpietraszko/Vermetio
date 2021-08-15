@@ -86,6 +86,7 @@ namespace Vermetio.Server
             {
                 Debug.LogWarning($"Simple query failed: {(CollProviderBakedFFT.QueryStatus)status}");
                 Debug.Log($"Fail at {tick}");
+                entities.Dispose();
                 return;
             }
             
@@ -101,13 +102,16 @@ namespace Vermetio.Server
                 });
             };
 
+            entities.Dispose();
+
             var debugDraw = _debugDraw;
 
             Entities
                 // .WithoutBurst()
                 .WithName("Apply_simple_buoyancy")
                 // .WithReadOnly(physicsWorld)
-                // .WithReadOnly(waterHeightsPerEntity)
+                .WithReadOnly(waterDataPerEntity)
+                .WithDisposeOnCompletion(waterDataPerEntity)
                 .ForEach((Entity entity, ref Translation translation, ref PhysicsVelocity pv,
                     ref SimpleBuoyantComponent buoyant, in LocalToWorld localToWorld, 
                     in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col) =>
@@ -173,7 +177,7 @@ namespace Vermetio.Server
                         Debug.DrawLine(translation.Value + 5f * float3(0,1f,0), translation.Value + 5f * float3(0,1f,0) + waterData.Velocity,
                             new Color(1, 1, 1, 0.6f));
                     }
-                }).Schedule();
+                }).ScheduleParallel();
 
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
         }

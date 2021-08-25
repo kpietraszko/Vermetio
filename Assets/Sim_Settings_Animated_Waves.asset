@@ -18,4 +18,4 @@ MonoBehaviour:
   _maxQueryCount: 4096
   _pingPongCombinePass: 1
   _renderTextureGraphicsFormat: 48
-  _bakedFFTData: {fileID: 11400000, guid: bfa28c59fa54f4744883c7d5e97f95fe, type: 2}
+  _bakedFFTData: {fileID: 11400000, guid: f8353e96077e3d14e832455afc28978e, type: 2}

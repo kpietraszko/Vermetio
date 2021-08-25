@@ -17,4 +17,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainScene/Wave.unity
     guid: beb7da61f22359844bdf6b711e1189b4
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 785f3684abf80e043adf46a903ccb8ae, type: 2}

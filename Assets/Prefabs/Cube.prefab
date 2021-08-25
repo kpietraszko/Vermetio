@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 8520222691718690185}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -49.93, y: 2.41, z: -217.03}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -301,11 +301,9 @@ MonoBehaviour:
   RefGameObjects:
   - {fileID: 8520222691718690185}
   - {fileID: 8520222691718690185}
-  - {fileID: 8520222691718690185}
   ComponentNames:
   - Unity.Physics.PhysicsCollider
   - Unity.Transforms.Rotation
-  - Unity.Transforms.Translation
   PrefabTypeOverrides:
   - Value: 7
     OverrideIndex: 0
@@ -313,8 +311,6 @@ MonoBehaviour:
   VariantOverrides:
   - Value: 16882179680978693687
     OverrideIndex: 1
-  - Value: 10137082255859595637
-    OverrideIndex: 2
 --- !u!114 &895779231170848824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +331,7 @@ MonoBehaviour:
   DragInWaterRight: 2
   DragInWaterForward: 1
   BouyancyTorque: 8
-  DragInWaterRotational: 0.2
+  DragInWaterRotational: 0.4
 --- !u!114 &-5937910058129836100
 MonoBehaviour:
   m_ObjectHideFlags: 0

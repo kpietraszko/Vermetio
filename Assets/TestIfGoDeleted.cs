@@ -13,8 +13,8 @@ public class TestIfGoDeleted : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        #if !UNITY_EDITOR
+        // #if !UNITY_EDITOR
         Destroy(gameObject);
-        #endif
+        // #endif
     }
 }

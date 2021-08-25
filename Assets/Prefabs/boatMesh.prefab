@@ -30,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3792861578683460849}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.6, y: 5, z: -174.3}
+  m_LocalPosition: {x: 6.6, y: 0, z: -174.3}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children:
   - {fileID: 8998331058358402316}
@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccbf43655a1610946b24a03a69901a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CenterOfMass: {x: 0, y: -0.25, z: 0}
+  CenterOfMass: {x: 0, y: 0, z: 0}
   ForcePoints:
   - Weight: 1
     Offset:
@@ -115,9 +115,11 @@ MonoBehaviour:
   ForceMultiplier: 6
   MinSpatialLength: 4
   TurningHeel: 0.35
-  DragInWaterUp: 3
-  EnginePower: 1
-  TurnPower: 0.5
+  DragInWaterUp: 3.4
+  DragInWaterRight: 0.7
+  DragInWaterForward: 0.1
+  EnginePower: 8
+  TurnPower: 2000
   PlayerControlled: 1
   EngineBias: 0
   TurnBias: 0
@@ -172,8 +174,8 @@ MonoBehaviour:
   m_MotionType: 0
   m_Smoothing: 0
   m_Mass: 5000
-  m_LinearDamping: 0
-  m_AngularDamping: 2
+  m_LinearDamping: 2
+  m_AngularDamping: 1.7
   m_InitialLinearVelocity:
     x: 0
     y: 0
@@ -225,8 +227,8 @@ MonoBehaviour:
     y: 0
     z: 0
   m_PrimitiveSize:
-    x: 1.0627494
-    y: 1.0627494
+    x: 1.2669113
+    y: 1.2669113
     z: 4.833164
   m_PrimitiveOrientation:
     Value:
@@ -236,11 +238,11 @@ MonoBehaviour:
     RotationOrder: 4
   m_Capsule:
     Height: 4.833164
-    Radius: 0.5313747
+    Radius: 0.63345563
     Axis: 2
   m_Cylinder:
     Height: 4.833164
-    Radius: 0.5313747
+    Radius: 0.63345563
     Axis: 2
   m_CylinderSideCount: 20
   m_SphereRadius: 2.416582
@@ -388,7 +390,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6209344250265291949}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: -0.5472483, z: -0.027600665}
+  m_LocalPosition: {x: -0, y: -0.52, z: -0.328}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4605250775463491147}

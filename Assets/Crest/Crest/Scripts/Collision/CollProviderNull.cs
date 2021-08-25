@@ -1,8 +1,7 @@
 ﻿// Crest Ocean System
 
-// Copyright 2020 Wave Harmonic Ltd
+// This file is subject to the MIT License as seen in the root of this folder structure (LICENSE)
 
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Crest
@@ -12,12 +11,11 @@ namespace Crest
     /// </summary>
     public class CollProviderNull : ICollProvider
     {
-        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
-            IList<Vector3> o_resultDisps, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, Vector3[] o_resultDisps, Vector3[] o_resultNorms, Vector3[] o_resultVels)
         {
             if (o_resultDisps != null)
             {
-                for (int i = 0; i < o_resultDisps.Count; i++)
+                for (int i = 0; i < o_resultDisps.Length; i++)
                 {
                     o_resultDisps[i] = Vector3.zero;
                 }
@@ -25,7 +23,7 @@ namespace Crest
 
             if (o_resultNorms != null)
             {
-                for (int i = 0; i < o_resultNorms.Count; i++)
+                for (int i = 0; i < o_resultNorms.Length; i++)
                 {
                     o_resultNorms[i] = Vector3.up;
                 }
@@ -33,7 +31,7 @@ namespace Crest
 
             if (o_resultVels != null)
             {
-                for (int i = 0; i < o_resultVels.Count; i++)
+                for (int i = 0; i < o_resultVels.Length; i++)
                 {
                     o_resultVels[i] = Vector3.zero;
                 }
@@ -42,12 +40,11 @@ namespace Crest
             return 0;
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
-            IList<float> o_resultHeights, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, float[] o_resultHeights, Vector3[] o_resultNorms, Vector3[] o_resultVels)
         {
             if (o_resultHeights != null)
             {
-                for (int i = 0; i < o_resultHeights.Count; i++)
+                for (int i = 0; i < o_resultHeights.Length; i++)
                 {
                     o_resultHeights[i] = 0f;
                 }
@@ -55,7 +52,7 @@ namespace Crest
 
             if (o_resultNorms != null)
             {
-                for (int i = 0; i < o_resultNorms.Count; i++)
+                for (int i = 0; i < o_resultNorms.Length; i++)
                 {
                     o_resultNorms[i] = Vector3.up;
                 }
@@ -63,7 +60,7 @@ namespace Crest
 
             if (o_resultVels != null)
             {
-                for (int i = 0; i < o_resultVels.Count; i++)
+                for (int i = 0; i < o_resultVels.Length; i++)
                 {
                     o_resultVels[i] = Vector3.zero;
                 }

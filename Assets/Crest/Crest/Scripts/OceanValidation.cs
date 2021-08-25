@@ -1,6 +1,6 @@
 ﻿// Crest Ocean System
 
-// Copyright 2020 Wave Harmonic Ltd
+// This file is subject to the MIT License as seen in the root of this folder structure (LICENSE)
 
 // How to use:
 // Create a custom editor that inherits from ValidatedEditor. Then implement IValidated on the component.
@@ -57,9 +57,9 @@ namespace Crest
 
             switch (type)
             {
-                case MessageType.Error: Debug.LogError(message, @object); break;
-                case MessageType.Warning: Debug.LogWarning(message, @object); break;
-                default: Debug.Log(message, @object); break;
+                case MessageType.Error: Debug.LogError("Crest: " + message, @object); break;
+                case MessageType.Warning: Debug.LogWarning("Crest: " + message, @object); break;
+                default: Debug.Log("Crest: " + message, @object); break;
             }
         }
 
@@ -108,64 +108,41 @@ namespace Crest
             EditorUtility.SetDirty(gameObject);
         }
 
-        public static bool ValidateRenderer(GameObject gameObject, string shaderPrefix, ShowMessage showMessage)
+        public static bool ValidateRenderer(GameObject gameObject, ShowMessage showMessage, string shaderPrefix)
         {
-            var renderer = gameObject.GetComponent<Renderer>();
-            if (!renderer)
-            {
-                showMessage
-                (
-                    "A MeshRenderer component is required but none is attached to ocean input.",
-                    "Attach a <i>MeshRenderer</i> component.",
-                    MessageType.Error, gameObject,
-                    FixAttachComponent<MeshRenderer>
-                );
-
-                return false;
-            }
-
-            // TODO:UnderwaterPostProcessValidation
-            // How to get this to work?
-            // var underwaters = FindObjectsOfType<UnderwaterPostProcess>();
-            // foreach (var underwater in underwaters)
-            // {
-            //     if (underwater.GetComponent<Camera>() == null)
-            //     {
-            //         showMessage("Validation: UnderwaterPostProcess script must be attached to a GameObject with a Camera component. Click this message to see the GameObject in question.", MessageType.Error, underwater.gameObject);
-            //         return false;
-            //     }
-            // }
-
-            if (!ValidateMaterial(renderer.sharedMaterial, shaderPrefix, gameObject, showMessage))
-            {
-                return false;
-            }
-
-            return true;
+            return ValidateRenderer(gameObject, showMessage, isRendererRequired: true, isRendererOptional: false, shaderPrefix);
         }
 
-        public static bool ValidateMaterial(Material material, string shaderPrefix, GameObject gameObject, ShowMessage showMessage)
-        {
-            if (!material || material.shader && !material.shader.name.StartsWith(shaderPrefix))
-            {
-                showMessage
-                (
-                    $"Shader assigned to ocean input expected to be of type <i>{shaderPrefix}</i>.",
-                    "Assign a material that uses a shader of this type.",
-                    MessageType.Error, gameObject
-                );
-
-                return false;
-            }
-
-            return true;
-        }
-
-        public static bool ValidateInputMesh(bool rendererRequired, GameObject gameObject, ShowMessage showMessage)
+        public static bool ValidateRenderer(GameObject gameObject, ShowMessage showMessage, bool isRendererRequired, bool isRendererOptional, string shaderPrefix = null)
         {
             gameObject.TryGetComponent<MeshRenderer>(out var renderer);
 
-            if (!rendererRequired)
+            if (isRendererRequired)
+            {
+                if (renderer == null)
+                {
+                    // If renderer is optional, then a different error message with all the optionals should be presented.
+                    if (isRendererOptional)
+                    {
+                        return true;
+                    }
+
+                    showMessage
+                    (
+                        "A MeshRenderer component is required but none is attached to ocean input.",
+                        "Attach a <i>MeshRenderer</i> component.",
+                        MessageType.Error, gameObject,
+                        FixAttachComponent<MeshRenderer>
+                    );
+
+                    return false;
+                }
+                else if (!ValidateMaterial(gameObject, showMessage, renderer.sharedMaterial, shaderPrefix))
+                {
+                    return false;
+                }
+            }
+            else
             {
                 if (renderer)
                 {
@@ -176,20 +153,39 @@ namespace Crest
                         MessageType.Warning, gameObject,
                         FixRemoveRenderer
                     );
+
                     return false;
                 }
+
                 return true;
             }
 
-            if (!renderer)
+            return true;
+        }
+
+        public static bool ValidateMaterial(GameObject gameObject, ShowMessage showMessage, Material material, string shaderPrefix)
+        {
+            if (shaderPrefix == null && material == null)
             {
                 showMessage
                 (
-                    "A <i>Crest Spline</i> component is required to drive this data. Alternatively a <i>MeshRenderer</i> can be added. Neither is currently attached to ocean input.",
-                    "Attach a <i>Crest Spline</i> component.",
-                    MessageType.Error, gameObject,
-                    FixAttachComponent<Spline.Spline>
+                    $"<i>Mesh Renderer</i> requires a material.",
+                    "Assign a material.",
+                    MessageType.Error, gameObject
                 );
+
+                return false;
+            }
+
+            if (!material || material.shader && !material.shader.name.StartsWith(shaderPrefix))
+            {
+                showMessage
+                (
+                    $"Shader assigned to ocean input expected to be of type <i>{shaderPrefix}</i>.",
+                    "Assign a material that uses a shader of this type.",
+                    MessageType.Error, gameObject
+                );
+
                 return false;
             }
 

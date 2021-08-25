@@ -12,8 +12,7 @@ using Vermetio;
 using ForceMode = Unity.Physics.Extensions.ForceMode;
 
 [UpdateInGroup(typeof(GhostPredictionSystemGroup))]
-[UpdateInWorld(UpdateInWorld.TargetWorld
-    .Server)] // no client side prediction, it would probably be impossible currently with physics
+[UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction, it would probably be impossible currently with physics
 public class BoatEngineSystem : SystemBase
 {
     GhostPredictionSystemGroup m_GhostPredictionSystemGroup;
@@ -28,30 +27,48 @@ public class BoatEngineSystem : SystemBase
         var tick = m_GhostPredictionSystemGroup.PredictingTick;
         var deltaTime = Time.DeltaTime;
 
-        Entities.ForEach((DynamicBuffer<BoatKeyboardInput> keyboardInputBuffer, ref Translation translation,
-            ref Rotation rotation,
-            ref PhysicsMass pm, ref PhysicsVelocity pv, in LocalToWorld localToWorld,
-            in ProbyBuoyantComponent probyBuoyant) =>
-        {
-            keyboardInputBuffer.GetDataAtTick(tick, out var input);
+        Entities.WithoutBurst()
+            .ForEach((DynamicBuffer<BoatKeyboardInput> keyboardInputBuffer, ref Translation translation,
+                ref Rotation rotation,
+                ref PhysicsMass pm, ref PhysicsVelocity pv, in LocalToWorld localToWorld,
+                in ProbyBuoyantComponent probyBuoyant) =>
+            {
+                keyboardInputBuffer.GetDataAtTick(tick, out var keyboardInput);
+                
+                Debug.DrawLine(translation.Value, math.transform(localToWorld.Value, pv.Linear), Color.green, deltaTime);
+                Debug.DrawLine(translation.Value, math.transform(localToWorld.Value, pv.Angular), Color.red, deltaTime);
 
-            pm.GetImpulseFromForce(localToWorld.Forward * probyBuoyant.EnginePower * input.Throttle,
-                ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
-            Debug.Log($"{pm.Transform.pos}");
-            var forcePoint = math.transform(localToWorld.Value, pm.Transform.pos);
-            forcePoint.DrawCross(1f, Color.black, deltaTime);
-            pv.ApplyImpulse(impulseMass, translation, rotation, impulse, translation.Value); // is point correct?
-            // Debug.Log($"Applying impulse {impulse}");
+                if (math.abs(keyboardInput.Throttle) < 0.001f) // don't add force OR ROTATION if no throttle
+                    return;
 
-            var rotationAxis = math.normalizesafe(localToWorld.Up + probyBuoyant.TurningHeel * localToWorld.Forward);
-            // var rotationToTarget = Math.FromToRotation(localToWorld.Forward, targetHeading.Value);
-            var angleToTargetInRad = SignedAngle(localToWorld.Forward, input.TargetDirection, new float3(0,1,0));
-            Debug.Log($"{angleToTargetInRad}");
-            Debug.DrawLine(translation.Value, translation.Value + localToWorld.Forward * 10f, Color.red, deltaTime);
-            Debug.DrawLine(translation.Value, translation.Value + input.TargetDirection * 10f, Color.yellow, deltaTime);
+                var force = localToWorld.Forward * probyBuoyant.EnginePower * keyboardInput.Throttle;
+                Debug.Log($"{keyboardInput.Throttle}");
+                pm.GetImpulseFromForce(force, ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
+                // Debug.Log($"{pm.Transform.pos}");
+                var forcePoint = math.transform(localToWorld.Value, pm.Transform.pos);
+                forcePoint.DrawCross(1f, Color.black, deltaTime);
+                pv.ApplyLinearImpulse(impulseMass, impulse);
+                // Debug.Log($"Applying impulse {impulse}");
 
-            pv.ApplyAngularImpulse(impulseMass, rotationAxis * math.clamp(angleToTargetInRad, -10f, 10f) * probyBuoyant.TurnPower * deltaTime);
-        }).Schedule();
+                var rotationAxis = new float3(0, 1, 0) + probyBuoyant.TurningHeel * new float3(0,0,1); //localToWorld.Up + probyBuoyant.TurningHeel * localToWorld.Forward; // localToWorld.Up or world up?
+                // var rotationToTarget = Math.FromToRotation(localToWorld.Forward, targetHeading.Value);
+                var angleToTarget = SignedAngle(math.normalize(new float3(localToWorld.Forward.x, 0f, localToWorld.Forward.z)),
+                        keyboardInput.TargetDirection, localToWorld.Up);
+                // Debug.Log($"{angleToTargetInRad}");
+                // Debug.DrawLine(translation.Value, translation.Value + force, Color.red, deltaTime);
+                // Debug.DrawLine(translation.Value, translation.Value + keyboardInput.TargetDirection * 10f, Color.yellow,
+                //     deltaTime);
+                //
+                // Debug.DrawLine(translation.Value,
+                //     translation.Value + rotationAxis * math.sign(angleToTargetInRad) * probyBuoyant.TurnPower,
+                //     Color.white, deltaTime);
+                
+
+                Debug.Log($"Impulse: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime}");
+                Debug.Log($"With inertia: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime * pm.InverseInertia}");
+                pv.ApplyAngularImpulse(pm, rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime);
+                // pv.SetAngularVelocityWorldSpace(pm, rotation, rotationAxis * math.sign(angleToTargetInRad) * probyBuoyant.TurnPower * deltaTime);
+            }).Run();
     }
 
     // Returns the angle in degrees between /from/ and /to/. This is always the smallest

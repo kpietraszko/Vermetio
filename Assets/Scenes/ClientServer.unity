@@ -285,9 +285,9 @@ MonoBehaviour:
   Ghosts:
   - prefab: {fileID: 6019950340958582473, guid: e0586d7bc2cba594a83c3d1ef7f9815b, type: 3}
     enabled: 1
-  - prefab: {fileID: 1870413638185650884, guid: cab6b01cb88e7b84a87d274192e818e2, type: 3}
-    enabled: 1
   - prefab: {fileID: 8080581829221530458, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
+    enabled: 1
+  - prefab: {fileID: 1870413638185650884, guid: cab6b01cb88e7b84a87d274192e818e2, type: 3}
     enabled: 1
 --- !u!4 &222666375
 Transform:
@@ -1772,6 +1772,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1084850555}
   - component: {fileID: 1084850554}
+  - component: {fileID: 1084850556}
   m_Layer: 0
   m_Name: PhysicsSettings
   m_TagString: Untagged
@@ -1791,7 +1792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d30974bf68d61043b1572197db94cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SimulationType: 1
+  m_SimulationType: 2
   m_Gravity:
     x: -0
     y: -9.81
@@ -1814,6 +1815,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 38
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1084850556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1084850553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06de384a85e79e44a6d2eb462730949, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableSleeping: 1
+  BodyTagsForContactWelding:
+    Tag00: 0
+    Tag01: 0
+    Tag02: 0
+    Tag03: 0
+    Tag04: 0
+    Tag05: 0
+    Tag06: 0
+    Tag07: 0
+  VisualDebugger:
+    EnableVisualDebugger: 0
+    Port: 25001
+    TimerBufferSize: 1048576
 --- !u!1001 &1284035008
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2754,7 +2781,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8520222691718690185, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8863730947970231035, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_RootOrder

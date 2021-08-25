@@ -39,7 +39,7 @@ public class SampleBoatInput : SystemBase
         else EntityManager.AddComponent<BoatTargetHeadingComponent>(localInput);
 
         var rotationDirection = (keyboard.aKey.isPressed ? -1f : 0) + (keyboard.dKey.isPressed ? 1f : 0);
-        var angleToRotateHeadingBy = math.PI * Time.DeltaTime * rotationDirection; // 180 degrees per second
+        var angleToRotateHeadingBy = math.PI / 2f * Time.DeltaTime * rotationDirection; // 90 degrees per second
         var rotationOfHeading = quaternion.AxisAngle(new float3(0, 1, 0), angleToRotateHeadingBy);
         targetHeading = math.normalize(math.mul(rotationOfHeading, targetHeading));
 

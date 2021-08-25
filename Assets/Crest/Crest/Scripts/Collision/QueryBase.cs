@@ -1,6 +1,6 @@
 ﻿// Crest Ocean System
 
-// Copyright 2020 Wave Harmonic Ltd
+// This file is subject to the MIT License as seen in the root of this folder structure (LICENSE)
 
 // Potential improvements
 // - Half return values
@@ -98,7 +98,7 @@ namespace Crest
                         // can happen if the Scene and Game view are not visible, in which case async readbacks dont get processed
                         // and the pipeline blocks up.
 #if !UNITY_EDITOR
-                        Debug.LogError("Query ring buffer exhausted. Please report this to developers.");
+                        Debug.LogError("Crest: Query ring buffer exhausted. Please report this to developers.");
 #endif
                         return;
                     }
@@ -235,7 +235,7 @@ namespace Crest
             _shaderProcessQueries = ComputeShaderHelpers.LoadShader(QueryShaderName);
             if (_shaderProcessQueries == null)
             {
-                Debug.LogError($"Could not load Query compute shader {QueryShaderName}");
+                Debug.LogError($"Crest: Could not load Query compute shader {QueryShaderName}");
                 return;
             }
             _kernelHandle = _shaderProcessQueries.FindKernel(QueryKernelName);
@@ -252,7 +252,7 @@ namespace Crest
         {
             if (queryPoints.Length + _segmentRegistrarRingBuffer.Current._numQueries > _maxQueryCount)
             {
-                Debug.LogError($"Max query count ({_maxQueryCount}) exceeded, increase the max query count in the Animated Waves Settings to support a higher number of queries.");
+                Debug.LogError($"Crest: Max query count ({_maxQueryCount}) exceeded, increase the max query count in the Animated Waves Settings to support a higher number of queries.");
                 return false;
             }
 
@@ -291,7 +291,7 @@ namespace Crest
             {
                 if (_segmentRegistrarRingBuffer.Current._segments.Count >= s_maxGuids)
                 {
-                    Debug.LogError("Too many guids registered with CollProviderCompute. Increase s_maxGuids.");
+                    Debug.LogError("Crest: Too many guids registered with CollProviderCompute. Increase s_maxGuids.");
                     return false;
                 }
 
@@ -302,7 +302,7 @@ namespace Crest
 
                 _segmentRegistrarRingBuffer.Current._numQueries += countTotal;
 
-                //Debug.Log("Added points for " + guid);
+                //Debug.Log("Crest: Added points for " + guid);
             }
 
             // The smallest wavelengths should repeat no more than twice across the smaller spatial length. Unless we're
@@ -312,7 +312,7 @@ namespace Crest
 
             if (countPts + segment.x > _queryPosXZ_minGridSize.Length)
             {
-                Debug.LogError("Too many wave height queries. Increase Max Query Count in the Animated Waves Settings.");
+                Debug.LogError("Crest: Too many wave height queries. Increase Max Query Count in the Animated Waves Settings.");
                 return false;
             }
 
@@ -560,24 +560,23 @@ namespace Crest
             _segmentRegistrarRingBuffer.ClearAll();
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
-            IList<Vector3> o_resultDisps, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, Vector3[] o_resultDisps, Vector3[] o_resultNorms, Vector3[] o_resultVels)
         {
             var result = (int)QueryStatus.OK;
 
-            if (!UpdateQueryPoints(i_ownerHash, i_minSpatialLength, (Vector3[]) i_queryPoints, (Vector3[]) (o_resultNorms != null ? i_queryPoints : null)))
+            if (!UpdateQueryPoints(i_ownerHash, i_minSpatialLength, i_queryPoints, o_resultNorms != null ? i_queryPoints : null))
             {
                 result |= (int)QueryStatus.PostFailed;
             }
 
-            if (!RetrieveResults(i_ownerHash, (Vector3[]) o_resultDisps, null, (Vector3[]) o_resultNorms))
+            if (!RetrieveResults(i_ownerHash, o_resultDisps, null, o_resultNorms))
             {
                 result |= (int)QueryStatus.RetrieveFailed;
             }
 
             if (o_resultVels != null)
             {
-                result |= CalculateVelocities(i_ownerHash, (Vector3[]) o_resultVels);
+                result |= CalculateVelocities(i_ownerHash, o_resultVels);
             }
 
             return result;

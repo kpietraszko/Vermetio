@@ -167,10 +167,22 @@ namespace Vermetio.Server
                     if (math.transform(localToWorld.Value, buoyant.CenterOfMass).y > waterHeightAtCom)
                         return; // don't apply drag if COM is above water, might be weird, but it should be rare
                     
-                    var velocityRelativeToWater = pv.Linear - waterVelocities[lastForcePointIndex]; // uses last force point, which is COM - see Prepare_query_points
+                    var verticalVelocityRelativeToWater = pv.Linear - waterVelocities[lastForcePointIndex]; // uses last force point, which is COM - see Prepare_query_points
                     var forcePosition = math.transform(localToWorld.Value, buoyant.ForceHeightOffset * up); // should be ok?
-                    pm.GetImpulseFromForce(up * math.dot(up, -velocityRelativeToWater) * buoyant.DragInWaterUp, ForceMode.Acceleration, deltaTime, out var dragImpulse, out var dragImpulseMass);
+                    pm.GetImpulseFromForce(up * math.dot(up, -verticalVelocityRelativeToWater) * buoyant.DragInWaterUp, ForceMode.Acceleration, deltaTime, out var dragImpulse, out var dragImpulseMass);
                     pv.ApplyImpulse(dragImpulseMass, translation, rotation, dragImpulse, forcePosition);
+                    
+                    // right and forward assumes water velocity is 0
+                    pm.GetImpulseFromForce(localToWorld.Right * math.dot(localToWorld.Right, -pv.Linear) * buoyant.DragInWaterRight, ForceMode.Acceleration, deltaTime, out dragImpulse, out dragImpulseMass);
+                    // pv.ApplyImpulse(dragImpulseMass, translation, rotation, dragImpulse, forcePosition);
+
+                    var forwardDrag = localToWorld.Forward * math.dot(localToWorld.Forward, -pv.Linear) * buoyant.DragInWaterForward;
+                    // Debug.DrawLine(translation.Value, translation.Value + forwardDrag, Color.green, deltaTime);
+                    pm.GetImpulseFromForce(forwardDrag, ForceMode.Acceleration, deltaTime, out dragImpulse, out dragImpulseMass);
+                    // pv.ApplyImpulse(dragImpulseMass, translation, rotation, dragImpulse, forcePosition);
+
+                    // _rb.AddForceAtPosition(transform.right * Vector3.Dot(transform.right, -_velocityRelativeToWater) * _dragInWaterRight, forcePosition, ForceMode.Acceleration);
+                    // _rb.AddForceAtPosition(transform.forward * Vector3.Dot(transform.forward, -_velocityRelativeToWater) * _dragInWaterForward, forcePosition, ForceMode.Acceleration);
                 }).Run();
             
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);

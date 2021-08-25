@@ -48,8 +48,8 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
 
     [Header("Drag")]
     public float DragInWaterUp;
-    // public float DragInWaterRight;
-    // public float DragInWaterForward;
+    public float DragInWaterRight;
+    public float DragInWaterForward;
     
     [Header("Control")]
     public float EnginePower = 7;
@@ -72,8 +72,8 @@ public class ProbyBuoyantComponentAuthoring : MonoBehaviour, IConvertGameObjectT
             MinSpatialLength = MinSpatialLength, 
             TurningHeel = TurningHeel, 
             DragInWaterUp = DragInWaterUp, 
-            // DragInWaterRight = DragInWaterRight, 
-            // DragInWaterForward = DragInWaterForward, 
+            DragInWaterRight = DragInWaterRight, 
+            DragInWaterForward = DragInWaterForward, 
             EnginePower = EnginePower, 
             TurnPower = TurnPower, 
             EngineBias = EngineBias, 

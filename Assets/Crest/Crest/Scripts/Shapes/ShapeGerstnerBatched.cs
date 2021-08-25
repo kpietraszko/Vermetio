@@ -1,6 +1,6 @@
 ﻿// Crest Ocean System
 
-// Copyright 2020 Wave Harmonic Ltd
+// This file is subject to the MIT License as seen in the root of this folder structure (LICENSE)
 
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -299,7 +299,7 @@ namespace Crest
         {
             if (_spectrum._chopScales.Length != OceanWaveSpectrum.NUM_OCTAVES)
             {
-                Debug.LogError($"OceanWaveSpectrum {_spectrum.name} is out of date, please open this asset and resave in editor.", _spectrum);
+                Debug.LogError($"Crest: OceanWaveSpectrum {_spectrum.name} is out of date, please open this asset and resave in editor.", _spectrum);
             }
 
             float ampSum = 0f;
@@ -450,7 +450,7 @@ namespace Crest
 
             if (dropped > 0)
             {
-                Debug.LogWarning(string.Format("Gerstner LOD{0}: Batch limit reached, dropped {1} wavelengths. To support bigger batch sizes, see the comment around the BATCH_SIZE declaration.", lodIdx, dropped), this);
+                Debug.LogWarning(string.Format("Crest: Gerstner LOD{0}: Batch limit reached, dropped {1} wavelengths. To support bigger batch sizes, see the comment around the BATCH_SIZE declaration.", lodIdx, dropped), this);
                 numComponents = BATCH_SIZE;
             }
 
@@ -550,7 +550,7 @@ namespace Crest
             // One or more wavelengths - update the batch
             if (componentIdx > startCompIdx)
             {
-                //Debug.Log($"Batch {batch}, lodIdx {lodIdx}, range: {minWl} -> {2f * minWl}, indices: {startCompIdx} -> {componentIdx}");
+                //Debug.Log($"Crest: Batch {batch}, lodIdx {lodIdx}, range: {minWl} -> {2f * minWl}, indices: {startCompIdx} -> {componentIdx}");
                 UpdateBatch(lodIdx, startCompIdx, componentIdx, batch);
             }
         }
@@ -764,25 +764,24 @@ namespace Crest
             return true;
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
-            IList<Vector3> o_resultDisps, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, Vector3[] o_resultDisps, Vector3[] o_resultNorms, Vector3[] o_resultVels)
         {
             if (o_resultDisps != null)
             {
-                for (int i = 0; i < o_resultDisps.Count; i++)
+                for (int i = 0; i < o_resultDisps.Length; i++)
                 {
-                    SampleDisplacement(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out ((Vector3[])o_resultDisps)[i]);
+                    SampleDisplacement(ref i_queryPoints[i], i_minSpatialLength, out o_resultDisps[i]);
                 }
             }
 
             if (o_resultNorms != null)
             {
-                for (int i = 0; i < o_resultNorms.Count; i++)
+                for (int i = 0; i < o_resultNorms.Length; i++)
                 {
                     Vector3 undispPos;
-                    if (ComputeUndisplacedPosition(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out undispPos))
+                    if (ComputeUndisplacedPosition(ref i_queryPoints[i], i_minSpatialLength, out undispPos))
                     {
-                        SampleNormal(ref undispPos, i_minSpatialLength, out ((Vector3[])o_resultNorms)[i]);
+                        SampleNormal(ref undispPos, i_minSpatialLength, out o_resultNorms[i]);
                     }
                     else
                     {
@@ -794,25 +793,24 @@ namespace Crest
             return 0;
         }
 
-        public int Query(int i_ownerHash, float i_minSpatialLength, IList<Vector3> i_queryPoints,
-            IList<float> o_resultHeights, IList<Vector3> o_resultNorms, IList<Vector3> o_resultVels)
+        public int Query(int i_ownerHash, float i_minSpatialLength, Vector3[] i_queryPoints, float[] o_resultHeights, Vector3[] o_resultNorms, Vector3[] o_resultVels)
         {
             if (o_resultHeights != null)
             {
-                for (int i = 0; i < o_resultHeights.Count; i++)
+                for (int i = 0; i < o_resultHeights.Length; i++)
                 {
-                    SampleHeight(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out ((float[])o_resultHeights)[i]);
+                    SampleHeight(ref i_queryPoints[i], i_minSpatialLength, out o_resultHeights[i]);
                 }
             }
 
             if (o_resultNorms != null)
             {
-                for (int i = 0; i < o_resultNorms.Count; i++)
+                for (int i = 0; i < o_resultNorms.Length; i++)
                 {
                     Vector3 undispPos;
-                    if (ComputeUndisplacedPosition(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out undispPos))
+                    if (ComputeUndisplacedPosition(ref i_queryPoints[i], i_minSpatialLength, out undispPos))
                     {
-                        SampleNormal(ref undispPos, i_minSpatialLength, out ((Vector3[])o_resultNorms)[i]);
+                        SampleNormal(ref undispPos, i_minSpatialLength, out o_resultNorms[i]);
                     }
                     else
                     {
@@ -823,9 +821,9 @@ namespace Crest
 
             if (o_resultVels != null)
             {
-                for (int i = 0; i < o_resultVels.Count; i++)
+                for (int i = 0; i < o_resultVels.Length; i++)
                 {
-                    GetSurfaceVelocity(ref ((Vector3[])i_queryPoints)[i], i_minSpatialLength, out ((Vector3[])o_resultVels)[i]);
+                    GetSurfaceVelocity(ref i_queryPoints[i], i_minSpatialLength, out o_resultVels[i]);
                 }
             }
 
@@ -861,7 +859,7 @@ namespace Crest
             {
                 if (gerstner._spectrum == null)
                 {
-                    Debug.LogError("A wave spectrum must be assigned in order to generate wave data.", gerstner);
+                    Debug.LogError("Crest: A wave spectrum must be assigned in order to generate wave data.", gerstner);
                 }
                 else
                 {
@@ -881,7 +879,7 @@ namespace Crest
             // Renderer
             if (_mode == GerstnerMode.Geometry)
             {
-                isValid = ValidatedHelper.ValidateRenderer(gameObject, "Crest/Inputs/Animated Waves/Gerstner", showMessage);
+                isValid = ValidatedHelper.ValidateRenderer(gameObject, showMessage, "Crest/Inputs/Animated Waves/Gerstner");
             }
             else if (_mode == GerstnerMode.Global && GetComponent<MeshRenderer>() != null)
             {

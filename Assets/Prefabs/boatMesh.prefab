@@ -114,12 +114,12 @@ MonoBehaviour:
   ForceHeightOffset: 0
   ForceMultiplier: 6
   MinSpatialLength: 4
-  TurningHeel: 0.35
+  TurningHeel: 0
   DragInWaterUp: 3.4
   DragInWaterRight: 0.7
   DragInWaterForward: 0.1
   EnginePower: 8
-  TurnPower: 2000
+  TurnPower: 200000
   PlayerControlled: 1
   EngineBias: 0
   TurnBias: 0

@@ -50,7 +50,7 @@ public class BoatEngineSystem : SystemBase
                 pv.ApplyLinearImpulse(impulseMass, impulse);
                 // Debug.Log($"Applying impulse {impulse}");
 
-                var rotationAxis = new float3(0, 1, 0) + probyBuoyant.TurningHeel * new float3(0,0,1); //localToWorld.Up + probyBuoyant.TurningHeel * localToWorld.Forward; // localToWorld.Up or world up?
+                var rotationAxis = new float3(0, 0, 1) + probyBuoyant.TurningHeel * new float3(0,0,1); //localToWorld.Up + probyBuoyant.TurningHeel * localToWorld.Forward; // localToWorld.Up or world up?
                 // var rotationToTarget = Math.FromToRotation(localToWorld.Forward, targetHeading.Value);
                 var angleToTarget = SignedAngle(math.normalize(new float3(localToWorld.Forward.x, 0f, localToWorld.Forward.z)),
                         keyboardInput.TargetDirection, localToWorld.Up);

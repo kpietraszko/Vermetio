@@ -112,7 +112,7 @@ MonoBehaviour:
       y: 0
       z: -1.99
   ForceHeightOffset: 0
-  ForceMultiplier: 6
+  ForceMultiplier: 7
   MinSpatialLength: 4
   TurningHeel: 0
   DragInWaterUp: 3.4

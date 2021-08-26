@@ -84,8 +84,10 @@ namespace Vermetio.Server
             var status = collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, _normals, _velocities);
             if (!collProvider.RetrieveSucceeded(status))
             {
+                #if UNITY_EDITOR
                 Debug.LogWarning($"Simple query failed: {(CollProviderBakedFFT.QueryStatus)status}");
                 Debug.Log($"Fail at {tick}");
+                #endif
                 entities.Dispose();
                 return;
             }

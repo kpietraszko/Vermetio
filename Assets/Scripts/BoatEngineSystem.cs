@@ -42,7 +42,7 @@ public class BoatEngineSystem : SystemBase
                     return;
 
                 var force = localToWorld.Forward * probyBuoyant.EnginePower * keyboardInput.Throttle;
-                Debug.Log($"{keyboardInput.Throttle}");
+                // Debug.Log($"{keyboardInput.Throttle}");
                 pm.GetImpulseFromForce(force, ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
                 // Debug.Log($"{pm.Transform.pos}");
                 var forcePoint = math.transform(localToWorld.Value, pm.Transform.pos);
@@ -64,8 +64,8 @@ public class BoatEngineSystem : SystemBase
                 //     Color.white, deltaTime);
                 
 
-                Debug.Log($"Impulse: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime}");
-                Debug.Log($"With inertia: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime * pm.InverseInertia}");
+                // Debug.Log($"Impulse: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime}");
+                // Debug.Log($"With inertia: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime * pm.InverseInertia}");
                 pv.ApplyAngularImpulse(pm, rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime);
                 // pv.SetAngularVelocityWorldSpace(pm, rotation, rotationAxis * math.sign(angleToTargetInRad) * probyBuoyant.TurnPower * deltaTime);
             }).Run();

@@ -19,7 +19,10 @@ namespace Vermetio.Client
         void Update()
         {
             var virtualCam = GetComponent<CinemachineVirtualCamera>();
-            if (Mouse.current?.scroll.y.CheckStateIsAtDefaultIgnoringNoise() == true)
+            if (Mouse.current == null) // probably true on server
+                return;
+            
+            if (Mouse.current.scroll.y.CheckStateIsAtDefaultIgnoringNoise() == true )
                 return;
 
             var transposer = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();

@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "com.e7.ecs.line-renderer": {
+      "version": "git://github.com/5argon/ECSLineRenderer.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.entities": "0.17.0-preview.42",
+        "com.unity.rendering.hybrid": "0.11.0-preview.44"
+      },
+      "hash": "cd81f5ac2c887f709df8d3ab98a379a505842f85"
+    },
     "com.havok.physics": {
       "version": "0.6.0-preview.3",
       "depth": 0,

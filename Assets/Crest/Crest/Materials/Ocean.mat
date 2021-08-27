@@ -117,7 +117,7 @@ Material:
     - _MipBias: 0
     - _Moving: 0.17
     - _NormalsScale: 17
-    - _NormalsStrength: 0.326
+    - _NormalsStrength: 0.313
     - _NormalsStrengthOverall: 1
     - _Offset: 0.00008
     - _OverrideReflectionCubemap: 0
@@ -126,7 +126,7 @@ Material:
     - _PlanarReflections: 0
     - _ProceduralSky: 0
     - _Projection: 1
-    - _ReflectionBlur: 0
+    - _ReflectionBlur: 0.4
     - _RefractAmt: 0
     - _RefractionStrength: 1
     - _RefractiveIndexOfAir: 1.094
@@ -136,8 +136,8 @@ Material:
     - _Shadows: 1
     - _ShorelineFoamMinDepth: 0.27
     - _SkyDirectionality: 0.809
-    - _Smoothness: 0.834
-    - _SmoothnessFar: 0.406
+    - _Smoothness: 0.841
+    - _SmoothnessFar: 0.468
     - _SmoothnessFarDistance: 2222
     - _SmoothnessPower: 0.611
     - _Specular: 1

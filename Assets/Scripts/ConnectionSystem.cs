@@ -43,8 +43,8 @@ public class ConnectionSystem : SystemBase
             var tickRate = serverWorld.EntityManager.CreateEntity();
             serverWorld.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
                 {
-                    SimulationTickRate = 30,
-                    NetworkTickRate = 30,
+                    SimulationTickRate = 60,
+                    NetworkTickRate = 60,
                     MaxSimulationStepsPerFrame = 1
                 });
 
@@ -63,8 +63,8 @@ public class ConnectionSystem : SystemBase
             var tickRate = clientWorld.EntityManager.CreateEntity();
             clientWorld.EntityManager.AddComponentData(tickRate, new ClientServerTickRate
             {
-                SimulationTickRate = 30,
-                NetworkTickRate = 30, 
+                SimulationTickRate = 60,
+                NetworkTickRate = 60, 
                 MaxSimulationStepsPerFrame = 1
             });
                 

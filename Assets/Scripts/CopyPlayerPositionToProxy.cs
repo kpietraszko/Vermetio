@@ -33,6 +33,7 @@ public class CopyPlayerPositionToProxy : MonoBehaviour
 
             var playerPosition = world.EntityManager.GetComponentData<Translation>(entities[i]).Value;
             var playerRotation = world.EntityManager.GetComponentData<Rotation>(entities[i]).Value;
+            Debug.Log($"{playerPosition}");
             transform.position = playerPosition;
             transform.rotation = playerRotation;
             return;

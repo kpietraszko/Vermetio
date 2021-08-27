@@ -109,15 +109,15 @@ Material:
     - _Flow: 0
     - _Foam: 1
     - _Foam3DLighting: 1
-    - _FoamBubbleParallax: 0.1
+    - _FoamBubbleParallax: 0.152
     - _FoamScale: 5
-    - _FresnelPower: 7.5
+    - _FresnelPower: 2
     - _Invert: 1
     - _LightIntensityMultiplier: 2.9
     - _MipBias: 0
     - _Moving: 0.17
     - _NormalsScale: 17
-    - _NormalsStrength: 0.5
+    - _NormalsStrength: 0.326
     - _NormalsStrengthOverall: 1
     - _Offset: 0.00008
     - _OverrideReflectionCubemap: 0
@@ -126,20 +126,20 @@ Material:
     - _PlanarReflections: 0
     - _ProceduralSky: 0
     - _Projection: 1
-    - _ReflectionBlur: 0.1
+    - _ReflectionBlur: 0
     - _RefractAmt: 0
     - _RefractionStrength: 1
-    - _RefractiveIndexOfAir: 1
+    - _RefractiveIndexOfAir: 1.094
     - _RefractiveIndexOfWater: 1.333
     - _Roughness: 0
     - _S: 1
     - _Shadows: 1
     - _ShorelineFoamMinDepth: 0.27
     - _SkyDirectionality: 0.809
-    - _Smoothness: 0.8
-    - _SmoothnessFar: 0.35
-    - _SmoothnessFarDistance: 2000
-    - _SmoothnessPower: 0.5
+    - _Smoothness: 0.834
+    - _SmoothnessFar: 0.406
+    - _SmoothnessFarDistance: 2222
+    - _SmoothnessPower: 0.611
     - _Specular: 1
     - _StartLevel: 0.157
     - _StencilFunction: 0
@@ -164,8 +164,8 @@ Material:
     - _WaveFoamBubblesStart: 0.115
     - _WaveFoamBubblesStrength: 0.637
     - _WaveFoamCoverage: 0.38
-    - _WaveFoamFeather: 0.4
-    - _WaveFoamLightScale: 0.9
+    - _WaveFoamFeather: 0.471
+    - _WaveFoamLightScale: 0.86
     - _WaveFoamNormalStrength: 3.5
     - _WaveFoamNormalsY: 0.253
     - _WaveFoamSpecularBoost: 0.15

@@ -57,32 +57,30 @@ public class SampleBoatInput : SystemBase
         input.Throttle = throttleInput;
         
         var playerPosition = EntityManager.GetComponentData<Translation>(localInputEntity).Value;
+        var playerForward = EntityManager.GetComponentData<LocalToWorld>(localInputEntity).Forward;
         Debug.DrawLine(playerPosition, playerPosition + targetHeading * 4, Color.black, Time.DeltaTime);
 
-        // if (keyboard.aKey.isPressed)
-        //     input
-        
         var inputBuffer = EntityManager.GetBuffer<BoatKeyboardInput>(localInputEntity);
         inputBuffer.AddCommandData(input);
         
         // Direction line
-        Entities.WithStructuralChanges().ForEach((Entity entity, ref LineSegment lineSegment, in Parent parent) =>
+        Entities
+            .WithName("boat_direction_line")
+            .WithStructuralChanges()
+            .ForEach((Entity entity, ref LineSegment lineSegment, in Parent parent) =>
         {
-            if (parent.Value == localInputEntity)
-                lineSegment = new LineSegment(playerPosition + targetHeading * 12f, playerPosition + targetHeading * 18f, lineSegment.lineWidth);
+            if (parent.Value != localInputEntity)
+                return;
+            
+            lineSegment = new LineSegment(playerPosition + targetHeading * 16f, playerPosition + targetHeading * 22f, lineSegment.lineWidth);
 
+            var barelyTurning = math.abs(math.dot(targetHeading, math.normalize(playerForward))) > 0.99f;
             var isHidden = HasComponent<DisableRendering>(entity);
-            if (math.abs(throttleInput) > 0.001f && isHidden)
-            {
+            if (isHidden && math.abs(throttleInput) > 0.001f && !barelyTurning)
                 EntityManager.RemoveComponent<DisableRendering>(entity);
-                Debug.Log("Unhiding");
-            }
 
-            if (math.abs(throttleInput) < 0.001 && !isHidden)
-            {
+            if (!isHidden && (math.abs(throttleInput) < 0.001 || barelyTurning))
                 EntityManager.AddComponent<DisableRendering>(entity);
-                Debug.Log("Hiding");
-            }
         }).Run();
     }
 

@@ -18,11 +18,18 @@ namespace Vermetio.Client
         // Update is called once per frame
         void Update()
         {
+            #if UNITY_EDITOR
+            var view = Camera.main.ScreenToViewportPoint(Mouse.current.position.ReadValue());
+            var isOutside = view.x < 0 || view.x > 1 || view.y < 0 || view.y > 1;
+            if (isOutside)
+                return;
+            #endif
+            
             var virtualCam = GetComponent<CinemachineVirtualCamera>();
             if (Mouse.current == null) // probably true on server
                 return;
             
-            if (Mouse.current.scroll.y.CheckStateIsAtDefaultIgnoringNoise() == true )
+            if (Mouse.current.scroll.y.CheckStateIsAtDefaultIgnoringNoise())
                 return;
 
             var transposer = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();

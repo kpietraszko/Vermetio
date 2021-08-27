@@ -54,6 +54,10 @@ public class BoatEngineSystem : SystemBase
                 // var rotationToTarget = Math.FromToRotation(localToWorld.Forward, targetHeading.Value);
                 var angleToTarget = SignedAngle(math.normalize(new float3(localToWorld.Forward.x, 0f, localToWorld.Forward.z)),
                         keyboardInput.TargetDirection, localToWorld.Up);
+                
+                if (math.abs(angleToTarget) < 3f) // close enough already
+                    return;
+                
                 // Debug.Log($"{angleToTargetInRad}");
                 // Debug.DrawLine(translation.Value, translation.Value + force, Color.red, deltaTime);
                 // Debug.DrawLine(translation.Value, translation.Value + keyboardInput.TargetDirection * 10f, Color.yellow,

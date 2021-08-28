@@ -161,8 +161,7 @@ namespace Vermetio.Server
                     pm.GetImpulseFromForce(up * dot(up, -velocityRelativeToWater) * buoyant.DragInWaterUp, ForceMode.Acceleration, deltaTime, out impulse, out impulseMass);
                     pv.ApplyImpulse(impulseMass, translation, rotation, impulse, forcePosition);
                     // skipping right and forward drag because only vertical velocities are baked
-                    
-                    
+
                     // Align to normal
                     if (debugDraw) 
                         Debug.DrawLine(translation.Value, translation.Value + 5f * waterData.Normal, Color.green);

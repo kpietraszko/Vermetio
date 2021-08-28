@@ -25,6 +25,7 @@ public class SampleBoatInput : SystemBase
         var localInputEntity = GetSingleton<CommandTargetComponent>().targetEntity;
         if (localInputEntity == Entity.Null)
         {
+            Debug.Log("Adding keyboard input buffer");
             AddKeyboardInputBuffer();
             return;
         }

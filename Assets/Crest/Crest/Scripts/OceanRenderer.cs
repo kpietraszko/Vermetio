@@ -1431,11 +1431,11 @@ namespace Crest
 #pragma warning disable 0618
             // UnderwaterEffect
 #if CREST_URP
-            var underwaters = FindObjectsOfType<UnderwaterEffect>();
-            foreach (var underwater in underwaters)
-            {
-                underwater.Validate(ocean, ValidatedHelper.DebugLog);
-            }
+            // var underwaters = FindObjectsOfType<UnderwaterEffect>();
+            // foreach (var underwater in underwaters)
+            // {
+            //     underwater.Validate(ocean, ValidatedHelper.DebugLog);
+            // }
 #endif
 #pragma warning restore 0618
 

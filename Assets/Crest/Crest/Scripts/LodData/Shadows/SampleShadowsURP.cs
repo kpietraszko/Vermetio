@@ -63,6 +63,11 @@ namespace Crest
             if (renderingData.lightData.mainLightIndex == -1)
                 return;
 
+            if (!renderingData.cullResults.GetShadowCasterBounds(renderingData.lightData.mainLightIndex, out _))
+            {
+                return;
+            }
+
             var cmd = OceanRenderer.Instance._lodDataShadow.BufCopyShadowMap;
             if (cmd == null) return;
 

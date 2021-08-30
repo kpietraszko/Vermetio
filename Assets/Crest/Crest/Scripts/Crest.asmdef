@@ -5,7 +5,8 @@
         "Unity.Postprocessing.Runtime",
         "Unity.InputSystem",
         "Unity.Mathematics",
-        "Unity.Burst"
+        "Unity.Burst",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -29,6 +30,11 @@
             "name": "com.unity.modules.xr",
             "expression": "1.0.0",
             "define": "ENABLE_XR_MODULE"
+        },
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "",
+            "define": "CREST_URP"
         }
     ],
     "noEngineReferences": false

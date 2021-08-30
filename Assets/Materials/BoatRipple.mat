@@ -87,8 +87,8 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _FactorOrthogonal: 0.2
-    - _FactorParallel: 0.2
+    - _FactorOrthogonal: 0.12
+    - _FactorParallel: 2.49
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -101,7 +101,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Strength: 0.2
+    - _Strength: 345
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1

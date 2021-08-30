@@ -35,11 +35,14 @@ public class BoatEngineSystem : SystemBase
             {
                 keyboardInputBuffer.GetDataAtTick(tick, out var keyboardInput);
                 
-                Debug.DrawLine(translation.Value, math.transform(localToWorld.Value, pv.Linear), Color.green, deltaTime);
-                Debug.DrawLine(translation.Value, math.transform(localToWorld.Value, pv.Angular), Color.red, deltaTime);
+                // Debug.DrawLine(translation.Value, math.transform(localToWorld.Value, pv.Linear), Color.green, deltaTime);
+                // Debug.DrawLine(translation.Value, math.transform(localToWorld.Value, pv.Angular), Color.red, deltaTime);
 
                 if (math.abs(keyboardInput.Throttle) < 0.001f) // don't add force OR ROTATION if no throttle
                     return;
+                
+                if (tick % 60 == 0)
+                    Debug.Log($"{math.length(pv.Linear)}");
 
                 var force = localToWorld.Forward * probyBuoyant.EnginePower * keyboardInput.Throttle;
                 // Debug.Log($"{keyboardInput.Throttle}");
@@ -51,27 +54,13 @@ public class BoatEngineSystem : SystemBase
                 // Debug.Log($"Applying impulse {impulse}");
 
                 var rotationAxis = new float3(0, 0, 1) + probyBuoyant.TurningHeel * new float3(0,0,1); //localToWorld.Up + probyBuoyant.TurningHeel * localToWorld.Forward; // localToWorld.Up or world up?
-                // var rotationToTarget = Math.FromToRotation(localToWorld.Forward, targetHeading.Value);
                 var angleToTarget = SignedAngle(math.normalize(new float3(localToWorld.Forward.x, 0f, localToWorld.Forward.z)),
                         keyboardInput.TargetDirection, localToWorld.Up);
                 
                 if (math.abs(angleToTarget) < 3f) // close enough already
                     return;
                 
-                // Debug.Log($"{angleToTargetInRad}");
-                // Debug.DrawLine(translation.Value, translation.Value + force, Color.red, deltaTime);
-                // Debug.DrawLine(translation.Value, translation.Value + keyboardInput.TargetDirection * 10f, Color.yellow,
-                //     deltaTime);
-                //
-                // Debug.DrawLine(translation.Value,
-                //     translation.Value + rotationAxis * math.sign(angleToTargetInRad) * probyBuoyant.TurnPower,
-                //     Color.white, deltaTime);
-                
-
-                // Debug.Log($"Impulse: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime}");
-                // Debug.Log($"With inertia: {rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime * pm.InverseInertia}");
                 pv.ApplyAngularImpulse(pm, rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime);
-                // pv.SetAngularVelocityWorldSpace(pm, rotation, rotationAxis * math.sign(angleToTargetInRad) * probyBuoyant.TurnPower * deltaTime);
             }).Run();
     }
 

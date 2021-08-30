@@ -15,7 +15,8 @@ public class TimeProvider : TimeProviderBase
     private float _previousTime = 0f;
     private float _delta = 0f;
 
-    public override float CurrentTime
+    // NOTE that this shouldn't really be float, but changing everything to double is difficult, because shaders don't really handle double
+    public override float CurrentTime  
     {
         get
         {
@@ -66,16 +67,32 @@ public class TimeProvider : TimeProviderBase
 
     private float GetInterpolationTime()
     {
-        for (int i = 0; i < World.All.Count; i++)
+        var clientWorld = GetWorldWith<ClientSimulationSystemGroup>(World.All);
+        if (clientWorld != null)
         {
-            var clientSimSystemGroup = World.All[i].GetExistingSystem<ClientSimulationSystemGroup>();
-            if (clientSimSystemGroup == null)
-                continue;
-
+            var clientSimSystemGroup = clientWorld.GetExistingSystem<ClientSimulationSystemGroup>();
             return (clientSimSystemGroup.InterpolationTick + clientSimSystemGroup.InterpolationTickFraction) *
                    clientSimSystemGroup.ServerTickDeltaTime;
         }
 
+        var serverWorld = GetWorldWith<ServerSimulationSystemGroup>(World.All);
+        if (serverWorld != null)
+        {
+            var serverSimSystemGroup = serverWorld.GetExistingSystem<ServerSimulationSystemGroup>();
+            return serverSimSystemGroup.ServerTick * serverSimSystemGroup.Time.DeltaTime;
+        }
+
         return 0f;
+    }
+    
+    private World GetWorldWith<T>(World.NoAllocReadOnlyCollection<World> worlds) where T : ComponentSystemBase
+    {
+        foreach (var world in worlds)
+        {
+            if (world.GetExistingSystem<T>() != null)
+                return world;
+        }
+
+        return null;
     }
 }

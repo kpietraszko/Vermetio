@@ -26,6 +26,7 @@ namespace Vermetio.Server
         private static float[] _waterHeights = new float[0];
         private static Vector3[] _velocities = new Vector3[0];
         private static bool _debugDraw = true;
+        private Segments.Batch _batch;
         
         private const float WATER_DENSITY = 1000;
 
@@ -35,10 +36,12 @@ namespace Vermetio.Server
 
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
+            Segments.Core.CreateBatch( out _batch );
         }
 
         protected override void OnUpdate()
         {
+            _batch.Dependency.Complete();
 
             var deltaTime = Time.DeltaTime;
             var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
@@ -111,6 +114,7 @@ namespace Vermetio.Server
             var waterVelocities = new NativeArray<Vector3>(_velocities, Allocator.TempJob).Reinterpret<float3>();
             
             var debugDraw = _debugDraw;
+            var buffer = _batch.buffer;
             
             Entities
                 .WithName("Apply_proby_buoyancy")
@@ -138,6 +142,7 @@ namespace Vermetio.Server
                     }
             
                     var startingIndex = entitiesStartingIndex[entity];
+                    // buffer.Length = forcePoints.Length * 3; // 3 lines per cross
 
                     // Apply buoyancy on force points
                     for (int i = 0; i < forcePoints.Length; i++)
@@ -148,8 +153,9 @@ namespace Vermetio.Server
 
                         if (debugDraw)
                         {
-                            worldSpaceForcePoint.DrawCross(0.2f, Color.green, 1/30f);
-                            new float3(worldSpaceForcePoint.x, waterHeight, worldSpaceForcePoint.z).DrawCross(0.2f, Color.red, 1/30f);
+                            // worldSpaceForcePoint.DrawCross(0.2f, Color.green, 1/30f);
+                            // new float3(worldSpaceForcePoint.x, waterHeight, worldSpaceForcePoint.z).DrawCross(0.2f, Color.red, 1/30f);
+                            // buffer.AddRange(new float3(worldSpaceForcePoint.x, waterHeight, worldSpaceForcePoint.z).GetCross(1f));
                         }
                         
                         var heightDiff = waterHeight - worldSpaceForcePoint.y; // TODO: query point or force point?
@@ -189,5 +195,12 @@ namespace Vermetio.Server
             
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
         }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            _batch.Dispose();
+        }
     }
+    
 }

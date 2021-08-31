@@ -176,7 +176,7 @@ Material:
     - _DepthFogDensity: {r: 0.4, g: 0.25, b: 0.3, a: 1}
     - _Diffuse: {r: 0, g: 0.13904555, b: 0.322, a: 1}
     - _DiffuseGrazing: {r: 0.14440192, g: 0.35713622, b: 0.5188679, a: 1}
-    - _DiffuseShadow: {r: 1, g: 0.05809614, b: 0, a: 1}
+    - _DiffuseShadow: {r: 0.07326001, g: 0.21048121, b: 0.333, a: 1}
     - _FoamBubbleColor: {r: 0.6383055, g: 0.8301887, b: 0.8243741, a: 1}
     - _FoamWhiteColor: {r: 1, g: 0.99634784, b: 0.97199994, a: 0.6862745}
     - _SkyAwayFromSun: {r: 0.043735042, g: 0.12477186, b: 0.2874409, a: 1}
@@ -185,6 +185,6 @@ Material:
     - _SubSurface: {r: 0, g: 0.48, b: 0.36, a: 1}
     - _SubSurfaceColour: {r: 0.08235292, g: 0.42745098, b: 0.37568623, a: 1}
     - _SubSurfaceShallowCol: {r: 0.552, g: 1, b: 1, a: 1}
-    - _SubSurfaceShallowColShadow: {r: 1, g: 0.010215759, b: 0, a: 1}
+    - _SubSurfaceShallowColShadow: {r: 0.14509805, g: 0.22745098, b: 0.21176471, a: 1}
     - _SubSurfaceShallowColour: {r: 0.41999996, g: 0.75, b: 0.69, a: 1}
   m_BuildTextureStacks: []

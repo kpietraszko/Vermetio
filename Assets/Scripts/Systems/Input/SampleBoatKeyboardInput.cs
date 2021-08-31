@@ -25,8 +25,7 @@ public class SampleBoatKeyboardInput : SystemBase
         var localInputEntity = GetSingleton<CommandTargetComponent>().targetEntity;
         if (localInputEntity == Entity.Null)
         {
-            Debug.Log("Adding keyboard input buffer");
-            AddKeyboardInputBuffer();
+            AddInputBuffers();
             return;
         }
         
@@ -73,7 +72,7 @@ public class SampleBoatKeyboardInput : SystemBase
             if (parent.Value != localInputEntity)
                 return;
             
-            lineSegment = new LineSegment(playerPosition + targetHeading * 16f, playerPosition + targetHeading * 22f, lineSegment.lineWidth);
+            lineSegment = new LineSegment(playerPosition + targetHeading * 24f, playerPosition + targetHeading * 29f, lineSegment.lineWidth);
 
             var barelyTurning = math.abs(math.dot(targetHeading, math.normalize(playerForward))) > 0.985f;
             var isHidden = HasComponent<DisableRendering>(entity);
@@ -85,15 +84,16 @@ public class SampleBoatKeyboardInput : SystemBase
         }).Run();
     }
 
-    private void AddKeyboardInputBuffer()
+    private void AddInputBuffers()
     {
         var localPlayerId = GetSingleton<NetworkIdComponent>().Value;
-        Entities.WithStructuralChanges().WithAll<MovableBoatComponent>().WithNone<BoatKeyboardInput>().ForEach(
+        Entities.WithStructuralChanges().WithAll<MovableBoatComponent>().WithNone<BoatKeyboardInput, BoatMouseInput>().ForEach(
             (Entity ent, ref GhostOwnerComponent ghostOwner) =>
             {
                 if (ghostOwner.NetworkId == localPlayerId)
                 {
                     EntityManager.AddBuffer<BoatKeyboardInput>(ent);
+                    EntityManager.AddBuffer<BoatMouseInput>(ent);
                     EntityManager.SetComponentData(GetSingletonEntity<CommandTargetComponent>(),
                         new CommandTargetComponent {targetEntity = ent});
                 }

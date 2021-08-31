@@ -27,7 +27,7 @@ public class BoatEngineSystem : SystemBase
         var tick = m_GhostPredictionSystemGroup.PredictingTick;
         var deltaTime = Time.DeltaTime;
 
-        Entities.WithoutBurst()
+        Entities
             .ForEach((DynamicBuffer<BoatKeyboardInput> keyboardInputBuffer, ref Translation translation,
                 ref Rotation rotation,
                 ref PhysicsMass pm, ref PhysicsVelocity pv, in LocalToWorld localToWorld,
@@ -41,8 +41,8 @@ public class BoatEngineSystem : SystemBase
                 if (math.abs(keyboardInput.Throttle) < 0.001f) // don't add force OR ROTATION if no throttle
                     return;
                 
-                if (tick % 60 == 0)
-                    Debug.Log($"{math.length(pv.Linear)}");
+                // if (tick % 60 == 0)
+                //     Debug.Log($"{math.length(pv.Linear)}");
 
                 var force = localToWorld.Forward * probyBuoyant.EnginePower * keyboardInput.Throttle;
                 // Debug.Log($"{keyboardInput.Throttle}");
@@ -61,7 +61,7 @@ public class BoatEngineSystem : SystemBase
                     return;
                 
                 pv.ApplyAngularImpulse(pm, rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime);
-            }).Run();
+            }).Schedule();
     }
 
     // Returns the angle in degrees between /from/ and /to/. This is always the smallest

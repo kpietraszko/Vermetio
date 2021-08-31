@@ -1,36 +1,75 @@
+using System;
+using Crest;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.NetCode;
 using Unity.Transforms;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using Vermetio;
 
+[UpdateInGroup(typeof(GhostInputSystemGroup))] // this executes only on the client
 public class SampleBoatMouseInput : SystemBase
 {
+    private RayTraceHelper _rayTraceHelper;
+    private Segments.Batch _batch;
+
+    protected override void OnCreate()
+    {
+        RequireSingletonForUpdate<NetworkIdComponent>();
+        _rayTraceHelper = new RayTraceHelper(600f, 1f);
+        Segments.Core.CreateBatch(out _batch, Resources.Load<Material>("Materials/DirectionLine"));
+    }
+    
     protected override void OnUpdate()
     {
-        // Assign values to local variables captured in your job here, so that it has
-        // everything it needs to do its work when it runs later.
-        // For example,
-        //     float deltaTime = Time.DeltaTime;
+        _batch.Dependency.Complete();
+        
+        var localInputEntity = GetSingleton<CommandTargetComponent>().targetEntity;
+        if (localInputEntity == Entity.Null)
+        {
+            return;
+        }
+        
+        var input = default(BoatMouseInput);
+        input.Tick = World.GetExistingSystem<ClientSimulationSystemGroup>().ServerTick;
 
-        // This declares a new kind of job, which is a unit of work to do.
-        // The job is declared as an Entities.ForEach with the target components as parameters,
-        // meaning it will process all entities in the world that have both
-        // Translation and Rotation components. Change it to process the component
-        // types you want.
+        var mouse = Mouse.current;
+        if (mouse == null) // somehow user has no mouse
+            return;
+
+        var camera = Camera.main;
+        var ray = camera.ScreenPointToRay(mouse.position.ReadValue());
+        var camPosition = camera.transform.position;
+        _rayTraceHelper.Init(camPosition, ray.direction);
+        _rayTraceHelper.Trace(out var distanceFromCam);
+        var playerPos = GetComponent<Translation>(localInputEntity).Value;
+        var aimPosition = new float3(camPosition + ray.direction * distanceFromCam);
         
+        input.AimPosition = aimPosition;
+        var inputBuffer = EntityManager.GetBuffer<BoatMouseInput>(localInputEntity);
+        inputBuffer.AddCommandData(input);
         
-        
-        Entities.ForEach((ref Translation translation, in Rotation rotation) => {
-            // Implement the work to perform for each entity here.
-            // You should only access data that is local or that is a
-            // field on this job. Note that the 'rotation' parameter is
-            // marked as 'in', which means it cannot be modified,
-            // but allows this job to run in parallel with other jobs
-            // that want to read Rotation component data.
-            // For example,
-            //     translation.Value += math.mul(rotation.Value, new float3(0, 0, 1)) * deltaTime;
-        }).Schedule();
+        DrawAimCircle(camPosition, aimPosition, playerPos);
+    }
+
+    private void DrawAimCircle(float3 camPosition, float3 aimPosition, float3 playerPos)
+    {
+        var buffer = _batch.buffer;
+        var aimCirclePosition = aimPosition + new float3(0f, 0.5f, 0f);
+        var aimCircleRotation = quaternion.AxisAngle(new float3(1, 0, 0), math.PI / 2f);
+
+        var camDistanceToPlayer = math.distance(camPosition, playerPos);
+        var index = 0;
+        Segments.Plot.Circle(buffer, ref index, camDistanceToPlayer / 70f, aimCirclePosition, aimCircleRotation, 18);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _batch.Dispose();
     }
 }

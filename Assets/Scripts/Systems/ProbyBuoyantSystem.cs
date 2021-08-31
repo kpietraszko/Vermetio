@@ -36,7 +36,7 @@ namespace Vermetio.Server
 
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
-            Segments.Core.CreateBatch( out _batch );
+            Segments.Core.CreateBatch(out _batch);
         }
 
         protected override void OnUpdate()

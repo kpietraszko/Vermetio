@@ -11,41 +11,53 @@ using Unity.Mathematics;
 
 namespace Assembly_CSharp.Generated
 {
-    public struct BoatKeyboardInputSerializer : ICommandDataSerializer<BoatKeyboardInput>
+    public struct BoatInputSerializer : ICommandDataSerializer<BoatInput>
     {
-        public void Serialize(ref DataStreamWriter writer, in BoatKeyboardInput data)
+        public void Serialize(ref DataStreamWriter writer, in BoatInput data)
         {
             writer.WriteFloat(data.TargetDirection.x);
             writer.WriteFloat(data.TargetDirection.y);
             writer.WriteFloat(data.TargetDirection.z);
             writer.WriteFloat(data.Throttle);
+            writer.WriteFloat(data.AimPosition.x);
+            writer.WriteFloat(data.AimPosition.y);
+            writer.WriteFloat(data.AimPosition.z);
         }
 
-        public void Deserialize(ref DataStreamReader reader, ref BoatKeyboardInput data)
+        public void Deserialize(ref DataStreamReader reader, ref BoatInput data)
         {
             data.TargetDirection.x = reader.ReadFloat();
             data.TargetDirection.y = reader.ReadFloat();
             data.TargetDirection.z = reader.ReadFloat();
             data.Throttle = reader.ReadFloat();
+            data.AimPosition.x = reader.ReadFloat();
+            data.AimPosition.y = reader.ReadFloat();
+            data.AimPosition.z = reader.ReadFloat();
         }
 
-        public void Serialize(ref DataStreamWriter writer, in BoatKeyboardInput data, in BoatKeyboardInput baseline, NetworkCompressionModel compressionModel)
+        public void Serialize(ref DataStreamWriter writer, in BoatInput data, in BoatInput baseline, NetworkCompressionModel compressionModel)
         {
             writer.WritePackedFloatDelta(data.TargetDirection.x, baseline.TargetDirection.x, compressionModel);
             writer.WritePackedFloatDelta(data.TargetDirection.y, baseline.TargetDirection.y, compressionModel);
             writer.WritePackedFloatDelta(data.TargetDirection.z, baseline.TargetDirection.z, compressionModel);
             writer.WritePackedFloatDelta(data.Throttle, baseline.Throttle, compressionModel);
+            writer.WritePackedFloatDelta(data.AimPosition.x, baseline.AimPosition.x, compressionModel);
+            writer.WritePackedFloatDelta(data.AimPosition.y, baseline.AimPosition.y, compressionModel);
+            writer.WritePackedFloatDelta(data.AimPosition.z, baseline.AimPosition.z, compressionModel);
         }
 
-        public void Deserialize(ref DataStreamReader reader, ref BoatKeyboardInput data, in BoatKeyboardInput baseline, NetworkCompressionModel compressionModel)
+        public void Deserialize(ref DataStreamReader reader, ref BoatInput data, in BoatInput baseline, NetworkCompressionModel compressionModel)
         {
             data.TargetDirection.x = reader.ReadPackedFloatDelta(baseline.TargetDirection.x, compressionModel);
             data.TargetDirection.y = reader.ReadPackedFloatDelta(baseline.TargetDirection.y, compressionModel);
             data.TargetDirection.z = reader.ReadPackedFloatDelta(baseline.TargetDirection.z, compressionModel);
             data.Throttle = reader.ReadPackedFloatDelta(baseline.Throttle, compressionModel);
+            data.AimPosition.x = reader.ReadPackedFloatDelta(baseline.AimPosition.x, compressionModel);
+            data.AimPosition.y = reader.ReadPackedFloatDelta(baseline.AimPosition.y, compressionModel);
+            data.AimPosition.z = reader.ReadPackedFloatDelta(baseline.AimPosition.z, compressionModel);
         }
     }
-    public class BoatKeyboardInputSendCommandSystem : CommandSendSystem<BoatKeyboardInputSerializer, BoatKeyboardInput>
+    public class BoatInputSendCommandSystem : CommandSendSystem<BoatInputSerializer, BoatInput>
     {
         [BurstCompile]
         struct SendJob : IJobEntityBatch
@@ -62,7 +74,7 @@ namespace Assembly_CSharp.Generated
             ScheduleJobData(sendJob);
         }
     }
-    public class BoatKeyboardInputReceiveCommandSystem : CommandReceiveSystem<BoatKeyboardInputSerializer, BoatKeyboardInput>
+    public class BoatInputReceiveCommandSystem : CommandReceiveSystem<BoatInputSerializer, BoatInput>
     {
         [BurstCompile]
         struct ReceiveJob : IJobEntityBatch

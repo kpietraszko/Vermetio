@@ -1,3 +1,4 @@
+using Crest;
 using E7.ECS.LineRenderer;
 using Unity.Assertions;
 using Unity.Burst;
@@ -13,15 +14,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [UpdateInGroup(typeof(GhostInputSystemGroup))] // this executes only on the client
-public class SampleBoatKeyboardInput : SystemBase
+public class SampleBoatInput : SystemBase
 {
+    private RayTraceHelper _rayTraceHelper;
+    private Segments.Batch _batch;
+
     protected override void OnCreate()
     {
         RequireSingletonForUpdate<NetworkIdComponent>();
+        _rayTraceHelper = new RayTraceHelper(600f, 1f);
+        Segments.Core.CreateBatch(out _batch, Resources.Load<Material>("Materials/DirectionLine"));
     }
     
     protected override void OnUpdate()
     {
+        _batch.Dependency.Complete();
+        
         var localInputEntity = GetSingleton<CommandTargetComponent>().targetEntity;
         if (localInputEntity == Entity.Null)
         {
@@ -29,9 +37,12 @@ public class SampleBoatKeyboardInput : SystemBase
             return;
         }
         
-        var input = default(BoatKeyboardInput);
-        input.Tick = World.GetExistingSystem<ClientSimulationSystemGroup>().ServerTick;
+        var tick = World.GetExistingSystem<ClientSimulationSystemGroup>().ServerTick;
 
+        var input = default(BoatInput);
+        input.Tick = tick;
+
+        #region keyboard
         var keyboard = Keyboard.current;
 
         if (keyboard == null) // somehow user has no keyboard
@@ -60,9 +71,6 @@ public class SampleBoatKeyboardInput : SystemBase
         var playerForward = EntityManager.GetComponentData<LocalToWorld>(localInputEntity).Forward;
         // Debug.DrawLine(playerPosition, playerPosition + targetHeading * 4, Color.black, Time.DeltaTime);
 
-        var inputBuffer = EntityManager.GetBuffer<BoatKeyboardInput>(localInputEntity);
-        inputBuffer.AddCommandData(input);
-        
         // Direction line
         Entities
             .WithName("boat_direction_line")
@@ -82,21 +90,58 @@ public class SampleBoatKeyboardInput : SystemBase
             if (!isHidden && (math.abs(throttleInput) < 0.001 || barelyTurning))
                 EntityManager.AddComponent<DisableRendering>(entity);
         }).Run();
+        #endregion
+
+        #region mouse
+        var mouse = Mouse.current;
+        if (mouse == null) // somehow user has no mouse
+            return;
+
+        var camera = Camera.main;
+        var ray = camera.ScreenPointToRay(mouse.position.ReadValue());
+        var camPosition = camera.transform.position;
+        _rayTraceHelper.Init(camPosition, ray.direction);
+        _rayTraceHelper.Trace(out var distanceFromCam);
+        var playerPos = GetComponent<Translation>(localInputEntity).Value;
+        var aimPosition = new float3(camPosition + ray.direction * distanceFromCam);
+        
+        input.AimPosition = aimPosition;
+        DrawAimCircle(camPosition, aimPosition, playerPos);
+        #endregion
+        
+        var inputBuffer = EntityManager.GetBuffer<BoatInput>(localInputEntity);
+        inputBuffer.AddCommandData(input);
     }
 
     private void AddInputBuffers()
     {
         var localPlayerId = GetSingleton<NetworkIdComponent>().Value;
-        Entities.WithStructuralChanges().WithAll<MovableBoatComponent>().WithNone<BoatKeyboardInput, BoatMouseInput>().ForEach(
+        Entities.WithStructuralChanges().WithAll<MovableBoatComponent>().WithNone<BoatInput>().ForEach(
             (Entity ent, ref GhostOwnerComponent ghostOwner) =>
             {
                 if (ghostOwner.NetworkId == localPlayerId)
                 {
-                    EntityManager.AddBuffer<BoatKeyboardInput>(ent);
-                    EntityManager.AddBuffer<BoatMouseInput>(ent);
+                    EntityManager.AddBuffer<BoatInput>(ent);
                     EntityManager.SetComponentData(GetSingletonEntity<CommandTargetComponent>(),
                         new CommandTargetComponent {targetEntity = ent});
                 }
             }).Run();
+    }
+    
+    private void DrawAimCircle(float3 camPosition, float3 aimPosition, float3 playerPos)
+    {
+        var buffer = _batch.buffer;
+        var aimCirclePosition = aimPosition + new float3(0f, 0.5f, 0f);
+        var aimCircleRotation = quaternion.AxisAngle(new float3(1, 0, 0), math.PI / 2f);
+
+        var camDistanceToPlayer = math.distance(camPosition, playerPos);
+        var index = 0;
+        Segments.Plot.Circle(buffer, ref index, camDistanceToPlayer / 70f, aimCirclePosition, aimCircleRotation, 18);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        _batch.Dispose();
     }
 }

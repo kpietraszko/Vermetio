@@ -30,7 +30,7 @@ namespace Vermetio.Server
             var deltaTime = Time.DeltaTime;
 
             Entities
-                .ForEach((DynamicBuffer<BoatKeyboardInput> keyboardInputBuffer, ref Translation translation,
+                .ForEach((DynamicBuffer<BoatInput> keyboardInputBuffer, ref Translation translation,
                     ref Rotation rotation,
                     ref PhysicsMass pm, ref PhysicsVelocity pv, in LocalToWorld localToWorld,
                     in ProbyBuoyantComponent probyBuoyant) =>

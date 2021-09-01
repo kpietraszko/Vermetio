@@ -22,19 +22,9 @@ namespace Vermetio.Server
         
         protected override void OnUpdate()
         {
-            // Assign values to local variables captured in your job here, so that it has
-            // everything it needs to do its work when it runs later.
-            // For example,
-            //     float deltaTime = Time.DeltaTime;
-
-            // This declares a new kind of job, which is a unit of work to do.
-            // The job is declared as an Entities.ForEach with the target components as parameters,
-            // meaning it will process all entities in the world that have both
-            // Translation and Rotation components. Change it to process the component
-            // types you want.
             var tick = _ghostPredictionSystemGroup.PredictingTick;
             var deltaTime = Time.DeltaTime;
-            var mouseInputsPerEntity = GetBufferFromEntity<BoatMouseInput>(true);
+            var inputsPerEntity = GetBufferFromEntity<BoatInput>(true);
             var parentPerEntity = GetComponentDataFromEntity<Parent>(true);
 
             Entities.WithoutBurst().WithAll<BoatCageTagComponent>()
@@ -42,9 +32,9 @@ namespace Vermetio.Server
                     in LocalToWorld localToWorld) =>
                 {
                     var parentsParent = parentPerEntity[parent.Value].Value;
-                    var mouseInputBuffer = mouseInputsPerEntity[parentsParent];
-                    mouseInputBuffer.GetDataAtTick(tick, out var mouseInput);
-                    var angleToReticle = localToWorld.Up.SignedAngle(localToWorld.Forward, mouseInput.AimPosition);
+                    var inputBuffer = inputsPerEntity[parentsParent];
+                    inputBuffer.GetDataAtTick(tick, out var input);
+                    var angleToReticle = localToWorld.Up.SignedAngle(localToWorld.Forward, input.AimPosition);
                     rotation.Value = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), angleToReticle),
                         rotation.Value);
                 }).Run();

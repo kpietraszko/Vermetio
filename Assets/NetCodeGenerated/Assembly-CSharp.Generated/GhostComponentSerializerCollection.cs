@@ -13,6 +13,7 @@ namespace Assembly_CSharp.Generated
             var ghostCollectionSystem = World.GetOrCreateSystem<GhostCollectionSystem>();
             ghostCollectionSystem.AddSerializer(TranslationLowPrecGhostComponentSerializer.State);
             ghostCollectionSystem.AddSerializer(RotationLowPrecGhostComponentSerializer.State);
+            ghostCollectionSystem.AddSerializer(RotationSendChildGhostComponentSerializer.State);
         }
 
         protected override void OnUpdate()

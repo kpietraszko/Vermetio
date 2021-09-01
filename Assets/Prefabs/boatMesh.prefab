@@ -1056,9 +1056,13 @@ MonoBehaviour:
   - {fileID: 517579761676443878}
   ComponentNames:
   - Unity.Transforms.Rotation
-  PrefabTypeOverrides: []
+  PrefabTypeOverrides:
+  - Value: 7
+    OverrideIndex: 0
   SendTypeOverrides: []
-  VariantOverrides: []
+  VariantOverrides:
+  - Value: 14998767508557141177
+    OverrideIndex: 0
 --- !u!114 &-7507076930631550000
 MonoBehaviour:
   m_ObjectHideFlags: 0

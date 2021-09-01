@@ -21,4 +21,12 @@ public struct RotationLowPrec
     [GhostField(Quantization=100, Smoothing=SmoothingAction.InterpolateAndExtrapolate, SubType=SubTypes.Rot_LowPrec)] public quaternion Value;
 }
 
+[GhostComponentVariation(typeof(Rotation), "Rotation - Send child")]
+[GhostComponent(PrefabType = GhostPrefabType.All, OwnerPredictedSendType = GhostSendType.All, SendDataForChildEntity = true)]
+public struct RotationSendChild
+{
+    // Default quantization is 1000
+    [GhostField(Quantization=1000, Smoothing=SmoothingAction.InterpolateAndExtrapolate, SubType=SubTypes.Rot_SendChild)] public quaternion Value;
+}
+
 

@@ -50,7 +50,7 @@ namespace Vermetio.Server
             ecb.Playback(EntityManager);
             
             #if UNITY_EDITOR
-            Entities.WithoutBurst().WithNone<Prefab>().ForEach((Entity entity, GhostOwnerComponent owner) =>
+            Entities.WithoutBurst().WithNone<Prefab>().ForEach((Entity entity, in GhostOwnerComponent owner) =>
             {
                 EntityManager.SetName(player, $"PlayerBoat{owner.NetworkId}");
                 Debug.Log("Set name");

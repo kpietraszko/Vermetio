@@ -25,14 +25,12 @@ namespace Vermetio.Server
             var tick = _ghostPredictionSystemGroup.PredictingTick;
             var deltaTime = Time.DeltaTime;
             var inputsPerEntity = GetBufferFromEntity<BoatInput>(true);
-            var parentPerEntity = GetComponentDataFromEntity<Parent>(true);
 
             Entities.WithoutBurst().WithAll<BoatCageTagComponent>()
                 .ForEach((ref Rotation rotation, in Parent parent, in LocalToParent localToParent,
                     in LocalToWorld localToWorld) =>
                 {
-                    var parentsParent = parentPerEntity[parent.Value].Value;
-                    var inputBuffer = inputsPerEntity[parentsParent];
+                    var inputBuffer = inputsPerEntity[parent.Value];
                     inputBuffer.GetDataAtTick(tick, out var input);
                     var angleToReticle = localToWorld.Up.SignedAngle(localToWorld.Forward, input.AimPosition);
                     rotation.Value = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), angleToReticle),

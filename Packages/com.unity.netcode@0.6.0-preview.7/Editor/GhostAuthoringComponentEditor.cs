@@ -508,20 +508,20 @@ namespace Unity.NetCode.Editor
                 var convertedEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(self.gameObject,
                     GameObjectConversionSettings.FromWorld(tempWorld, blobAssetStore));
                 self.ForcePrefabConversion = false;
-
+ 
                 var newComponents = new List<SerializedComponentData>();
                 AddToComponentList(newComponents, tempWorld, convertedEntity, 0, self.gameObject);
-
-
+ 
                 if (tempWorld.EntityManager.HasComponent<LinkedEntityGroup>(convertedEntity))
                 {
+                    var transformGroup = self.GetComponentsInChildren<Transform>(true);
                     var linkedEntityGroup = tempWorld.EntityManager.GetBuffer<LinkedEntityGroup>(convertedEntity);
                     for (int i = 1; i < linkedEntityGroup.Length; ++i)
                     {
-                        AddToComponentList(newComponents, tempWorld, linkedEntityGroup[i].Value, i, self.transform.GetChild(i-1).gameObject);
+                        AddToComponentList(newComponents, tempWorld, linkedEntityGroup[i].Value, i, transformGroup[i].gameObject);
                     }
                 }
-
+ 
                 Components = newComponents.ToArray();
             }
         }

@@ -1052,8 +1052,10 @@ MonoBehaviour:
   Importance: 1
   prefabId: cab6b01cb88e7b84a87d274192e818e2
   Name: 
-  RefGameObjects: []
-  ComponentNames: []
+  RefGameObjects:
+  - {fileID: 517579761676443878}
+  ComponentNames:
+  - Unity.Transforms.Rotation
   PrefabTypeOverrides: []
   SendTypeOverrides: []
   VariantOverrides: []

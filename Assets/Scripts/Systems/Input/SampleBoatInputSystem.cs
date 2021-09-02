@@ -48,13 +48,13 @@ public class SampleBoatInputSystem : SystemBase
         
         var mouse = Mouse.current;
         if (mouse != null)
-            BoatInput(mouse, localInputEntity, ref input);
+            HandleMouseInput(mouse, localInputEntity, ref input);
 
         var inputBuffer = EntityManager.GetBuffer<BoatInput>(localInputEntity);
         inputBuffer.AddCommandData(input);
     }
 
-    private void BoatInput(Mouse mouse, Entity localInputEntity, ref BoatInput input)
+    private void HandleMouseInput(Mouse mouse, Entity localInputEntity, ref BoatInput input)
     {
         var camera = Camera.main;
         var ray = camera.ScreenPointToRay(mouse.position.ReadValue());
@@ -66,6 +66,12 @@ public class SampleBoatInputSystem : SystemBase
 
         input.AimPosition = aimPosition;
         DrawAimCircle(camPosition, aimPosition, playerPos);
+
+        if (mouse.leftButton.wasPressedThisFrame)
+        {
+            var shootCmdEntity = EntityManager.CreateEntity(typeof(ShootCommand), typeof(SendRpcCommandRequestComponent));
+            EntityManager.SetComponentData(shootCmdEntity, new ShootCommand() { TargetPosition = aimPosition });
+        }
     }
 
     private void HandleKeyboardInput(Entity localInputEntity, Keyboard keyboard, ref BoatInput input)

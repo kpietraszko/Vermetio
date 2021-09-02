@@ -27,7 +27,7 @@ namespace Vermetio.Server
             var deltaTime = Time.DeltaTime;
             var inputsPerEntity = GetBufferFromEntity<BoatInput>(true);
 
-            Entities.WithoutBurst().WithAll<BoatCageTagComponent>()
+            Entities.WithoutBurst().WithAll<BoatCageTag>()
                 .ForEach((ref Rotation rotation, in Parent parent, in LocalToParent localToParent,
                     in LocalToWorld localToWorld) =>
                 {

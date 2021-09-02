@@ -38,7 +38,7 @@ namespace Vermetio.Server
                     Debug.Log(String.Format("Server setting connection {0} to in game", GetComponent<NetworkIdComponent>(reqSrc.SourceConnection).Value));
                     player = ecb.Instantiate(boatPrefab);
                     var y = GetComponent<Translation>(boatPrefab).Value.y;
-                    var randomPosition = rnd.NextFloat3(new float3(-215, y, -331), new float3(280, y, -107)); //new float3(rnd.NextFloat(-215, 280), y, rnd.NextFloat(-331, -107));
+                    var randomPosition = rnd.NextFloat3(new float3(-215, y, -331), new float3(280, y, -107));
                     // Debug.Log($"{randomPosition}");
                     ecb.SetComponent(player, new Translation() {Value = randomPosition});
                     ecb.SetComponent(player, new GhostOwnerComponent { NetworkId = networkIdFromEntity[reqSrc.SourceConnection].Value});
@@ -48,6 +48,19 @@ namespace Vermetio.Server
                 }).Run();
             
             ecb.Playback(EntityManager);
+
+            var parentPerEntity = GetComponentDataFromEntity<Parent>(true);
+            var ghostOwnerPerEntity = GetComponentDataFromEntity<GhostOwnerComponent>(true);
+            
+            Entities
+                .WithReadOnly(parentPerEntity)
+                .WithReadOnly(ghostOwnerPerEntity)
+                .WithoutBurst()
+                .ForEach((Entity entity, ref BulletSpawnPointComponent spawnPoint) =>
+                {
+                    var root = GetRootParent(entity, parentPerEntity);
+                    spawnPoint = new BulletSpawnPointComponent() {NetworkId = ghostOwnerPerEntity[root].NetworkId};
+                }).Run();
             
             #if UNITY_EDITOR
             Entities.WithoutBurst().WithNone<Prefab>().ForEach((Entity entity, in GhostOwnerComponent owner) =>
@@ -58,7 +71,7 @@ namespace Vermetio.Server
             #endif
         }
 
-        private Entity GetGhostPrefab<T>() where T : struct
+        private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common
         {
             var ghostCollection = GetSingletonEntity<GhostPrefabCollectionComponent>();
             var prefabs = EntityManager.GetBuffer<GhostPrefabBuffer>(ghostCollection);
@@ -69,6 +82,17 @@ namespace Vermetio.Server
             }
 
             return Entity.Null;
+        }
+
+        private static Entity GetRootParent(Entity entity, ComponentDataFromEntity<Parent> parentPerEntity) // TODO: move to common
+        {
+            var currentParent = entity;
+            while (parentPerEntity.HasComponent(currentParent)) // while currentParent has a parent
+            {
+                currentParent = parentPerEntity[currentParent].Value;
+            }
+
+            return currentParent;
         }
     }
 }

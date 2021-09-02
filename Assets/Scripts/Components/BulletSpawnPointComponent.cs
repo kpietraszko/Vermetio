@@ -3,7 +3,9 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
+[Serializable]
 [GenerateAuthoringComponent]
-public struct PlayerProxyTagComponent : IComponentData
+public struct BulletSpawnPointComponent : IComponentData
 {
+    public int NetworkId;
 }

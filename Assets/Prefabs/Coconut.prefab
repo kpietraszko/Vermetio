@@ -16,8 +16,9 @@ GameObject:
   - component: {fileID: 8080581829221530458}
   - component: {fileID: 895779231170848824}
   - component: {fileID: -5937910058129836100}
+  - component: {fileID: 6604076675010041891}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Coconut
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -342,5 +343,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c941d046360ef384cad8546735c18092, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6604076675010041891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8520222691718690185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41843ec1de2404f458fae5fdce4b9c9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

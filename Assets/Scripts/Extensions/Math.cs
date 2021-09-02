@@ -20,7 +20,7 @@ namespace Vermetio
         // The smaller of the two possible angles between the two vectors is returned, therefore the result will never be greater than 180 degrees or smaller than -180 degrees.
         // If you imagine the from and to vectors as lines on a piece of paper, both originating from the same point, then the /axis/ vector would point up out of the paper.
         // The measured angle between the two vectors would be positive in a clockwise direction and negative in an anti-clockwise direction.
-        public static float SignedAngle(this float3 axis, float3 from, float3 to)
+        public static float SignedAngleDeg(this float3 axis, float3 from, float3 to)
         {
             var unsignedAngle = Angle(from, to);
             var sign = math.sign(math.dot(math.cross(from, to), axis));

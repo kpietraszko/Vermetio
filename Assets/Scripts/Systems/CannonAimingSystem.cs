@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;
+using UnityEngine;
 using Vermetio;
 
 namespace Vermetio.Server
@@ -32,10 +33,17 @@ namespace Vermetio.Server
                 {
                     var inputBuffer = inputsPerEntity[parent.Value];
                     inputBuffer.GetDataAtTick(tick, out var input);
-                    var angleToReticle = localToWorld.Up.SignedAngle(localToWorld.Forward, input.AimPosition);
-                    rotation.Value = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), angleToReticle),
-                        rotation.Value);
+                    
+                    var angleToReticle = localToWorld.Up.SignedAngleDeg(math.normalize(Flatten(localToWorld.Forward)), math.normalize(Flatten(input.AimPosition - localToWorld.Position)));
+                    Debug.DrawLine(localToWorld.Position, localToWorld.Position + Flatten(math.normalize(localToWorld.Forward)) * 10, Color.red, deltaTime);
+                    Debug.DrawLine(localToWorld.Position, localToWorld.Position + Flatten(math.normalize(input.AimPosition - localToWorld.Position) * 10), Color.green, deltaTime);
+                    if (math.abs(angleToReticle) < 2f) // close enough
+                        return;
+                        
+                    rotation.Value = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(math.sign(angleToReticle) * 180f) * deltaTime), rotation.Value);
                 }).Run();
         }
+
+        private float3 Flatten(float3 vector) => new float3(vector.x, 0f, vector.z);
     }
 }

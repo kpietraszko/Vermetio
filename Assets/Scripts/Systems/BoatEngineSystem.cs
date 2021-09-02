@@ -56,12 +56,9 @@ namespace Vermetio.Server
                     pv.ApplyLinearImpulse(impulseMass, impulse);
                     // Debug.Log($"Applying impulse {impulse}");
 
-                    var rotationAxis =
-                        new float3(0, 0, 1) +
-                        probyBuoyant.TurningHeel *
-                        new float3(0, 0,
-                            1); //localToWorld.Up + probyBuoyant.TurningHeel * localToWorld.Forward; // localToWorld.Up or world up?
-                    var angleToTarget = localToWorld.Up.SignedAngle(
+                    // TODO: note that this axis is a hack because idk
+                    var rotationAxis = new float3(0, 0, 1) + probyBuoyant.TurningHeel * new float3(0, 0, 1); //localToWorld.Up + probyBuoyant.TurningHeel * localToWorld.Forward; // localToWorld.Up or world up?
+                    var angleToTarget = localToWorld.Up.SignedAngleDeg(
                         math.normalize(new float3(localToWorld.Forward.x, 0f, localToWorld.Forward.z)),
                         keyboardInput.TargetDirection);
 

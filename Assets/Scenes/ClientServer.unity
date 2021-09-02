@@ -283,11 +283,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Ghosts:
-  - prefab: {fileID: 6019950340958582473, guid: e0586d7bc2cba594a83c3d1ef7f9815b, type: 3}
-    enabled: 1
   - prefab: {fileID: 8080581829221530458, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
     enabled: 1
-  - prefab: {fileID: 1870413638185650884, guid: cab6b01cb88e7b84a87d274192e818e2, type: 3}
+  - prefab: {fileID: 7477081914441570866, guid: e0586d7bc2cba594a83c3d1ef7f9815b, type: 3}
     enabled: 1
 --- !u!4 &222666375
 Transform:

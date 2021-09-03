@@ -98,7 +98,7 @@ void ApplyReflectionSky(in const half3 i_view, in const half3 i_n_pixel, in cons
 
 	// Fresnel
 	float R_theta = CalculateFresnelReflectionCoefficient(max(dot(i_n_pixel, i_view), 0.0));
-	io_col = lerp(io_col, skyColour, R_theta * _Specular * i_weight * i_shadow);
+	io_col = lerp(io_col, skyColour, R_theta * _Specular * i_weight * max(i_shadow, 0.1));
 }
 
 #if _UNDERWATER_ON

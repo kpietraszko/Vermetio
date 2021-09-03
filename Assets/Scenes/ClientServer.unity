@@ -1990,7 +1990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a9831c057d563b48bf674fa036b5803, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeCompoundColliderSize: 1900
+  treeCompoundColliderSize: 1181
   terrainData: {fileID: 15600000, guid: c77316a1ea375d14dbbe5b6a95cac277, type: 2}
   belongsTo:
     Category00: 1

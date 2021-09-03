@@ -1220,7 +1220,7 @@ MonoBehaviour:
   _gravityMultiplier: 1
   _minTexelsPerWave: 3
   _minScale: 8
-  _maxScale: 256
+  _maxScale: 64
   _dropDetailHeightBasedOnWaves: 0.2
   _lodDataResolution: 384
   _geometryDownSampleFactor: 2
@@ -1948,7 +1948,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695907642}
   m_LocalRotation: {x: 0.43004853, y: 0.000000023338021, z: 0.000000011116965, w: 0.90280586}
-  m_LocalPosition: {x: -0.000022970815, y: 144.47379, z: -1.9378953}
+  m_LocalPosition: {x: -0.000021063466, y: 144.47379, z: -1.9378953}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2331,7 +2331,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548558693647917774}
   m_LocalRotation: {x: 0.43004853, y: 0.000000023338021, z: 0.000000011116965, w: 0.90280586}
-  m_LocalPosition: {x: -0.000022970815, y: 144.47379, z: -1.9378953}
+  m_LocalPosition: {x: -0.000021063466, y: 144.47379, z: -1.9378953}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 548558693587097833}

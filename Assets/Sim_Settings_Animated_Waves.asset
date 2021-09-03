@@ -16,6 +16,6 @@ MonoBehaviour:
   _attenuationInShallows: 0
   _collisionSource: 3
   _maxQueryCount: 4096
-  _pingPongCombinePass: 1
+  _pingPongCombinePass: 0
   _renderTextureGraphicsFormat: 48
   _bakedFFTData: {fileID: 11400000, guid: bb330664d741f48419099de24ad4cd27, type: 2}

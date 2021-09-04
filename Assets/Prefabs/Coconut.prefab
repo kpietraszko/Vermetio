@@ -102,7 +102,7 @@ MonoBehaviour:
   m_MotionType: 0
   m_Smoothing: 0
   m_Mass: 4
-  m_LinearDamping: 2
+  m_LinearDamping: 0
   m_AngularDamping: 0.4
   m_InitialLinearVelocity:
     x: 0
@@ -112,7 +112,7 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
-  m_GravityFactor: 1
+  m_GravityFactor: 7
   m_OverrideDefaultMassDistribution: 0
   m_CenterOfMass:
     x: 0
@@ -302,9 +302,11 @@ MonoBehaviour:
   RefGameObjects:
   - {fileID: 8520222691718690185}
   - {fileID: 8520222691718690185}
+  - {fileID: 8520222691718690185}
   ComponentNames:
   - Unity.Physics.PhysicsCollider
   - Unity.Transforms.Rotation
+  - Unity.Transforms.Translation
   PrefabTypeOverrides:
   - Value: 7
     OverrideIndex: 0
@@ -312,6 +314,8 @@ MonoBehaviour:
   VariantOverrides:
   - Value: 16882179680978693687
     OverrideIndex: 1
+  - Value: 10137082255859595637
+    OverrideIndex: 2
 --- !u!114 &895779231170848824
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class TestIfGoDeleted : MonoBehaviour
     void Update()
     {
         // #if !UNITY_EDITOR
+        Debug.Log($"Destroying GameObject {gameObject.name}");
         Destroy(gameObject);
         // #endif
     }

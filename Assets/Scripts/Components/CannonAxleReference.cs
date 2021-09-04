@@ -5,7 +5,7 @@ using Unity.Mathematics;
 
 [Serializable]
 [GenerateAuthoringComponent]
-public struct BulletSpawnPointComponent : IComponentData
+public struct CannonAxleReference : IComponentData
 {
-    public int NetworkId;
+    public Entity Axle;
 }

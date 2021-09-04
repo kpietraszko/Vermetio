@@ -52,15 +52,15 @@ namespace Vermetio.Server
             var parentPerEntity = GetComponentDataFromEntity<Parent>(true);
             var ghostOwnerPerEntity = GetComponentDataFromEntity<GhostOwnerComponent>(true);
             
-            Entities
-                .WithReadOnly(parentPerEntity)
-                .WithReadOnly(ghostOwnerPerEntity)
-                .WithoutBurst()
-                .ForEach((Entity entity, ref BulletSpawnPointComponent spawnPoint) =>
-                {
-                    var root = GetRootParent(entity, parentPerEntity);
-                    spawnPoint = new BulletSpawnPointComponent() {NetworkId = ghostOwnerPerEntity[root].NetworkId};
-                }).Run();
+            // Entities
+            //     .WithReadOnly(parentPerEntity)
+            //     .WithReadOnly(ghostOwnerPerEntity)
+            //     .WithoutBurst()
+            //     .ForEach((Entity entity, ref BulletSpawnPointComponent spawnPoint) =>
+            //     {
+            //         var root = GetRootParent(entity, parentPerEntity);
+            //         spawnPoint = new BulletSpawnPointComponent() {NetworkId = ghostOwnerPerEntity[root].NetworkId};
+            //     }).Run();
             
             #if UNITY_EDITOR
             Entities.WithoutBurst().WithNone<Prefab>().ForEach((Entity entity, in GhostOwnerComponent owner) =>

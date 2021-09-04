@@ -340,7 +340,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &131878862
 Transform:
   m_ObjectHideFlags: 0
@@ -977,7 +977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &857174067
 Transform:
   m_ObjectHideFlags: 0
@@ -1211,7 +1211,7 @@ MonoBehaviour:
   _globalWindSpeed: 150
   _viewpoint: {fileID: 0}
   _camera: {fileID: 1695907644}
-  _timeProvider: {fileID: 909074733}
+  _timeProvider: {fileID: 0}
   _primaryLight: {fileID: 1442418599}
   _searchForPrimaryLightOnStartup: 1
   _material: {fileID: 2100000, guid: 9def92ac79181fe41b238e91663f0fad, type: 2}
@@ -1577,7 +1577,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -1948,7 +1948,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695907642}
   m_LocalRotation: {x: 0.43004853, y: 0.000000023338021, z: 0.000000011116965, w: 0.90280586}
-  m_LocalPosition: {x: -0.000021063466, y: 144.47379, z: -1.9378953}
+  m_LocalPosition: {x: -0.000022970815, y: 144.47379, z: -1.9378953}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2331,7 +2331,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548558693647917774}
   m_LocalRotation: {x: 0.43004853, y: 0.000000023338021, z: 0.000000011116965, w: 0.90280586}
-  m_LocalPosition: {x: -0.000021063466, y: 144.47379, z: -1.9378953}
+  m_LocalPosition: {x: -0.000022970815, y: 144.47379, z: -1.9378953}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 548558693587097833}

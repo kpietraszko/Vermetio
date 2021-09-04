@@ -15,6 +15,6 @@ MonoBehaviour:
   _version: 0
   _jitterDiameterSoft: 11.4
   _currentFrameWeightSoft: 0.03
-  _jitterDiameterHard: 1
+  _jitterDiameterHard: 2
   _currentFrameWeightHard: 0.15
   _allowNullLight: 0

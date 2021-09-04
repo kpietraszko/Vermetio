@@ -8,8 +8,7 @@ using UnityEngine;
 
 public class CopyPlayerPositionToProxy : MonoBehaviour
 {
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         var world = GetWorldWith<ClientSimulationSystemGroup>(World.All);
         if (world == null)

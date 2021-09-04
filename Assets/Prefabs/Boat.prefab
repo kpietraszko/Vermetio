@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4879339658106556814}
-  - component: {fileID: 8856442996461123955}
   m_Layer: 0
   m_Name: BulletSpawnPoint
   m_TagString: Untagged
@@ -31,19 +30,6 @@ Transform:
   m_Father: {fileID: 4340774783139444529}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8856442996461123955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491511351821123689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3530273782ee1448b7fcbeea7a6f42a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NetworkId: 0
 --- !u!1 &658744444295539272
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,6 +126,8 @@ GameObject:
   - component: {fileID: 4885768470970430959}
   - component: {fileID: 2233581049079496736}
   - component: {fileID: 4676568210551468701}
+  - component: {fileID: 3788335438872679929}
+  - component: {fileID: 1356380062199504376}
   m_Layer: 0
   m_Name: boat
   m_TagString: Untagged
@@ -270,18 +258,22 @@ MonoBehaviour:
   DefaultGhostMode: 0
   SupportedGhostModes: 3
   OptimizationMode: 0
-  Importance: 1
+  Importance: 10
   prefabId: e0586d7bc2cba594a83c3d1ef7f9815b
   Name: 
   RefGameObjects:
   - {fileID: 3476712302908373068}
+  - {fileID: 4159249310053457270}
   ComponentNames:
+  - Unity.Transforms.Rotation
   - Unity.Transforms.Rotation
   PrefabTypeOverrides: []
   SendTypeOverrides: []
   VariantOverrides:
   - Value: 14998767508557141177
     OverrideIndex: 0
+  - Value: 14998767508557141177
+    OverrideIndex: 1
 --- !u!114 &3080096736190477122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,12 +351,12 @@ MonoBehaviour:
   m_ShapeType: 1
   m_PrimitiveCenter:
     x: 0
-    y: 0
+    y: 0.33
     z: 0
   m_PrimitiveSize:
-    x: 1.2669113
-    y: 1.2669113
-    z: 4.833164
+    x: 1.42
+    y: 1.42
+    z: 5.55
   m_PrimitiveOrientation:
     Value:
       x: 0
@@ -372,15 +364,15 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 4.833164
-    Radius: 0.63345563
+    Height: 5.55
+    Radius: 0.71
     Axis: 2
   m_Cylinder:
-    Height: 4.833164
-    Radius: 0.63345563
+    Height: 5.55
+    Radius: 0.71
     Axis: 2
   m_CylinderSideCount: 20
-  m_SphereRadius: 2.416582
+  m_SphereRadius: 2.775
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.015
@@ -499,6 +491,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f82709671fa0841468b8d229c9e80c1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3788335438872679929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028933030943869725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2998174c351264469710449853e48f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BulletSpawnPoint: {fileID: 491511351821123689}
+--- !u!114 &1356380062199504376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028933030943869725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad46a189e4bd073468fdc71d806e771e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Axle: {fileID: 4159249310053457270}
 --- !u!1 &1031506611295282554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1253,14 +1271,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4159249310053457270}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.39722794, y: 0, z: 0, w: 0.91771996}
   m_LocalPosition: {x: 0.005150297, y: 0.0000042653082, z: -0.0000011432171}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4340774783139444529}
   m_Father: {fileID: 6292451928276376462}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 46.81, y: 0, z: 0}
 --- !u!33 &7837242925673506932
 MeshFilter:
   m_ObjectHideFlags: 0

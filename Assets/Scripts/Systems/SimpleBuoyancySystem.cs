@@ -115,14 +115,14 @@ namespace Vermetio.Server
                 .WithReadOnly(waterDataPerEntity)
                 .WithDisposeOnCompletion(waterDataPerEntity)
                 .ForEach((Entity entity, ref Translation translation, ref PhysicsVelocity pv,
-                    ref SimpleBuoyantComponent buoyant, in LocalToWorld localToWorld, 
-                    in Rotation rotation, in PhysicsMass pm, in PhysicsCollider col) =>
+                    ref SimpleBuoyantComponent buoyant, ref PhysicsDamping damping, in LocalToWorld localToWorld, 
+                    in Rotation rotation, in PhysicsMass pm) =>
                 {
                     // ProfileFewTicks(tick);
                     // GizmoManager.ClearGizmos();
-                    var objectExtents = col.Value.Value
-                        .CalculateAabb(new RigidTransform(rotation.Value, translation.Value))
-                        .Extents;
+                    // var objectExtents = col.Value.Value
+                    //     .CalculateAabb(new RigidTransform(rotation.Value, translation.Value))
+                    //     .Extents;
 
                     // var objectSizeForWaves = min(objectExtents.x, min(objectExtents.y, objectExtents.z));
                     // Debug.Log($"{voxels.Length}");
@@ -142,7 +142,8 @@ namespace Vermetio.Server
                     var inWater = bottomDepth > 0f;
                     if (!inWater)
                         return;
-                    
+
+                    damping = new PhysicsDamping() {Angular = damping.Angular, Linear = 1.5f}; // note that this will stay at at value forever, it's never unapplied
                     var up = new float3(0f, 1f, 0f);
                     var buoyancy = up * buoyant.BuoyancyCoeff * bottomDepth * bottomDepth * bottomDepth;
                     // Debug.Log($"pmTransformPos: {pm.Transform.pos}");

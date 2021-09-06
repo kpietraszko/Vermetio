@@ -60,7 +60,11 @@ public class SampleBoatInputSystem : SystemBase
         var ray = camera.ScreenPointToRay(mouse.position.ReadValue());
         var camPosition = camera.transform.position;
         _rayTraceHelper.Init(camPosition, ray.direction);
-        _rayTraceHelper.Trace(out var distanceFromCam);
+        if (!_rayTraceHelper.Trace(out var distanceFromCam))
+        {
+            _batch.buffer.Clear();
+            return;
+        }
         var playerPos = GetComponent<Translation>(localInputEntity).Value;
         var aimPosition = new float3(camPosition + ray.direction * distanceFromCam);
 

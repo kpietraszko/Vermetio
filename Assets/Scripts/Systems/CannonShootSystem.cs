@@ -15,6 +15,7 @@ namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostPredictionSystemGroup))]
     [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction for now
+    [UpdateAfter(typeof(CannonAimingSystem))]
     public class CannonShootSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
@@ -48,15 +49,25 @@ namespace Vermetio.Server
             ecb.Playback(EntityManager); // so that we can spawn the bullet instantly
             
             ecb = new EntityCommandBuffer(Allocator.Temp);
+            var elapsedTime = Time.ElapsedTime;
 
             Entities
-                .ForEach((Entity playerEntity, ref ShootCommand cmd, in BulletSpawnPointReference spawnPointReference) =>
+                .ForEach((Entity playerEntity, ref ShootCommand cmd, ref ShootParametersComponent shootParams, in BulletSpawnPointReference spawnPointReference) =>
                 {
-                    var bullet = ecb.Instantiate(bulletPrefab);
-                    var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
-                    ecb.SetComponent(bullet, new Translation() { Value = spawnPointLTW.Position});
-                    ecb.AddComponent(bullet, cmd);
-                    ecb.AddComponent(bullet, new SpawnedByComponent() { Player = playerEntity});
+                    var afterCooldown = elapsedTime - shootParams.LastShotAt > shootParams.Cooldown;
+                    if (afterCooldown && shootParams.TargetLegit)
+                    {
+                        var bullet = ecb.Instantiate(bulletPrefab);
+                        var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
+                        ecb.SetComponent(bullet, new Translation() {Value = spawnPointLTW.Position});
+                        ecb.AddComponent(bullet, new SpawnedByComponent() {Player = playerEntity});
+                        shootParams.LastShotAt = elapsedTime;
+                    }
+                    else
+                    {
+                        Debug.Log("Wait for cooldown or aim properly!");
+                    }
+
                     ecb.RemoveComponent<ShootCommand>(playerEntity);
                 }).Run();
             

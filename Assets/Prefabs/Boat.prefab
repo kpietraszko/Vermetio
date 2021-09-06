@@ -501,7 +501,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ea9ecfda79c0041a54db748a0ddcf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeToHit: 0
+  Cooldown: 0.5
+  LastShotAt: 0
+  TargetLegit: 0
+  Velocity:
+    x: 0
+    y: 0
+    z: 0
 --- !u!1 &1031506611295282554
 GameObject:
   m_ObjectHideFlags: 0

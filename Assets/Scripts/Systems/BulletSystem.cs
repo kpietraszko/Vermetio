@@ -37,15 +37,10 @@ namespace Vermetio.Server
             Entities
                 .WithAll<BulletTag>().WithNone<BulletFiredComponent>()
                 .ForEach((Entity entity, int entityInQueryIndex, ref LocalToWorld localToWorld, ref PhysicsVelocity pv,
-                    in PhysicsMass pm, in ShootCommand cmd, in PhysicsGravityFactor gravityFactor, in SpawnedByComponent spawnedBy) =>
+                    in PhysicsMass pm, in PhysicsGravityFactor gravityFactor, in SpawnedByComponent spawnedBy) =>
                 {
                     var shootParams = GetComponent<ShootParametersComponent>(spawnedBy.Player);
-                    if (!shootParams.Legit)
-                    {
-                        endFrameEcb.DestroyEntity(entityInQueryIndex, entity);
-                        return;
-                    }
-                    
+
                     endFrameEcb.AddComponent<BulletFiredComponent>(entityInQueryIndex, entity);
                     pm.GetImpulseFromForce(shootParams.Velocity, ForceMode.VelocityChange, deltaTime, out var impulse, out var impulseMass);
                     pv.ApplyLinearImpulse(impulseMass, impulse);

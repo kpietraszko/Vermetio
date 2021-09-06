@@ -29,6 +29,7 @@ namespace Vermetio.Server
         {
             var tick = _ghostPredictionSystemGroup.PredictingTick;
             var deltaTime = Time.DeltaTime;
+            var elapsedTime = Time.ElapsedTime;
 
             Entities
                 // .WithoutBurst()
@@ -80,7 +81,7 @@ namespace Vermetio.Server
                     if (discriminant < 0 || math.length(toTarget) < 2 * math.distance(ltw.Position, spawnPoint))
                     {
                         // Target to far to hit with given max speed
-                        shootParams = new ShootParametersComponent() { Legit = false };
+                        shootParams.TargetLegit = false;
                         return;
                     }
 
@@ -101,7 +102,9 @@ namespace Vermetio.Server
                     // Convert from time-to-hit to a launch velocity:
                     var velocity = toTarget / T - gravity * T / 2f;
 
-                    shootParams = new ShootParametersComponent() { Legit = true, Velocity = velocity };
+                    var afterCooldown = elapsedTime - shootParams.LastShotAt > shootParams.Cooldown;
+                    shootParams.TargetLegit = true;
+                    shootParams.Velocity = velocity;
                 }).Schedule(Dependency);
 
             Entities
@@ -109,7 +112,7 @@ namespace Vermetio.Server
                 .WithAll<MovableBoatComponent>()
                 .ForEach((in CannonAxleReference axleReference, in ShootParametersComponent shootParams) =>
                 {
-                    if (!shootParams.Legit)
+                    if (!shootParams.TargetLegit)
                         return;
                     
                     var angle = new float3(1, 0, 0).SignedAngleDeg(new float3(0, 1, 0), math.normalize(shootParams.Velocity));

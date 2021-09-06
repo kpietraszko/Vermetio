@@ -9,8 +9,12 @@ using UnityEngine.Serialization;
 [GenerateAuthoringComponent]
 public struct ShootParametersComponent : IComponentData
 {
+    public double Cooldown;
+    
+    public double LastShotAt;
+    
     [HideInInspector] 
-    public bool Legit;
+    public bool TargetLegit;
 
     [HideInInspector] 
     public float3 Velocity;

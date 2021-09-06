@@ -23,7 +23,7 @@ namespace Assembly_CSharp.Generated
             {
                 s_State = new GhostComponentSerializer.State
                 {
-                    GhostFieldsHash = 11975939360750824860,
+                    GhostFieldsHash = 14830936391251481244,
                     ExcludeFromComponentCollectionHash = 0,
                     ComponentType = ComponentType.ReadWrite<Unity.Transforms.Rotation>(),
                     ComponentSize = UnsafeUtility.SizeOf<Unity.Transforms.Rotation>(),
@@ -76,10 +76,10 @@ namespace Assembly_CSharp.Generated
                 ref var snapshot = ref GhostComponentSerializer.TypeCast<Snapshot>(snapshotData, snapshotOffset + snapshotStride*i);
                 ref var component = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(componentData, componentStride*i);
                 ref var serializerState = ref GhostComponentSerializer.TypeCast<GhostSerializerState>(stateData, 0);
-                snapshot.Value_value_x = (int) math.round(component.Value.value.x * 100);
-                snapshot.Value_value_y = (int) math.round(component.Value.value.y * 100);
-                snapshot.Value_value_z = (int) math.round(component.Value.value.z * 100);
-                snapshot.Value_value_w = (int) math.round(component.Value.value.w * 100);
+                snapshot.Value_value_x = (int) math.round(component.Value.value.x * 10);
+                snapshot.Value_value_y = (int) math.round(component.Value.value.y * 10);
+                snapshot.Value_value_z = (int) math.round(component.Value.value.z * 10);
+                snapshot.Value_value_w = (int) math.round(component.Value.value.w * 10);
             }
         }
         [BurstCompile]
@@ -106,8 +106,8 @@ namespace Assembly_CSharp.Generated
                 float snapshotInterpolationFactor = snapshotInterpolationFactorRaw;
                 ref var component = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(componentData, componentStride*i);
                 snapshotInterpolationFactor = snapshotInterpolationFactorRaw;
-                var Value_value_Before = new float4(snapshotBefore.Value_value_x * 0.01f, snapshotBefore.Value_value_y * 0.01f, snapshotBefore.Value_value_z * 0.01f, snapshotBefore.Value_value_w * 0.01f);
-                var Value_value_After = new float4(snapshotAfter.Value_value_x * 0.01f, snapshotAfter.Value_value_y * 0.01f, snapshotAfter.Value_value_z * 0.01f, snapshotAfter.Value_value_w * 0.01f);
+                var Value_value_Before = new float4(snapshotBefore.Value_value_x * 0.1f, snapshotBefore.Value_value_y * 0.1f, snapshotBefore.Value_value_z * 0.1f, snapshotBefore.Value_value_w * 0.1f);
+                var Value_value_After = new float4(snapshotAfter.Value_value_x * 0.1f, snapshotAfter.Value_value_y * 0.1f, snapshotAfter.Value_value_z * 0.1f, snapshotAfter.Value_value_w * 0.1f);
                 component.Value.value = math.lerp(Value_value_Before, Value_value_After, snapshotInterpolationFactor);
 
             }

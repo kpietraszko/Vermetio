@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Smoothing: 0
   m_Mass: 4
   m_LinearDamping: 0
-  m_AngularDamping: 0.4
+  m_AngularDamping: 0.7
   m_InitialLinearVelocity:
     x: 0
     y: 0

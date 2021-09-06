@@ -48,14 +48,12 @@ namespace Vermetio.Server
             ecb.Playback(EntityManager); // so that we can spawn the bullet instantly
             
             ecb = new EntityCommandBuffer(Allocator.Temp);
-            var spawnPointLTWPerEntity = GetComponentDataFromEntity<LocalToWorld>(true);
 
             Entities
-                .WithReadOnly(spawnPointLTWPerEntity)
                 .ForEach((Entity playerEntity, ref ShootCommand cmd, in BulletSpawnPointReference spawnPointReference) =>
                 {
                     var bullet = ecb.Instantiate(bulletPrefab);
-                    var spawnPointLTW = spawnPointLTWPerEntity[spawnPointReference.BulletSpawnPoint];
+                    var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
                     ecb.SetComponent(bullet, new Translation() { Value = spawnPointLTW.Position});
                     ecb.AddComponent(bullet, cmd);
                     ecb.AddComponent(bullet, new SpawnedByComponent() { Player = playerEntity});

@@ -27,8 +27,9 @@ namespace Vermetio.Server
     [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // probably redundant
     public class SimpleBuoyancySystem : SystemBase
     {
-        BuildPhysicsWorld _buildPhysicsWorld;
-        EndFramePhysicsSystem _endFramePhysics;
+        private BuildPhysicsWorld _buildPhysicsWorld;
+        private EndFramePhysicsSystem _endFramePhysics;
+        private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
         private static Vector3[] _queryPoints = new Vector3[0];
         private static float[] _waterHeights = new float[0];
@@ -43,6 +44,7 @@ namespace Vermetio.Server
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
 
+            _endSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
             // Debug.unityLogger.logEnabled = false;
         }
 
@@ -107,6 +109,7 @@ namespace Vermetio.Server
             entities.Dispose();
 
             var debugDraw = _debugDraw;
+            var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
 
             Entities
                 // .WithoutBurst()
@@ -114,9 +117,8 @@ namespace Vermetio.Server
                 // .WithReadOnly(physicsWorld)
                 .WithReadOnly(waterDataPerEntity)
                 .WithDisposeOnCompletion(waterDataPerEntity)
-                .ForEach((Entity entity, ref Translation translation, ref PhysicsVelocity pv,
-                    ref SimpleBuoyantComponent buoyant, ref PhysicsDamping damping, in LocalToWorld localToWorld, 
-                    in Rotation rotation, in PhysicsMass pm) =>
+                .ForEach((Entity entity, int entityInQueryIndex, ref Translation translation, ref PhysicsVelocity pv,
+                    ref SimpleBuoyantComponent buoyant, ref PhysicsDamping damping, in LocalToWorld localToWorld, in PhysicsMass pm) =>
                 {
                     // ProfileFewTicks(tick);
                     // GizmoManager.ClearGizmos();
@@ -141,14 +143,21 @@ namespace Vermetio.Server
                     var bottomDepth = waterData.Height - translation.Value.y + buoyant.RaiseObject;
                     var inWater = bottomDepth > 0f;
                     if (!inWater)
+                    {
+                        damping = new PhysicsDamping() {Angular = damping.Angular, Linear = 0f};
                         return;
+                    }
 
-                    damping = new PhysicsDamping() {Angular = damping.Angular, Linear = 1.5f}; // note that this will stay at at value forever, it's never unapplied
+                    if (HasComponent<BulletTag>(entity)) // bullet is no longer a bullet once in water
+                        endFrameEcb.RemoveComponent<BulletTag>(entityInQueryIndex, entity);
+
+                    damping = new PhysicsDamping() {Angular = damping.Angular, Linear = 1.5f};
                     var up = new float3(0f, 1f, 0f);
                     var buoyancy = up * buoyant.BuoyancyCoeff * bottomDepth * bottomDepth * bottomDepth;
                     // Debug.Log($"pmTransformPos: {pm.Transform.pos}");
                     pm.GetImpulseFromForce(buoyancy, ForceMode.Acceleration, deltaTime, out var impulse, out var impulseMass);
                     pv.ApplyLinearImpulse(pm, impulse);
+                    var rotation = new Rotation() {Value = localToWorld.Rotation.value};
 
                     // Approximate hydrodynamics of sliding along water
                     if (buoyant.AccelerateDownhill > 0f)

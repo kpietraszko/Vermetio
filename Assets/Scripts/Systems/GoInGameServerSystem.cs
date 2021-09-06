@@ -5,6 +5,8 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.NetCode;
+using Unity.Physics;
+using Unity.Physics.GraphicsIntegration;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -23,7 +25,7 @@ namespace Vermetio.Server
         {
             var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-            var boatPrefab = GetGhostPrefab<ProbyBuoyantComponent>();
+            var boatPrefab = EntityHelpers.GetGhostPrefab<ProbyBuoyantComponent>(EntityManager);
             var networkIdFromEntity = GetComponentDataFromEntity<NetworkIdComponent>(true);
             var rnd = new Unity.Mathematics.Random((uint)DateTime.Now.Millisecond * 1500000000u);
             Entity player = Entity.Null;
@@ -36,6 +38,9 @@ namespace Vermetio.Server
                 {
                     ecb.AddComponent<NetworkStreamInGame>(reqSrc.SourceConnection);
                     Debug.Log(String.Format("Server setting connection {0} to in game", GetComponent<NetworkIdComponent>(reqSrc.SourceConnection).Value));
+                    if (boatPrefab == null)
+                        Debug.LogError("Player boat prefab not found!");
+                    
                     player = ecb.Instantiate(boatPrefab);
                     var y = GetComponent<Translation>(boatPrefab).Value.y;
                     var randomPosition = rnd.NextFloat3(new float3(-215, y, -331), new float3(280, y, -107));
@@ -51,7 +56,7 @@ namespace Vermetio.Server
 
             var parentPerEntity = GetComponentDataFromEntity<Parent>(true);
             var ghostOwnerPerEntity = GetComponentDataFromEntity<GhostOwnerComponent>(true);
-            
+
             // Entities
             //     .WithReadOnly(parentPerEntity)
             //     .WithReadOnly(ghostOwnerPerEntity)
@@ -69,30 +74,6 @@ namespace Vermetio.Server
                 Debug.Log("Set name");
             }).Run();
             #endif
-        }
-
-        private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common
-        {
-            var ghostCollection = GetSingletonEntity<GhostPrefabCollectionComponent>();
-            var prefabs = EntityManager.GetBuffer<GhostPrefabBuffer>(ghostCollection);
-            for (int ghostId = 0; ghostId < prefabs.Length; ++ghostId)
-            {
-                if (EntityManager.HasComponent<T>(prefabs[ghostId].Value))
-                    return prefabs[ghostId].Value;
-            }
-
-            return Entity.Null;
-        }
-
-        private static Entity GetRootParent(Entity entity, ComponentDataFromEntity<Parent> parentPerEntity) // TODO: move to common
-        {
-            var currentParent = entity;
-            while (parentPerEntity.HasComponent(currentParent)) // while currentParent has a parent
-            {
-                currentParent = parentPerEntity[currentParent].Value;
-            }
-
-            return currentParent;
         }
     }
 }

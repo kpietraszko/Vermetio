@@ -99,6 +99,7 @@ GameObject:
   - component: {fileID: 3788335438872679929}
   - component: {fileID: 1356380062199504376}
   - component: {fileID: 3420753679625098974}
+  - component: {fileID: 777112987026946711}
   m_Layer: 0
   m_Name: boat
   m_TagString: Untagged
@@ -227,12 +228,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ForcePrefabConversion: 0
-  DefaultGhostMode: 0
+  DefaultGhostMode: 1
   SupportedGhostModes: 3
   OptimizationMode: 0
   Importance: 10
   prefabId: e0586d7bc2cba594a83c3d1ef7f9815b
-  Name: 
+  Name: boat
   RefGameObjects:
   - {fileID: 3503698240212922768}
   - {fileID: 4114318234614650026}
@@ -501,13 +502,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ea9ecfda79c0041a54db748a0ddcf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cooldown: 0.5
-  LastShotAt: 0
+  MinimumShotDelay: 0.5
+  Cooldown: 0.4
+  LastShotFiredAt: 0
   TargetLegit: 0
   Velocity:
     x: 0
     y: 0
     z: 0
+--- !u!114 &777112987026946711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028933030943869725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d960e6f91c81b8946a0ddebb12e881ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Cage: {fileID: 4114318234614650026}
 --- !u!1 &1031506611295282554
 GameObject:
   m_ObjectHideFlags: 0

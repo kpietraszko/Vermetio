@@ -2,10 +2,10 @@ using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.NetCode;
 
 [Serializable]
-public struct ShootCommand : IRpcCommand
+[GenerateAuthoringComponent]
+public struct BoatCageReference : IComponentData
 {
-    public float3 TargetPosition;
+    public Entity Cage;
 }

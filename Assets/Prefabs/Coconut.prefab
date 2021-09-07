@@ -298,7 +298,7 @@ MonoBehaviour:
   OptimizationMode: 0
   Importance: 1
   prefabId: dbb88a7fe23bdbd4ca8cddd2b83f0dff
-  Name: 
+  Name: coconut
   RefGameObjects:
   - {fileID: 8520222691718690185}
   - {fileID: 8520222691718690185}

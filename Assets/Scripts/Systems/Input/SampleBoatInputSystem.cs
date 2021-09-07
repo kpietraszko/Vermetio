@@ -71,10 +71,15 @@ public class SampleBoatInputSystem : SystemBase
         input.AimPosition = aimPosition;
         DrawAimCircle(camPosition, aimPosition, playerPos);
 
+        input.Shoot = false;
+
         if (mouse.leftButton.wasPressedThisFrame)
         {
-            var shootCmdEntity = EntityManager.CreateEntity(typeof(ShootCommand), typeof(SendRpcCommandRequestComponent));
-            EntityManager.SetComponentData(shootCmdEntity, new ShootCommand() { TargetPosition = aimPosition });
+            // var clientTickRate = GetSingleton<ClientTickRate>();
+            // var ack = GetSingleton<NetworkSnapshotAckComponent>();
+            // var estimatedRTT = math.min(ack.EstimatedRTT, clientTickRate.MaxPredictAheadTimeMS);
+            // input.FinishRotationAt = Time.ElapsedTime + estimatedRTT; // probably wrong
+            input.Shoot = true;
         }
     }
 

@@ -12,7 +12,7 @@ using Vermetio;
 namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostPredictionSystemGroup))]
-    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction for now
+    // [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction for now
     [UpdateBefore(typeof(BulletSystem))]
     public class CannonAimingSystem : SystemBase
     {
@@ -34,22 +34,35 @@ namespace Vermetio.Server
             Entities
                 // .WithoutBurst()
                 .WithName("Boat_cage_rotation")
-                .WithAll<BoatCageTag>()
-                .ForEach((ref Rotation rotation, in Parent parent, in LocalToParent localToParent,
-                    in LocalToWorld localToWorld) =>
+                .ForEach((in PredictedGhostComponent prediction,
+                    in BoatCageReference cageReference,
+                    in DynamicBuffer<BoatInput> inputBuffer,
+                    in ShootParametersComponent shootParams) =>
                 {
-                    var inputBuffer = GetBuffer<BoatInput>(parent.Value);
-                    inputBuffer.GetDataAtTick(tick, out var input);
+                    if (!GhostPredictionSystemGroup.ShouldPredict(tick, prediction))
+                        return;
                     
-                    var angleToReticle = localToWorld.Up.SignedAngleDeg(math.normalize(Flatten(localToWorld.Forward)), math.normalize(Flatten(input.AimPosition - localToWorld.Position)));
+                    inputBuffer.GetDataAtTick(tick, out var input);
+
+                    if (!math.any(input.AimPosition))
+                        return;
+
+                    var localToWorld = GetComponent<LocalToWorld>(cageReference.Cage);
+                    var angleToReticle = localToWorld.Up.SignedAngleDeg(new float3(0, 0, 1), math.normalize(Flatten(input.AimPosition - localToWorld.Position)));
                     Debug.DrawLine(localToWorld.Position, localToWorld.Position + Flatten(math.normalize(localToWorld.Forward)) * 10, Color.red, deltaTime);
                     Debug.DrawLine(localToWorld.Position, localToWorld.Position + Flatten(math.normalize(input.AimPosition - localToWorld.Position) * 10), Color.green, deltaTime);
-                    if (math.abs(angleToReticle) < 2f) // close enough
-                        return;
-                        
-                    rotation.Value = math.mul(quaternion.AxisAngle(new float3(0, 1, 0), math.radians(math.sign(angleToReticle) * 180f) * deltaTime), rotation.Value);
+                    // if (math.abs(angleToReticle) < 3f) // close enough
+                    //     return;
                     
-                    
+                    SetComponent(cageReference.Cage, new Rotation()
+                    {
+                        // Value = math.mul(rotation.Value, 
+                        //         quaternion.AxisAngle(new float3(0, 1, 0),
+                        //             math.sign(angleToReticle) * (deltaTime / shootParams.MinimumShotDelay) *
+                        //             math.radians(180f)))
+                        Value = quaternion.AxisAngle(new float3(0, 1, 0), math.radians(angleToReticle))
+
+                    });
                 }).Run();
             
             var bulletPrefab = EntityHelpers.GetGhostPrefab<BulletTag>(EntityManager);
@@ -102,7 +115,7 @@ namespace Vermetio.Server
                     // Convert from time-to-hit to a launch velocity:
                     var velocity = toTarget / T - gravity * T / 2f;
 
-                    var afterCooldown = elapsedTime - shootParams.LastShotAt > shootParams.Cooldown;
+                    var afterCooldown = elapsedTime - shootParams.LastShotFiredAt > shootParams.Cooldown;
                     shootParams.TargetLegit = true;
                     shootParams.Velocity = velocity;
                 }).Schedule(Dependency);

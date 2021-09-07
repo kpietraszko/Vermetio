@@ -14,19 +14,20 @@ using UnityEngine;
 namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostPredictionSystemGroup))]
-    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction for now
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client-side prediction
     [UpdateAfter(typeof(CannonAimingSystem))]
     public class CannonShootSystem : SystemBase
     {
+        private GhostPredictionSystemGroup _ghostPredictionSystemGroup;
         private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
         protected override void OnCreate()
         {
             base.OnCreate();
+            _ghostPredictionSystemGroup = World.GetExistingSystem<GhostPredictionSystemGroup>();
             _endSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
         }
-
-        // TODO: rewrite this into max 2 ForEaches to avoid complexity around passing the targetPos
+        
         protected override void OnUpdate()
         {
             var bulletPrefab = GetGhostPrefab<BulletTag>();
@@ -36,42 +37,73 @@ namespace Vermetio.Server
             var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer();
             // var ecbParallel = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
 
-            Entities
-                .WithReadOnly(commandTargetPerEntity)
-                .ForEach(
-                (Entity reqEnt, ref ShootCommand cmd, ref ReceiveRpcCommandRequestComponent req) =>
-                {
-                    var playerEntity = commandTargetPerEntity[req.SourceConnection].targetEntity;
-                    ecb.AddComponent(playerEntity, cmd);
-                    ecb.DestroyEntity(reqEnt);
-                }).Run();
-
             ecb.Playback(EntityManager); // so that we can spawn the bullet instantly
             
             ecb = new EntityCommandBuffer(Allocator.Temp);
             var elapsedTime = Time.ElapsedTime;
+            var deltaTime = Time.DeltaTime;
+            var tick = _ghostPredictionSystemGroup.PredictingTick;
+
+            var rttPerEntity = new NativeHashMap<Entity, float>(100, Allocator.TempJob);
 
             Entities
-                .ForEach((Entity playerEntity, ref ShootCommand cmd, ref ShootParametersComponent shootParams, in BulletSpawnPointReference spawnPointReference) =>
+                .ForEach((NetworkSnapshotAckComponent ack, CommandTargetComponent target) =>
                 {
-                    var afterCooldown = elapsedTime - shootParams.LastShotAt > shootParams.Cooldown;
+                    rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT);
+                }).Run();
+
+            Entities
+                .ForEach((Entity playerEntity,
+                    ref ShootParametersComponent shootParams,
+                    in BulletSpawnPointReference spawnPointReference,
+                    in DynamicBuffer<BoatInput> inputBuffer,
+                    in PredictedGhostComponent prediction) =>
+                {
+                    // if (!GhostPredictionSystemGroup.ShouldPredict(tick, prediction))
+                    //     return;
+                    
+                    inputBuffer.GetDataAtTick(tick, out var input);
+
+                    if (!input.Shoot)
+                        return;
+                    
+                    var afterCooldown = elapsedTime - shootParams.LastShotFiredAt > shootParams.Cooldown;
                     if (afterCooldown && shootParams.TargetLegit)
-                    {
-                        var bullet = ecb.Instantiate(bulletPrefab);
-                        var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
-                        ecb.SetComponent(bullet, new Translation() {Value = spawnPointLTW.Position});
-                        ecb.AddComponent(bullet, new SpawnedByComponent() {Player = playerEntity});
-                        shootParams.LastShotAt = elapsedTime;
+                    { 
+                        shootParams.LastShotFiredAt = elapsedTime;
+                        var rtt = rttPerEntity[playerEntity];
+                        
+                        // if the input already took more than minimum delay to reach the server, don't delay the shot further
+                        if (rtt > shootParams.MinimumShotDelay)
+                        {
+                            var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
+                            SpawnBullet(ecb, bulletPrefab, spawnPointLTW, playerEntity);
+                            return;
+                        }
+                        
+                        ecb.AddComponent(playerEntity, new DelayedBulletSpawnComponent()
+                        {
+                            Velocity = shootParams.Velocity,
+                            SpawnAtTick =  tick + (long)math.ceil((shootParams.MinimumShotDelay - rtt) / deltaTime)
+                        });
+
                     }
                     else
                     {
                         Debug.Log("Wait for cooldown or aim properly!");
                     }
-
-                    ecb.RemoveComponent<ShootCommand>(playerEntity);
                 }).Run();
             
             ecb.Playback(EntityManager);
+
+            ecb = new EntityCommandBuffer(Allocator.Temp);
+
+            Entities.ForEach((Entity entity, DelayedBulletSpawnComponent delayedBulletSpawn, BulletSpawnPointReference spawnPointReference) =>
+            {
+                var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
+                SpawnBullet(ecb, bulletPrefab, spawnPointLTW, entity);
+                ecb.RemoveComponent<DelayedBulletSpawnComponent>(entity);
+            }).Run();
 
             // Entities.WithAll<BulletFiredComponent>().ForEach((Entity entity, ref PhysicsVelocity pv, in PhysicsMass pm, in LocalToWorld localToWorld) =>
             // {
@@ -80,6 +112,14 @@ namespace Vermetio.Server
             // }).Run();
 
             // _endSimulationEcbSystem.AddJobHandleForProducer(Dependency); // I think only necessary if using ParallelWriter
+        }
+
+        private static void SpawnBullet(EntityCommandBuffer ecb, Entity bulletPrefab, LocalToWorld spawnPointLTW,
+            Entity playerEntity)
+        {
+            var bullet = ecb.Instantiate(bulletPrefab);
+            ecb.SetComponent(bullet, new Translation() {Value = spawnPointLTW.Position});
+            ecb.AddComponent(bullet, new SpawnedByComponent() {Player = playerEntity});
         }
 
         private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common

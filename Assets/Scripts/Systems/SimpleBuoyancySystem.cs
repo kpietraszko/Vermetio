@@ -35,6 +35,7 @@ namespace Vermetio.Server
         private static float[] _waterHeights = new float[0];
         private static Vector3[] _normals = new Vector3[0];
         private static Vector3[] _velocities = new Vector3[0];
+        private EntityQuery _simpleBuoyantQuery;
         private static bool _debugDraw = false;
 
         protected override void OnCreate()
@@ -71,16 +72,14 @@ namespace Vermetio.Server
                 _normals = new Vector3[numberOfBuoyantObjects];
                 _velocities = new Vector3[numberOfBuoyantObjects];
             }
-            
-            var entityIndex = 0;
 
             Entities
                 .WithoutBurst()
-                .ForEach((Entity entity, in Translation translation, in SimpleBuoyantComponent buoyantComponent) =>
+                // .WithStoreEntityQueryInField(ref _simpleBuoyantQuery)
+                .ForEach((Entity entity, int entityInQueryIndex, in Translation translation, in SimpleBuoyantComponent buoyantComponent) =>
             {
-                entities[entityIndex] = entity;
-                _queryPoints[entityIndex] = translation.Value;
-                entityIndex++;
+                entities[entityInQueryIndex] = entity;
+                _queryPoints[entityInQueryIndex] = translation.Value;
             }).Run();
 
             var status = collProvider.Query(GetHashCode(), 0f, _queryPoints, _waterHeights, _normals, _velocities);
@@ -129,8 +128,7 @@ namespace Vermetio.Server
                     // var objectSizeForWaves = min(objectExtents.x, min(objectExtents.y, objectExtents.z));
                     // Debug.Log($"{voxels.Length}");
                     // Debug.Log($"{tick}");
-
-                    var submergedAmount = 0f;
+                    
                     var waterData = waterDataPerEntity[entity];
                     var velocityRelativeToWater = pv.Linear - waterData.Velocity;
                     

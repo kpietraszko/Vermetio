@@ -22,6 +22,7 @@ namespace Assembly_CSharp.Generated
             writer.WriteFloat(data.AimPosition.x);
             writer.WriteFloat(data.AimPosition.y);
             writer.WriteFloat(data.AimPosition.z);
+            writer.WriteUInt(data.Shoot ? 1u : 0);
         }
 
         public void Deserialize(ref DataStreamReader reader, ref BoatInput data)
@@ -33,6 +34,7 @@ namespace Assembly_CSharp.Generated
             data.AimPosition.x = reader.ReadFloat();
             data.AimPosition.y = reader.ReadFloat();
             data.AimPosition.z = reader.ReadFloat();
+            data.Shoot = (reader.ReadUInt() != 0) ? true : false;
         }
 
         public void Serialize(ref DataStreamWriter writer, in BoatInput data, in BoatInput baseline, NetworkCompressionModel compressionModel)
@@ -44,6 +46,7 @@ namespace Assembly_CSharp.Generated
             writer.WritePackedFloatDelta(data.AimPosition.x, baseline.AimPosition.x, compressionModel);
             writer.WritePackedFloatDelta(data.AimPosition.y, baseline.AimPosition.y, compressionModel);
             writer.WritePackedFloatDelta(data.AimPosition.z, baseline.AimPosition.z, compressionModel);
+            writer.WritePackedUInt(data.Shoot ? 1u : 0, compressionModel);
         }
 
         public void Deserialize(ref DataStreamReader reader, ref BoatInput data, in BoatInput baseline, NetworkCompressionModel compressionModel)
@@ -55,6 +58,7 @@ namespace Assembly_CSharp.Generated
             data.AimPosition.x = reader.ReadPackedFloatDelta(baseline.AimPosition.x, compressionModel);
             data.AimPosition.y = reader.ReadPackedFloatDelta(baseline.AimPosition.y, compressionModel);
             data.AimPosition.z = reader.ReadPackedFloatDelta(baseline.AimPosition.z, compressionModel);
+            data.Shoot = (reader.ReadPackedUInt(compressionModel) != 0) ? true : false;
         }
     }
     public class BoatInputSendCommandSystem : CommandSendSystem<BoatInputSerializer, BoatInput>

@@ -10,6 +10,7 @@ using Unity.Physics.Extensions;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using ForceMode = Unity.Physics.Extensions.ForceMode;
 
 namespace Vermetio.Server
 {
@@ -49,7 +50,7 @@ namespace Vermetio.Server
             Entities
                 .ForEach((NetworkSnapshotAckComponent ack, CommandTargetComponent target) =>
                 {
-                    rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT);
+                    rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT / 1000); // ack.EstimatedRTT is in ms
                 }).Run();
 
             Entities
@@ -66,25 +67,28 @@ namespace Vermetio.Server
 
                     if (!input.Shoot)
                         return;
-                    
-                    var afterCooldown = elapsedTime - shootParams.LastShotFiredAt > shootParams.Cooldown;
+
+                    var rtt = rttPerEntity[playerEntity];
+                    var inputTravelTime = rtt / 2d;
+                    var afterCooldown = (elapsedTime - inputTravelTime) - shootParams.LastShotRequestedAt > shootParams.MinimumShotDelay;
                     if (afterCooldown && shootParams.TargetLegit)
-                    { 
-                        shootParams.LastShotFiredAt = elapsedTime;
-                        var rtt = rttPerEntity[playerEntity];
+                    {
+                        shootParams.LastShotRequestedAt = elapsedTime - inputTravelTime;
+                        Debug.Log($"{rtt}");
+
+                        var spawnAtTick = tick;
                         
-                        // if the input already took more than minimum delay to reach the server, don't delay the shot further
-                        if (rtt > shootParams.MinimumShotDelay)
+                        // if the input took less than minimum delay to reach the server, delay the shot
+                        if (inputTravelTime < shootParams.MinimumShotDelay)
                         {
-                            var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
-                            SpawnBullet(ecb, bulletPrefab, spawnPointLTW, playerEntity);
-                            return;
+                            Debug.Log($"RTT {rtt} lower than min, delaying shot");
+                            spawnAtTick = tick + (uint) math.ceil((shootParams.MinimumShotDelay - inputTravelTime) / deltaTime);
                         }
                         
-                        ecb.AddComponent(playerEntity, new DelayedBulletSpawnComponent()
+                        ecb.AddComponent(playerEntity, new BulletSpawnComponent()
                         {
                             Velocity = shootParams.Velocity,
-                            SpawnAtTick =  tick + (long)math.ceil((shootParams.MinimumShotDelay - rtt) / deltaTime)
+                            SpawnAtTick =  spawnAtTick
                         });
 
                     }
@@ -97,13 +101,35 @@ namespace Vermetio.Server
             ecb.Playback(EntityManager);
 
             ecb = new EntityCommandBuffer(Allocator.Temp);
+            var bulletPm = GetComponent<PhysicsMass>(bulletPrefab);
 
-            Entities.ForEach((Entity entity, DelayedBulletSpawnComponent delayedBulletSpawn, BulletSpawnPointReference spawnPointReference) =>
+            Entities.ForEach((Entity entity,
+                ref PhysicsVelocity pv,
+                in PhysicsMass pm, 
+                in Translation translation,
+                in Rotation rotation, 
+                in ShootParametersComponent shootParams,
+                in BulletSpawnComponent bulletSpawn,
+                in BulletSpawnPointReference spawnPointReference) =>
             {
+                if (bulletSpawn.SpawnAtTick < tick) // somehow we missed a spawn, discard it because it's old
+                    endFrameEcb.RemoveComponent<BulletSpawnComponent>(entity);
+                
+                if (tick != bulletSpawn.SpawnAtTick)
+                    return;
+                
+                Debug.Log("Executing spawn");
                 var spawnPointLTW = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint);
                 SpawnBullet(ecb, bulletPrefab, spawnPointLTW, entity);
-                ecb.RemoveComponent<DelayedBulletSpawnComponent>(entity);
+                
+                // recoil
+                pm.GetImpulseFromForce(-shootParams.Velocity * 15, ForceMode.Impulse, 0f, out var recoilImpulse, out var recoilMass);
+                pv.ApplyImpulse(recoilMass, translation, rotation, recoilImpulse, spawnPointLTW.Position);
+                
+                endFrameEcb.RemoveComponent<BulletSpawnComponent>(entity);
             }).Run();
+            
+            ecb.Playback(EntityManager);
 
             // Entities.WithAll<BulletFiredComponent>().ForEach((Entity entity, ref PhysicsVelocity pv, in PhysicsMass pm, in LocalToWorld localToWorld) =>
             // {

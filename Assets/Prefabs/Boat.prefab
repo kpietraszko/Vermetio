@@ -502,8 +502,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ea9ecfda79c0041a54db748a0ddcf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MinimumShotDelay: 0.5
-  Cooldown: 0.4
+  MinimumShotDelay: 0.25
+  Cooldown: 0
   LastShotFiredAt: 0
   TargetLegit: 0
   Velocity:

@@ -79,6 +79,9 @@ public class SampleBoatInputSystem : SystemBase
             // var ack = GetSingleton<NetworkSnapshotAckComponent>();
             // var estimatedRTT = math.min(ack.EstimatedRTT, clientTickRate.MaxPredictAheadTimeMS);
             // input.FinishRotationAt = Time.ElapsedTime + estimatedRTT; // probably wrong
+            var shootParams = GetComponent<ShootParametersComponent>(localInputEntity);
+            shootParams.LastShotRequestedAt = Time.ElapsedTime;
+            SetComponent(localInputEntity, shootParams);
             input.Shoot = true;
         }
     }

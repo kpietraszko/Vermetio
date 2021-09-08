@@ -11,6 +11,5 @@ public struct BoatInput : ICommandData
     public float3 TargetDirection;
     public float Throttle;
     public float3 AimPosition;
-    public double FinishRotationAt;
     public bool Shoot;
 }

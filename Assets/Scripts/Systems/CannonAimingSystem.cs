@@ -12,7 +12,7 @@ using Vermetio;
 namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostPredictionSystemGroup))]
-    // [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction for now
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction for now
     [UpdateBefore(typeof(BulletSystem))]
     public class CannonAimingSystem : SystemBase
     {
@@ -30,16 +30,32 @@ namespace Vermetio.Server
             var tick = _ghostPredictionSystemGroup.PredictingTick;
             var deltaTime = Time.DeltaTime;
             var elapsedTime = Time.ElapsedTime;
+            
+            var rttPerEntity = new NativeHashMap<Entity, float>(100, Allocator.TempJob);
+
+            Entities
+                .ForEach((NetworkSnapshotAckComponent ack, CommandTargetComponent target) =>
+                {
+                    rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT / 1000); // ack.EstimatedRTT is in ms
+                }).Run();
 
             Entities
                 // .WithoutBurst()
                 .WithName("Boat_cage_rotation")
-                .ForEach((in PredictedGhostComponent prediction,
+                .ForEach((Entity playerEntity, 
+                    in PredictedGhostComponent prediction,
                     in BoatCageReference cageReference,
                     in DynamicBuffer<BoatInput> inputBuffer,
-                    in ShootParametersComponent shootParams) =>
+                    in ShootParametersComponent shootParams,
+                    in LocalToWorld localToWorld) =>
                 {
                     if (!GhostPredictionSystemGroup.ShouldPredict(tick, prediction))
+                        return;
+                    
+                    var rtt = rttPerEntity[playerEntity];
+                    var snapshotTravelTime = rtt / 2d;
+                    var afterCooldown = elapsedTime + snapshotTravelTime - shootParams.LastShotRequestedAt > shootParams.MinimumShotDelay;
+                    if (!afterCooldown)
                         return;
                     
                     inputBuffer.GetDataAtTick(tick, out var input);
@@ -47,10 +63,10 @@ namespace Vermetio.Server
                     if (!math.any(input.AimPosition))
                         return;
 
-                    var localToWorld = GetComponent<LocalToWorld>(cageReference.Cage);
-                    var angleToReticle = localToWorld.Up.SignedAngleDeg(new float3(0, 0, 1), math.normalize(Flatten(input.AimPosition - localToWorld.Position)));
-                    Debug.DrawLine(localToWorld.Position, localToWorld.Position + Flatten(math.normalize(localToWorld.Forward)) * 10, Color.red, deltaTime);
-                    Debug.DrawLine(localToWorld.Position, localToWorld.Position + Flatten(math.normalize(input.AimPosition - localToWorld.Position) * 10), Color.green, deltaTime);
+                    var cageLtw = GetComponent<LocalToWorld>(cageReference.Cage);
+                    var angleToReticle = cageLtw.Up.SignedAngleDeg(math.normalize(Flatten(localToWorld.Forward)), math.normalize(Flatten(input.AimPosition - cageLtw.Position)));
+                    Debug.DrawLine(cageLtw.Position, cageLtw.Position + Flatten(math.normalize(cageLtw.Forward)) * 10, Color.red, deltaTime);
+                    Debug.DrawLine(cageLtw.Position, cageLtw.Position + Flatten(math.normalize(input.AimPosition - cageLtw.Position) * 10), Color.green, deltaTime);
                     // if (math.abs(angleToReticle) < 3f) // close enough
                     //     return;
                     
@@ -75,7 +91,7 @@ namespace Vermetio.Server
             var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
             
             Dependency = Entities
-                .WithName("Prepare_shoot_paramaters") // could be slow, 2 indirect lookups
+                .WithName("Prepare_shot_velocity") // could be slow, 2 indirect lookups
                 .WithAll<MovableBoatComponent>()
                 .ForEach((Entity entity, int entityInQueryIndex, ref ShootParametersComponent shootParams, in BulletSpawnPointReference spawnPointReference, in LocalToWorld ltw) =>
                 {
@@ -114,8 +130,7 @@ namespace Vermetio.Server
 
                     // Convert from time-to-hit to a launch velocity:
                     var velocity = toTarget / T - gravity * T / 2f;
-
-                    var afterCooldown = elapsedTime - shootParams.LastShotFiredAt > shootParams.Cooldown;
+                    
                     shootParams.TargetLegit = true;
                     shootParams.Velocity = velocity;
                 }).Schedule(Dependency);
@@ -126,6 +141,10 @@ namespace Vermetio.Server
                 .ForEach((in CannonAxleReference axleReference, in ShootParametersComponent shootParams) =>
                 {
                     if (!shootParams.TargetLegit)
+                        return;
+                    
+                    var afterCooldown = elapsedTime - shootParams.LastShotRequestedAt > shootParams.MinimumShotDelay;
+                    if (!afterCooldown)
                         return;
                     
                     var angle = new float3(1, 0, 0).SignedAngleDeg(new float3(0, 1, 0), math.normalize(shootParams.Velocity));

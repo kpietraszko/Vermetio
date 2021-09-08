@@ -86,9 +86,8 @@ namespace Vermetio.Server
             if (!collProvider.RetrieveSucceeded(status))
             {
                 #if UNITY_EDITOR
-                Debug.LogWarning($"Simple query failed: {(CollProviderBakedFFT.QueryStatus)status}");
-                Debug.Log($"Fail at {tick}");
-                #endif
+                Debug.LogWarning($"Simple query failed: {(CollProviderBakedFFT.QueryStatus)status} on tick {tick}");
+#endif
                 entities.Dispose();
                 return;
             }

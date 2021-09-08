@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -23,6 +24,9 @@ public class ConnectionSystem : SystemBase
 
     protected override void OnCreate()
     {
+        // if (IsClientButNotThin())
+        //     return;
+        
         RequireSingletonForUpdate<InitGameComponent>();
         // Create singleton, require singleton for update so system runs once
         EntityManager.CreateEntity(typeof(InitGameComponent));
@@ -32,8 +36,7 @@ public class ConnectionSystem : SystemBase
     {
         // Destroy singleton to prevent system from running again
         EntityManager.DestroyEntity(GetSingletonEntity<InitGameComponent>());
-        
-        
+
         var serverWorld = GetWorldWith<ServerSimulationSystemGroup>(World.All);
 
         if (serverWorld != null)
@@ -56,8 +59,8 @@ public class ConnectionSystem : SystemBase
             #endif
         }
 
-        var clientWorld = GetWorldWith<ClientSimulationSystemGroup>(World.All);
-        if (clientWorld != null)
+        var clientWorlds = GetWorldsWith<ClientSimulationSystemGroup>(World.All);
+        foreach (var clientWorld in clientWorlds)
         {
             var network = clientWorld.GetExistingSystem<NetworkStreamReceiveSystem>();
             var tickRate = clientWorld.EntityManager.CreateEntity();
@@ -88,5 +91,20 @@ public class ConnectionSystem : SystemBase
         }
 
         return null;
+    }
+
+    private IEnumerable<World> GetWorldsWith<T>(World.NoAllocReadOnlyCollection<World> worlds)
+        where T : ComponentSystemBase
+    {
+        foreach (var world in worlds)
+        {
+            if (world.GetExistingSystem<T>() != null)
+                yield return world;
+        }
+    }
+    
+    private bool IsClientButNotThin()
+    {
+        return World.GetExistingSystem<ClientSimulationSystemGroup>() != null && !TryGetSingleton<ThinClientComponent>(out _);
     }
 }

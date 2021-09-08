@@ -42,6 +42,8 @@ namespace Vermetio.Server
             Entities
                 // .WithoutBurst()
                 .WithName("Boat_cage_rotation")
+                .WithReadOnly(rttPerEntity)
+                .WithDisposeOnCompletion(rttPerEntity)
                 .ForEach((Entity playerEntity, 
                     in PredictedGhostComponent prediction,
                     in BoatCageReference cageReference,

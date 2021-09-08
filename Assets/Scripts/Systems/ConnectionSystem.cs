@@ -77,7 +77,7 @@ public class ConnectionSystem : SystemBase
             Debug.Log("Connecting...");
             var entity = network.Connect(ep);
             #if UNITY_EDITOR
-            EntityManager.SetName(entity, "Connection");
+            clientWorld.EntityManager.SetName(entity, "Connection");
             #endif
         }
     }

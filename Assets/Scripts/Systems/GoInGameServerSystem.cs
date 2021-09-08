@@ -70,7 +70,7 @@ namespace Vermetio.Server
             #if UNITY_EDITOR
             Entities.WithoutBurst().WithNone<Prefab>().ForEach((Entity entity, in GhostOwnerComponent owner) =>
             {
-                EntityManager.SetName(player, $"PlayerBoat{owner.NetworkId}");
+                EntityManager.SetName(entity, $"PlayerBoat{owner.NetworkId}");
                 Debug.Log("Set name");
             }).Run();
             #endif

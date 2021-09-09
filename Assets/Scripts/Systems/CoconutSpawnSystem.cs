@@ -3,34 +3,66 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.NetCode;
 using Unity.Transforms;
 
-public class CoconutSpawnSystem : SystemBase
+namespace Vermetio.Server
 {
-    protected override void OnUpdate()
+    [UpdateInGroup(typeof(GhostSimulationSystemGroup))]
+    public class CoconutSpawnSystem : SystemBase
     {
-        // Assign values to local variables captured in your job here, so that it has
-        // everything it needs to do its work when it runs later.
-        // For example,
-        //     float deltaTime = Time.DeltaTime;
+        private const int TargetNumberOfCoconuts = 200;
+        private const double Cooldown = 1f;
+        private EntityQuery _existingCoconutsQuery;
+        private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
-        // This declares a new kind of job, which is a unit of work to do.
-        // The job is declared as an Entities.ForEach with the target components as parameters,
-        // meaning it will process all entities in the world that have both
-        // Translation and Rotation components. Change it to process the component
-        // types you want.
-        
-        
-        
-        Entities.ForEach((ref Translation translation, in Rotation rotation) => {
-            // Implement the work to perform for each entity here.
-            // You should only access data that is local or that is a
-            // field on this job. Note that the 'rotation' parameter is
-            // marked as 'in', which means it cannot be modified,
-            // but allows this job to run in parallel with other jobs
-            // that want to read Rotation component data.
-            // For example,
-            //     translation.Value += math.mul(rotation.Value, new float3(0, 0, 1)) * deltaTime;
-        }).Schedule();
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+            _existingCoconutsQuery = GetEntityQuery(new EntityQueryDesc()
+            {
+                All = new ComponentType[] {typeof(SimpleBuoyantComponent)},
+                None = new ComponentType[] {typeof(BulletTag)}
+            });
+            
+            _endSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        }
+
+        protected override void OnUpdate()
+        {
+            var existingCoconuts = _existingCoconutsQuery.CalculateEntityCount();
+            var coconutsToSpawn = TargetNumberOfCoconuts - existingCoconuts;
+            var coconutPrefab = GetGhostPrefab<SimpleBuoyantComponent>(); // TODO: hack
+            var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
+            var elapsedTime = Time.ElapsedTime;
+
+            Entities
+                .WithAll<CoconutSpawnPointTag>()
+                .WithNone<CoconutSpawnCooldownComponent>()
+                .ForEach((Entity entity, int entityInQueryIndex, in LocalToWorld localToWorld) =>
+                {
+                    if (entityInQueryIndex >= coconutsToSpawn)
+                        return;
+                    
+                    var bullet = endFrameEcb.Instantiate(entityInQueryIndex, coconutPrefab);
+                    endFrameEcb.SetComponent(entityInQueryIndex, bullet, new Translation() {Value = localToWorld.Position});
+                    // endFrameEcb.AddComponent(entityInQueryIndex, entity, new CoconutSpawnCooldownComponent() {CooldownStartedAt = elapsedTime});
+                }).Schedule();
+            
+            _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
+        }
+
+        private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common
+        {
+            var ghostCollection = GetSingletonEntity<GhostPrefabCollectionComponent>();
+            var prefabs = EntityManager.GetBuffer<GhostPrefabBuffer>(ghostCollection);
+            for (int ghostId = 0; ghostId < prefabs.Length; ++ghostId)
+            {
+                if (EntityManager.HasComponent<T>(prefabs[ghostId].Value))
+                    return prefabs[ghostId].Value;
+            }
+
+            return Entity.Null;
+        }
     }
 }

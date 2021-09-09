@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4308497572080867889}
+  - component: {fileID: 219057344314630670}
   m_Layer: 0
   m_Name: CoconutSpawnPoint
   m_TagString: Untagged
@@ -30,6 +31,18 @@ Transform:
   m_Father: {fileID: 7416764079229035212}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &219057344314630670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7003588859425149494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a46b72ba931d3cf40a66351e973193d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8803141327330172269
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,7 +31,7 @@ namespace Vermetio.Server
         
         protected override void OnUpdate()
         {
-            var bulletPrefab = GetGhostPrefab<BulletTag>();
+            var bulletPrefab = GetGhostPrefab<SimpleBuoyantComponent>(); // TODO: hack, find a better way to find coconut's prefab, or add a CoconutTag
             var commandTargetPerEntity = GetComponentDataFromEntity<CommandTargetComponent>(true);
 
             var ecb = new EntityCommandBuffer(Allocator.Temp);//_endSimulationEcbSystem.CreateCommandBuffer();
@@ -140,12 +140,12 @@ namespace Vermetio.Server
             // _endSimulationEcbSystem.AddJobHandleForProducer(Dependency); // I think only necessary if using ParallelWriter
         }
 
-        private static void SpawnBullet(EntityCommandBuffer ecb, Entity bulletPrefab, LocalToWorld spawnPointLTW,
-            Entity playerEntity)
+        private static void SpawnBullet(EntityCommandBuffer ecb, Entity bulletPrefab, LocalToWorld spawnPointLTW, Entity playerEntity)
         {
             var bullet = ecb.Instantiate(bulletPrefab);
             ecb.SetComponent(bullet, new Translation() {Value = spawnPointLTW.Position});
             ecb.AddComponent(bullet, new SpawnedByComponent() {Player = playerEntity});
+            ecb.AddComponent<BulletTag>(bullet);
         }
 
         private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common

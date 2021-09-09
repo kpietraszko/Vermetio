@@ -5,6 +5,6 @@ using Unity.Mathematics;
 
 [Serializable]
 [GenerateAuthoringComponent]
-public struct CoconutSpawnPoint : IComponentData
+public struct CoconutSpawnPointTag : IComponentData
 {
 }

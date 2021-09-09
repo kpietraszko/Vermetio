@@ -681,8 +681,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _version: 0
-  _type: 0
-  _refreshMode: 0
+  _type: 1
+  _refreshMode: 1
   _layers:
     serializedVersion: 2
     m_Bits: 8
@@ -691,7 +691,7 @@ MonoBehaviour:
   _cameraMaxTerrainHeight: 100
   _forceAlwaysUpdateDebug: 0
   _hideDepthCacheCam: 1
-  _savedCache: {fileID: 0}
+  _savedCache: {fileID: 2800000, guid: b6788c92b406fea45b81781c4b3ef948, type: 3}
   _runValidationOnStart: 1
 --- !u!4 &466947835
 Transform:

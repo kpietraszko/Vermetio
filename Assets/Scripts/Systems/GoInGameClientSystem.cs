@@ -26,10 +26,11 @@ public class GoInGameClientSystem : SystemBase
         
         Entities.WithoutBurst().WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
         {
-            if (prespawnCount < 1/*!= 2*/)
-                return;
+            // TODO: make sure that the subscene has finished loading before sending InGame
+            // if (prespawnCount < 1/*!= 2*/)
+            //     return;
 
-            Debug.Log($"{buoyantCount} buoyant components");
+            // Debug.Log($"{buoyantCount} buoyant components");
             
             ecb.AddComponent<NetworkStreamInGame>(ent);
             var req = ecb.CreateEntity();

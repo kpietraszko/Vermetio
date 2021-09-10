@@ -31,7 +31,7 @@ namespace Vermetio.Server
         
         protected override void OnUpdate()
         {
-            var bulletPrefab = GetGhostPrefab<SimpleBuoyantComponent>(); // TODO: hack, find a better way to find coconut's prefab, or add a CoconutTag
+            var bulletPrefab = GetGhostPrefab<CoconutAgeComponent>();
             var commandTargetPerEntity = GetComponentDataFromEntity<CommandTargetComponent>(true);
 
             var ecb = new EntityCommandBuffer(Allocator.Temp);//_endSimulationEcbSystem.CreateCommandBuffer();

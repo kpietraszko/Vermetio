@@ -83,7 +83,7 @@ namespace Vermetio.Server
                     });
                 }).Run();
             
-            var bulletPrefab = EntityHelpers.GetGhostPrefab<SimpleBuoyantComponent>(EntityManager); // TODO: hack, find a better way to find coconut's prefab, or add a CoconutTag
+            var bulletPrefab = EntityHelpers.GetGhostPrefab<CoconutAgeComponent>(EntityManager); 
             var gravityFactor = GetComponent<PhysicsGravityFactor>(bulletPrefab).Value;
             if (!TryGetSingleton<PhysicsStep>(out var physicsStep))
             {

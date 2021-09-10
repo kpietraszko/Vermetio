@@ -4,7 +4,10 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.NetCode;
+using Unity.Physics;
 using Unity.Transforms;
+using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 namespace Vermetio.Server
 {
@@ -12,7 +15,7 @@ namespace Vermetio.Server
     public class CoconutSpawnSystem : SystemBase
     {
         private const int TargetNumberOfCoconuts = 200;
-        private const double Cooldown = 1f;
+        // private const double Cooldown = 1f;
         private EntityQuery _existingCoconutsQuery;
         private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
@@ -35,6 +38,7 @@ namespace Vermetio.Server
             var coconutPrefab = GetGhostPrefab<SimpleBuoyantComponent>(); // TODO: hack
             var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
             var elapsedTime = Time.ElapsedTime;
+            var random = new Random((uint) UnityEngine.Random.Range(1, int.MaxValue));
 
             Entities
                 .WithAll<CoconutSpawnPointTag>()
@@ -44,8 +48,12 @@ namespace Vermetio.Server
                     if (entityInQueryIndex >= coconutsToSpawn)
                         return;
                     
-                    var bullet = endFrameEcb.Instantiate(entityInQueryIndex, coconutPrefab);
-                    endFrameEcb.SetComponent(entityInQueryIndex, bullet, new Translation() {Value = localToWorld.Position});
+                    var coconut = endFrameEcb.Instantiate(entityInQueryIndex, coconutPrefab);
+                    endFrameEcb.SetComponent(entityInQueryIndex, coconut, new Translation() {Value = localToWorld.Position});
+                    random.InitState((uint)(random.state + entityInQueryIndex));
+                    var randomInitialAge = random.NextFloat(0, 20f);
+                    Debug.Log($"{randomInitialAge}");
+                    endFrameEcb.SetComponent(entityInQueryIndex, coconut, new CoconutAgeComponent() { Age = randomInitialAge});
                     // endFrameEcb.AddComponent(entityInQueryIndex, entity, new CoconutSpawnCooldownComponent() {CooldownStartedAt = elapsedTime});
                 }).Schedule();
             

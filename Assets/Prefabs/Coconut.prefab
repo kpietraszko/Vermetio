@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8080581829221530458}
   - component: {fileID: 895779231170848824}
   - component: {fileID: -5937910058129836100}
+  - component: {fileID: -4592230389502133926}
   m_Layer: 0
   m_Name: Coconut
   m_TagString: Untagged
@@ -328,7 +329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RaiseObject: 1
-  BuoyancyCoeff: 3
+  BuoyancyCoeff: 4
   AccelerateDownhill: 0.222
   ForceHeightOffset: -0.3
   DragInWaterUp: 3
@@ -348,3 +349,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c941d046360ef384cad8546735c18092, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4592230389502133926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8520222691718690185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 175b992a13616994f8c8fd05a48b6cd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Age: 0

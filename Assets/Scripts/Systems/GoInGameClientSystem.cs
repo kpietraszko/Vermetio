@@ -4,33 +4,36 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.NetCode;
+using Unity.Scenes;
 using Unity.Transforms;
 using UnityEngine;
 
 [UpdateInGroup(typeof(ClientSimulationSystemGroup))]
 public class GoInGameClientSystem : SystemBase
 {
+    private SceneSystem _sceneSystem;
 
     protected override void OnCreate()
     {
         RequireSingletonForUpdate<GhostPrefabCollectionComponent>();
         RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<NetworkIdComponent>(), ComponentType.Exclude<NetworkStreamInGame>()));
+        _sceneSystem = World.GetExistingSystem<SceneSystem>();
     }
 
     protected override void OnUpdate()
     {
         var ecb = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>().CreateCommandBuffer();
-        
-        var prespawnCount = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<PreSpawnedGhostId>()).CalculateEntityCount();
-        var buoyantCount = EntityManager.CreateEntityQuery(ComponentType.ReadOnly<SimpleBuoyantComponent>()).CalculateEntityCount();
-        
+        var scenes = GetEntityQuery(typeof(SceneReference), typeof(SubScene)).ToEntityArray(Allocator.Temp);
+        for (int i = 0; i < scenes.Length; i++)
+        {
+            if (!_sceneSystem.IsSceneLoaded(scenes[i]))
+                return;
+        }
+
         Entities.WithoutBurst().WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
         {
-            // TODO: make sure that the subscene has finished loading before sending InGame
-            // if (prespawnCount < 1/*!= 2*/)
-            //     return;
+            // TODO: make sure that the subscene has finished loading before sending InGame, 
 
-            // Debug.Log($"{buoyantCount} buoyant components");
             
             ecb.AddComponent<NetworkStreamInGame>(ent);
             var req = ecb.CreateEntity();

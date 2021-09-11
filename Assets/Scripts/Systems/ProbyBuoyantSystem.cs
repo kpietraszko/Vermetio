@@ -19,8 +19,9 @@ namespace Vermetio.Server
     [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // probably redundant
     public class ProbyBuoyantSystem : SystemBase
     {
-        BuildPhysicsWorld _buildPhysicsWorld;
-        EndFramePhysicsSystem _endFramePhysics;
+        private BuildPhysicsWorld _buildPhysicsWorld;
+        private EndFramePhysicsSystem _endFramePhysics;
+        private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
         private static Vector3[] _queryPoints = new Vector3[0];
         private static float[] _waterHeights = new float[0];
@@ -36,6 +37,7 @@ namespace Vermetio.Server
 
             _buildPhysicsWorld = World.GetOrCreateSystem<BuildPhysicsWorld>();
             _endFramePhysics = World.GetOrCreateSystem<EndFramePhysicsSystem>();
+            _endSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
             Segments.Core.CreateBatch(out _batch);
         }
 
@@ -115,6 +117,7 @@ namespace Vermetio.Server
             
             var debugDraw = _debugDraw;
             var buffer = _batch.buffer;
+            var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer();
             
             Entities
                 .WithName("Apply_proby_buoyancy")
@@ -144,6 +147,7 @@ namespace Vermetio.Server
                     var startingIndex = entitiesStartingIndex[entity];
                     // buffer.Length = forcePoints.Length * 3; // 3 lines per cross
 
+                    var wholeAboveWater = true;
                     // Apply buoyancy on force points
                     for (int i = 0; i < forcePoints.Length; i++)
                     {
@@ -161,6 +165,7 @@ namespace Vermetio.Server
                         var heightDiff = waterHeight - worldSpaceForcePoint.y; // TODO: query point or force point?
                         if (heightDiff > 0)
                         {
+                            wholeAboveWater = false;
                             // Debug.Log($"worldSpaceForcePoint: {worldSpaceForcePoint} translation: {translation.Value} rotation: {rotation.Value}");
                             pm.GetImpulseFromForce(archimedesForceMagnitude * heightDiff * Vector3.up * forcePoints[i].Weight * buoyant.ForceMultiplier / totalWeight, 
                                 ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
@@ -168,7 +173,19 @@ namespace Vermetio.Server
                             pv.ApplyImpulse(impulseMass, translation, rotation, impulse, worldSpaceForcePoint); // TODO: transform to world space?
                         }
                     }
-                    
+
+                    var damping = GetComponent<PhysicsDamping>(entity);
+                    if (wholeAboveWater)
+                    {
+                        SetComponent(entity, new PhysicsDamping() { Angular = damping.Angular, Linear = 0});
+                        endFrameEcb.AddComponent<BoatFullyAboveWaterTag>(entity);
+                    }
+                    else
+                    {
+                        SetComponent(entity, new PhysicsDamping() { Angular = damping.Angular, Linear = 2});
+                        endFrameEcb.RemoveComponent<BoatFullyAboveWaterTag>(entity);
+                    }
+
                     // Apply drag relative to water
                     var lastForcePointIndex = startingIndex + forcePoints.Length; // this is actually COM
                     var waterHeightAtCom = waterHeights[lastForcePointIndex];
@@ -191,9 +208,10 @@ namespace Vermetio.Server
 
                     // _rb.AddForceAtPosition(transform.right * Vector3.Dot(transform.right, -_velocityRelativeToWater) * _dragInWaterRight, forcePosition, ForceMode.Acceleration);
                     // _rb.AddForceAtPosition(transform.forward * Vector3.Dot(transform.forward, -_velocityRelativeToWater) * _dragInWaterForward, forcePosition, ForceMode.Acceleration);
-                }).Run();
+                }).Schedule();
             
             _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
+            _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
         }
 
         protected override void OnDestroy()

@@ -52,7 +52,6 @@ namespace Vermetio.Server
                     endFrameEcb.SetComponent(entityInQueryIndex, coconut, new Translation() {Value = localToWorld.Position});
                     random.InitState((uint)(random.state + entityInQueryIndex));
                     var randomInitialAge = random.NextFloat(0, 20f);
-                    Debug.Log($"{randomInitialAge}");
                     endFrameEcb.SetComponent(entityInQueryIndex, coconut, new CoconutAgeComponent() { Age = randomInitialAge});
                     // endFrameEcb.AddComponent(entityInQueryIndex, entity, new CoconutSpawnCooldownComponent() {CooldownStartedAt = elapsedTime});
                 }).Schedule();

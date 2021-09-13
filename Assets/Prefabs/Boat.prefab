@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 1356380062199504376}
   - component: {fileID: 3420753679625098974}
   - component: {fileID: 777112987026946711}
+  - component: {fileID: 7709403621284681402}
   m_Layer: 0
   m_Name: boat
   m_TagString: Untagged
@@ -324,12 +325,12 @@ MonoBehaviour:
   m_ShapeType: 1
   m_PrimitiveCenter:
     x: 0
-    y: 0.33
+    y: 0.66
     z: 0
   m_PrimitiveSize:
-    x: 1.42
-    y: 1.42
-    z: 5.55
+    x: 2.451318
+    y: 2.451318
+    z: 6.2817793
   m_PrimitiveOrientation:
     Value:
       x: 0
@@ -337,15 +338,15 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 5.55
-    Radius: 0.71
+    Height: 6.2817793
+    Radius: 1.225659
     Axis: 2
   m_Cylinder:
-    Height: 5.55
-    Radius: 0.71
+    Height: 6.2817793
+    Radius: 1.225659
     Axis: 2
   m_CylinderSideCount: 20
-  m_SphereRadius: 2.775
+  m_SphereRadius: 3.1408896
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.015
@@ -358,7 +359,7 @@ MonoBehaviour:
     m_Template: {fileID: 0}
     m_CollisionResponse:
       m_Override: 0
-      m_Value: 0
+      m_Value: 1
     m_Friction:
       m_Override: 0
       m_Value:
@@ -503,8 +504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MinimumShotDelay: 0.25
-  Cooldown: 0
-  LastShotFiredAt: 0
+  LastShotRequestedAt: 0
   TargetLegit: 0
   Velocity:
     x: 0
@@ -523,6 +523,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cage: {fileID: 4114318234614650026}
+--- !u!114 &7709403621284681402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028933030943869725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a199925149b373a41b65311071bb7bdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Coconuts: 2
 --- !u!1 &1031506611295282554
 GameObject:
   m_ObjectHideFlags: 0

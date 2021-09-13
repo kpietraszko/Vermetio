@@ -50,12 +50,13 @@ namespace Vermetio.Server
             Entities
                 .ForEach((NetworkSnapshotAckComponent ack, CommandTargetComponent target) =>
                 {
-                    rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT / 1000); // ack.EstimatedRTT is in ms
+                    rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT / 1000); // ack.EstimatedRTT is in ms // this sometimes duplicates keys for some reason
                 }).Run();
 
             Entities
                 .ForEach((Entity playerEntity,
                     ref ShootParametersComponent shootParams,
+                    ref PlayerInventoryComponent inventory, 
                     in BulletSpawnPointReference spawnPointReference,
                     in DynamicBuffer<BoatInput> inputBuffer,
                     in PredictedGhostComponent prediction) =>
@@ -68,20 +69,23 @@ namespace Vermetio.Server
                     if (!input.Shoot)
                         return;
 
+                    if (inventory.Coconuts < 1)
+                        return;
+
                     var rtt = rttPerEntity[playerEntity];
                     var inputTravelTime = rtt / 2d;
                     var afterCooldown = (elapsedTime - inputTravelTime) - shootParams.LastShotRequestedAt > shootParams.MinimumShotDelay;
                     if (afterCooldown && shootParams.TargetLegit)
                     {
                         shootParams.LastShotRequestedAt = elapsedTime - inputTravelTime;
-                        Debug.Log($"{rtt}");
+                        // Debug.Log($"{rtt}");
 
                         var spawnAtTick = tick;
                         
                         // if the input took less than minimum delay to reach the server, delay the shot
                         if (inputTravelTime < shootParams.MinimumShotDelay)
                         {
-                            Debug.Log($"RTT {rtt} lower than min, delaying shot");
+                            // Debug.Log($"RTT {rtt} lower than min, delaying shot");
                             spawnAtTick = tick + (uint) math.ceil((shootParams.MinimumShotDelay - inputTravelTime) / deltaTime);
                         }
                         
@@ -91,6 +95,7 @@ namespace Vermetio.Server
                             SpawnAtTick =  spawnAtTick
                         });
 
+                        inventory.Coconuts--;
                     }
                     else
                     {

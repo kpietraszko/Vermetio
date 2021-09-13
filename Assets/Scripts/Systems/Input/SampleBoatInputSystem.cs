@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using Crest;
 using E7.ECS.LineRenderer;
 using Unity.Assertions;
@@ -80,6 +81,10 @@ public class SampleBoatInputSystem : SystemBase
             // var estimatedRTT = math.min(ack.EstimatedRTT, clientTickRate.MaxPredictAheadTimeMS);
             // input.FinishRotationAt = Time.ElapsedTime + estimatedRTT; // probably wrong
             var shootParams = GetComponent<ShootParametersComponent>(localInputEntity);
+            var inventory = GetComponent<PlayerInventoryComponent>(localInputEntity);
+            if (inventory.Coconuts < 1)
+                return;
+            
             shootParams.LastShotRequestedAt = Time.ElapsedTime;
             SetComponent(localInputEntity, shootParams);
             input.Shoot = true;

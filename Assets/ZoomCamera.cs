@@ -31,11 +31,26 @@ namespace Vermetio.Client
             if (Mouse.current.scroll.y.CheckStateIsAtDefaultIgnoringNoise())
                 return;
 
-            var transposer = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();
-            transposer.m_CameraDistance +=
-                Mouse.current.scroll.y.ReadValue() * Time.deltaTime / 120f * 400f * -1f;
+            var framingTransposer = virtualCam.GetCinemachineComponent<CinemachineFramingTransposer>();
+            if (framingTransposer != null)
+            {
+                framingTransposer.m_CameraDistance = GetNewCameraDistance(framingTransposer.m_CameraDistance);
+                return;
+            }
 
-            transposer.m_CameraDistance = math.clamp(transposer.m_CameraDistance, 10f, 500f);
+            var transposer = virtualCam.GetCinemachineComponent<CinemachineTransposer>();
+            if (transposer != null)
+            {
+                var newOffset = transposer.m_FollowOffset;
+                newOffset.y = GetNewCameraDistance(transposer.m_FollowOffset.y);
+                transposer.m_FollowOffset = newOffset;
+            }
+        }
+
+        private float GetNewCameraDistance(float currentDistance)
+        {
+            var unclamped = currentDistance + Mouse.current.scroll.y.ReadValue() * Time.deltaTime / 120f * 400f * -1f;
+            return math.clamp(unclamped, 10f, 500f);
         }
     }
 }

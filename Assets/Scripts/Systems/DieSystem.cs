@@ -26,7 +26,8 @@ namespace Vermetio.Server
 
             Entities.ForEach((Entity entity, in HealthComponent health) =>
                 {
-                    endFrameEcb.DestroyEntity(entity);
+                    if (health.Value <= 0)
+                        endFrameEcb.DestroyEntity(entity);
                 }).Schedule();
 
             _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);

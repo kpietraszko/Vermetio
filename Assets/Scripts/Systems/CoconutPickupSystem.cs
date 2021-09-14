@@ -33,6 +33,7 @@ namespace Vermetio.Server
                 {
                     CoconutsPerEntity = GetComponentDataFromEntity<CoconutAgeComponent>(),
                     InventoriesPerEntity = GetComponentDataFromEntity<PlayerInventoryComponent>(), 
+                    BulletTagsPerEntity = GetComponentDataFromEntity<BulletTag>(), 
                     Ecb = _endSimulationEcbSystem.CreateCommandBuffer()
                 }
                 .Schedule
@@ -48,9 +49,9 @@ namespace Vermetio.Server
         [BurstCompile]
         struct CollisionEventJob : ICollisionEventsJob
         {
-            public ComponentDataFromEntity<CoconutAgeComponent> CoconutsPerEntity;
             public ComponentDataFromEntity<PlayerInventoryComponent> InventoriesPerEntity;
-            public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
+            [ReadOnly] public ComponentDataFromEntity<CoconutAgeComponent> CoconutsPerEntity;
+            [ReadOnly] public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
             public EntityCommandBuffer Ecb;
 
             public void Execute(CollisionEvent e)

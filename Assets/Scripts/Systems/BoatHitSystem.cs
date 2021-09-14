@@ -57,12 +57,12 @@ namespace Vermetio.Server
         [BurstCompile]
         struct CollisionEventJob : ICollisionEventsJob
         {
-            public EntityCommandBuffer Ecb;
-            public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
-            public ComponentDataFromEntity<SpawnedByComponent> SpawnedByPerEntity;
-            public ComponentDataFromEntity<GhostOwnerComponent> GhostOwnersPerEntity;
+            // public EntityCommandBuffer Ecb;
+            [ReadOnly] public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
+            [ReadOnly] public ComponentDataFromEntity<SpawnedByComponent> SpawnedByPerEntity;
+            [ReadOnly] public ComponentDataFromEntity<GhostOwnerComponent> GhostOwnersPerEntity;
             public ComponentDataFromEntity<HealthComponent> HealthPerEntity;
-            public NativeHashMap<int, Entity> PlayerEntityPerNetworkId;
+            [ReadOnly] public NativeHashMap<int, Entity> PlayerEntityPerNetworkId;
 
             public void Execute(CollisionEvent e)
             {

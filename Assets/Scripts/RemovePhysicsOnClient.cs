@@ -21,7 +21,7 @@ public class RemovePhysicsOnClient : SystemBase
             ecb.RemoveComponent<PhysicsDamping>(entity);
             ecb.RemoveComponent<PhysicsVelocity>(entity);
             ecb.RemoveComponent<PhysicsMass>(entity);
-            // ecb.RemoveComponent<PhysicsCollider>(entity);
+            ecb.RemoveComponent<PhysicsCollider>(entity);
         }).Run();
     }
 }

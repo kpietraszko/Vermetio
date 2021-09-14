@@ -14,7 +14,7 @@ using Unity.Mathematics;
 namespace Assembly_CSharp.Generated
 {
     [BurstCompile]
-    public struct PlayerInventoryComponentGhostComponentSerializer
+    public struct HealthComponentGhostComponentSerializer
     {
         static GhostComponentSerializer.State GetState()
         {
@@ -25,8 +25,8 @@ namespace Assembly_CSharp.Generated
                 {
                     GhostFieldsHash = 14767913548786401661,
                     ExcludeFromComponentCollectionHash = 0,
-                    ComponentType = ComponentType.ReadWrite<PlayerInventoryComponent>(),
-                    ComponentSize = UnsafeUtility.SizeOf<PlayerInventoryComponent>(),
+                    ComponentType = ComponentType.ReadWrite<HealthComponent>(),
+                    ComponentSize = UnsafeUtility.SizeOf<HealthComponent>(),
                     SnapshotSize = UnsafeUtility.SizeOf<Snapshot>(),
                     ChangeMaskBits = ChangeMaskBits,
                     SendMask = GhostComponentSerializer.SendMask.Predicted,
@@ -61,7 +61,7 @@ namespace Assembly_CSharp.Generated
         public static GhostComponentSerializer.State State => GetState();
         public struct Snapshot
         {
-            public int Coconuts;
+            public int Value;
         }
         public const int ChangeMaskBits = 1;
         [BurstCompile]
@@ -71,9 +71,9 @@ namespace Assembly_CSharp.Generated
             for (int i = 0; i < count; ++i)
             {
                 ref var snapshot = ref GhostComponentSerializer.TypeCast<Snapshot>(snapshotData, snapshotOffset + snapshotStride*i);
-                ref var component = ref GhostComponentSerializer.TypeCast<PlayerInventoryComponent>(componentData, componentStride*i);
+                ref var component = ref GhostComponentSerializer.TypeCast<HealthComponent>(componentData, componentStride*i);
                 ref var serializerState = ref GhostComponentSerializer.TypeCast<GhostSerializerState>(stateData, 0);
-                snapshot.Coconuts = (int) component.Coconuts;
+                snapshot.Value = (int) component.Value;
             }
         }
         [BurstCompile]
@@ -98,8 +98,8 @@ namespace Assembly_CSharp.Generated
                 deserializerState.SnapshotTick = snapshotInterpolationData.Tick;
                 float snapshotInterpolationFactorRaw = snapshotInterpolationData.InterpolationFactor;
                 float snapshotInterpolationFactor = snapshotInterpolationFactorRaw;
-                ref var component = ref GhostComponentSerializer.TypeCast<PlayerInventoryComponent>(componentData, componentStride*i);
-                component.Coconuts = (int) snapshotBefore.Coconuts;
+                ref var component = ref GhostComponentSerializer.TypeCast<HealthComponent>(componentData, componentStride*i);
+                component.Value = (int) snapshotBefore.Value;
 
             }
         }
@@ -109,9 +109,9 @@ namespace Assembly_CSharp.Generated
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.RestoreFromBackupDelegate))]
         private static void RestoreFromBackup(IntPtr componentData, IntPtr backupData)
         {
-            ref var component = ref GhostComponentSerializer.TypeCast<PlayerInventoryComponent>(componentData, 0);
-            ref var backup = ref GhostComponentSerializer.TypeCast<PlayerInventoryComponent>(backupData, 0);
-            component.Coconuts = backup.Coconuts;
+            ref var component = ref GhostComponentSerializer.TypeCast<HealthComponent>(componentData, 0);
+            ref var backup = ref GhostComponentSerializer.TypeCast<HealthComponent>(backupData, 0);
+            component.Value = backup.Value;
         }
 
         [BurstCompile]
@@ -121,7 +121,7 @@ namespace Assembly_CSharp.Generated
             ref var snapshot = ref GhostComponentSerializer.TypeCast<Snapshot>(snapshotData);
             ref var baseline1 = ref GhostComponentSerializer.TypeCast<Snapshot>(baseline1Data);
             ref var baseline2 = ref GhostComponentSerializer.TypeCast<Snapshot>(baseline2Data);
-            snapshot.Coconuts = predictor.PredictInt(snapshot.Coconuts, baseline1.Coconuts, baseline2.Coconuts);
+            snapshot.Value = predictor.PredictInt(snapshot.Value, baseline1.Value, baseline2.Value);
         }
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.CalculateChangeMaskDelegate))]
@@ -130,7 +130,7 @@ namespace Assembly_CSharp.Generated
             ref var snapshot = ref GhostComponentSerializer.TypeCast<Snapshot>(snapshotData);
             ref var baseline = ref GhostComponentSerializer.TypeCast<Snapshot>(baselineData);
             uint changeMask;
-            changeMask = (snapshot.Coconuts != baseline.Coconuts) ? 1u : 0;
+            changeMask = (snapshot.Value != baseline.Value) ? 1u : 0;
             GhostComponentSerializer.CopyToChangeMask(bits, changeMask, startOffset, 1);
         }
         [BurstCompile]
@@ -141,7 +141,7 @@ namespace Assembly_CSharp.Generated
             ref var baseline = ref GhostComponentSerializer.TypeCast<Snapshot>(baselineData);
             uint changeMask = GhostComponentSerializer.CopyFromChangeMask(changeMaskData, startOffset, ChangeMaskBits);
             if ((changeMask & (1 << 0)) != 0)
-                writer.WritePackedIntDelta(snapshot.Coconuts, baseline.Coconuts, compressionModel);
+                writer.WritePackedIntDelta(snapshot.Value, baseline.Value, compressionModel);
         }
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.DeserializeDelegate))]
@@ -151,19 +151,19 @@ namespace Assembly_CSharp.Generated
             ref var baseline = ref GhostComponentSerializer.TypeCast<Snapshot>(baselineData);
             uint changeMask = GhostComponentSerializer.CopyFromChangeMask(changeMaskData, startOffset, ChangeMaskBits);
             if ((changeMask & (1 << 0)) != 0)
-                snapshot.Coconuts = reader.ReadPackedIntDelta(baseline.Coconuts, compressionModel);
+                snapshot.Value = reader.ReadPackedIntDelta(baseline.Value, compressionModel);
             else
-                snapshot.Coconuts = baseline.Coconuts;
+                snapshot.Value = baseline.Value;
         }
         #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.ReportPredictionErrorsDelegate))]
         private static void ReportPredictionErrors(IntPtr componentData, IntPtr backupData, ref UnsafeList<float> errors)
         {
-            ref var component = ref GhostComponentSerializer.TypeCast<PlayerInventoryComponent>(componentData, 0);
-            ref var backup = ref GhostComponentSerializer.TypeCast<PlayerInventoryComponent>(backupData, 0);
+            ref var component = ref GhostComponentSerializer.TypeCast<HealthComponent>(componentData, 0);
+            ref var backup = ref GhostComponentSerializer.TypeCast<HealthComponent>(backupData, 0);
             int errorIndex = 0;
-            errors[errorIndex] = math.max(errors[errorIndex], math.abs(component.Coconuts - backup.Coconuts));
+            errors[errorIndex] = math.max(errors[errorIndex], math.abs(component.Value - backup.Value));
             ++errorIndex;
         }
         private static int GetPredictionErrorNames(ref FixedString512 names)
@@ -171,7 +171,7 @@ namespace Assembly_CSharp.Generated
             int nameCount = 0;
             if (nameCount != 0)
                 names.Append(new FixedString32(","));
-            names.Append(new FixedString64("Coconuts"));
+            names.Append(new FixedString64("Value"));
             ++nameCount;
             return nameCount;
         }

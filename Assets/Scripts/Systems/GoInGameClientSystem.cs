@@ -29,6 +29,7 @@ public class GoInGameClientSystem : SystemBase
             if (!_sceneSystem.IsSceneLoaded(scenes[i]))
                 return;
         }
+        Debug.Log("All scenes loaded, requesting InGame");
 
         Entities.WithoutBurst().WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
         {

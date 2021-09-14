@@ -3,6 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.NetCode;
 using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
@@ -10,6 +11,7 @@ using UnityEngine;
 
 namespace Vermetio.Server
 {
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
     [UpdateAfter(typeof(StepPhysicsWorld))]
     public class CoconutPickupSystem : SystemBase
     {
@@ -48,12 +50,16 @@ namespace Vermetio.Server
         {
             public ComponentDataFromEntity<CoconutAgeComponent> CoconutsPerEntity;
             public ComponentDataFromEntity<PlayerInventoryComponent> InventoriesPerEntity;
+            public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
             public EntityCommandBuffer Ecb;
 
             public void Execute(CollisionEvent e)
             {
                 if (CoconutsPerEntity.HasComponent(e.EntityA) && InventoriesPerEntity.HasComponent(e.EntityB))
                 {
+                    if (BulletTagsPerEntity.HasComponent(e.EntityA)) // can't pick up bullets
+                        return;
+                    
                     var newInv = InventoriesPerEntity[e.EntityB];
                     newInv.Coconuts++;
                     InventoriesPerEntity[e.EntityB] = newInv;
@@ -62,6 +68,9 @@ namespace Vermetio.Server
                 
                 if (CoconutsPerEntity.HasComponent(e.EntityB) && InventoriesPerEntity.HasComponent(e.EntityA))
                 {
+                    if (BulletTagsPerEntity.HasComponent(e.EntityB)) // can't pick up bullets
+                        return;
+                    
                     var newInv = InventoriesPerEntity[e.EntityA];
                     newInv.Coconuts++;
                     InventoriesPerEntity[e.EntityA] = newInv;

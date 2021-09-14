@@ -66,7 +66,9 @@ namespace Vermetio.Server
 
             if (_queryPoints?.Length != numberOfBuoyantObjects)
             {
+                #if UNITY_EDITOR
                 Debug.Log("Simple array size mismatch - reallocating");
+                #endif
                 _queryPoints = new Vector3[numberOfBuoyantObjects];
                 _waterHeights = new float[numberOfBuoyantObjects];
                 _normals = new Vector3[numberOfBuoyantObjects];
@@ -87,7 +89,7 @@ namespace Vermetio.Server
             {
                 #if UNITY_EDITOR
                 Debug.LogWarning($"Simple query failed: {(CollProviderBakedFFT.QueryStatus)status} on tick {tick}");
-#endif
+                #endif
                 entities.Dispose();
                 return;
             }

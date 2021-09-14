@@ -6,7 +6,7 @@ using Unity.NetCode;
 
 [Serializable]
 [GenerateAuthoringComponent]
-[GhostComponent(PrefabType = GhostPrefabType.AllPredicted, OwnerPredictedSendType = GhostSendType.Predicted)]
+[GhostComponent(PrefabType = GhostPrefabType.AllPredicted, OwnerSendType = SendToOwnerType.SendToOwner)]
 public struct PlayerInventoryComponent : IComponentData
 {
     [GhostField]

@@ -432,10 +432,10 @@ namespace Unity.NetCode
                 SnapshotData snapshotDataComponent;
                 byte* snapshotData;
                 //
-                int baselineDynamicDataIndex = -1;
                 byte* snapshotDynamicDataPtr = null;
                 uint snapshotDynamicDataCapacity = 0; // available space in the dynamic snapshot data history slot
                 byte* baselineDynamicDataPtr = null;
+                uint baselineDynamicDataSize = 0; //used for delta compression, the last stored dynamic size for the entity in snapshot history buffer
 
                 bool existingGhost = ghostEntityMap.TryGetValue(ghostId, out gent);
                 var sendToOwnerMask = SendToOwnerType.All;
@@ -474,7 +474,11 @@ namespace Unity.NetCode
                                 {
                                     if (!snapshotDynamicDataFromEntity.HasComponent(gent))
                                         throw new InvalidOperationException($"SnapshotDynamictDataBuffer buffer not found for ghost with id {ghostId}");
-                                    baselineDynamicDataIndex = bi / snapshotSize;
+                                    var snapshotDynamicDataBuffer = snapshotDynamicDataFromEntity[gent];
+                                    int bindex = bi / snapshotSize;
+                                    var bufferPtr = (byte*)snapshotDynamicDataBuffer.GetUnsafeReadOnlyPtr();
+                                    baselineDynamicDataPtr = SnapshotDynamicBuffersHelper.GetDynamicDataPtr(bufferPtr, bindex, snapshotDynamicDataBuffer.Length);
+                                    baselineDynamicDataSize = ((uint*)bufferPtr)[bindex];
                                 }
                                 break;
                             }
@@ -554,20 +558,16 @@ namespace Unity.NetCode
                         //@timj This could also use PackedUIntDelta with baselineSize = 0 if the send system is changed to match.
                         //      That's how most other readers / writers work.
                         uint dynamicDataSize;
-                        var buf = snapshotDynamicDataFromEntity[gent];
-                        if (baselineDynamicDataIndex == -1)
+                        if (baselineDynamicDataPtr == null)
                             dynamicDataSize = dataStream.ReadPackedUInt(compressionModel);
                         else
-                        {
-                            var bufferPtr = (byte*)buf.GetUnsafeReadOnlyPtr();
-                            var baselineDynamicDataSize = ((uint*) bufferPtr)[baselineDynamicDataIndex];
                             dynamicDataSize = dataStream.ReadPackedUIntDelta(baselineDynamicDataSize, compressionModel);
-                        }
 
                         if (!snapshotDynamicDataFromEntity.HasComponent(gent))
                             throw new InvalidOperationException($"SnapshotDynamictDataBuffer buffer not found for ghost with id {ghostId}");
 
                         //Fit the snapshot buffer to accomodate the new size. Add some room for growth (20%)
+                        var buf = snapshotDynamicDataFromEntity[gent];
                         var slotCapacity = SnapshotDynamicBuffersHelper.GetDynamicDataCapacity(SnapshotDynamicBuffersHelper.GetHeaderSize(), buf.Length);
                         var newCapacity = SnapshotDynamicBuffersHelper.CalculateBufferCapacity(dynamicDataSize, out var newSlotCapacity);
                         if (buf.Length < newCapacity)
@@ -575,28 +575,21 @@ namespace Unity.NetCode
                             //Perf: Is already copying over the contents to the new re-allocated buffer. It would be nice to avoid that
                             buf.ResizeUninitialized((int)newCapacity);
                             //Move buffer content around (because the slot size is changed)
-                            if (slotCapacity > 0) 
+                            var sourcePtr = (byte*)buf.GetUnsafePtr() + GhostSystemConstants.SnapshotHistorySize*slotCapacity;
+                            var destPtr = (byte*)buf.GetUnsafePtr() + GhostSystemConstants.SnapshotHistorySize*newSlotCapacity;
+                            for (int i=0;i<GhostSystemConstants.SnapshotHistorySize;++i)
                             {
-                                var bufferPtr = (byte*)buf.GetUnsafePtr() + SnapshotDynamicBuffersHelper.GetHeaderSize();
-                                var sourcePtr = bufferPtr + GhostSystemConstants.SnapshotHistorySize*slotCapacity;
-                                var destPtr = bufferPtr + GhostSystemConstants.SnapshotHistorySize*newSlotCapacity;
-                                for (int i=0;i<GhostSystemConstants.SnapshotHistorySize;++i)
-                                {
-                                    destPtr -= newSlotCapacity;
-                                    sourcePtr -= slotCapacity;
-                                    UnsafeUtility.MemMove(destPtr, sourcePtr, slotCapacity);
-                                }
+                                destPtr -= newSlotCapacity;
+                                sourcePtr -= slotCapacity;
+                                UnsafeUtility.MemMove(destPtr, sourcePtr, slotCapacity);
                             }
                             slotCapacity = newSlotCapacity;
                         }
                         //write down the received data size inside the snapshot (used for delta compression) and setup dynamic data ptr
                         var bufPtr = (byte*)buf.GetUnsafePtr();
                         ((uint*)bufPtr)[snapshotDataComponent.LatestIndex] = dynamicDataSize;
-                        //Retrive dynamic data ptrs
                         snapshotDynamicDataPtr = SnapshotDynamicBuffersHelper.GetDynamicDataPtr(bufPtr,snapshotDataComponent.LatestIndex, buf.Length);
                         snapshotDynamicDataCapacity = slotCapacity;
-                        if (baselineDynamicDataIndex != -1) 
-                            baselineDynamicDataPtr = SnapshotDynamicBuffersHelper.GetDynamicDataPtr(bufPtr, baselineDynamicDataIndex, buf.Length);
                     }
                 }
                 else

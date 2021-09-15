@@ -36,13 +36,13 @@ namespace Overrides.NetCodeGen
                 fields = fields.ToArray()
             };
             
-            fields = new [] { "Value" }.Select(f => new GhostFieldModifier() {name = f});
-                        overrides["Unity.Physics.PhysicsCollider"] = new GhostComponentModifier()
-                        {
-                            typeFullName = "Unity.Physics.PhysicsCollider",
-                            attribute = new GhostComponentAttribute() {PrefabType = GhostPrefabType.Server},
-                            fields = fields.ToArray()
-                        };
+            // fields = new [] { "Value" }.Select(f => new GhostFieldModifier() {name = f});
+            //             overrides["Unity.Physics.PhysicsCollider"] = new GhostComponentModifier()
+            //             {
+            //                 typeFullName = "Unity.Physics.PhysicsCollider",
+            //                 attribute = new GhostComponentAttribute() {PrefabType = GhostPrefabType.Server},
+            //                 fields = fields.ToArray()
+            //             };
             
 
         }

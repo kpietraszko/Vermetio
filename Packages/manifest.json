@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.andrewraphaellukasik.segments": "https://github.com/andrew-raphael-lukasik/segments.git#upm",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.e7.ecs.line-renderer": "git://github.com/5argon/ECSLineRenderer.git",
     "com.havok.physics": "0.6.0-preview.3",
     "com.unity.build-report-inspector": "0.2.2-preview",

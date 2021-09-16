@@ -564,6 +564,7 @@ namespace Unity.NetCode.Editor
         {
             using (var toogle = new EditorGUILayout.ToggleGroupScope("PrefabType", modPrefab))
             {
+                newPrefab = 0; // this line added from forum post by CMarastoni
                 ++EditorGUI.indentLevel;
                 if (EditorGUILayout.ToggleLeft("Server", (prefabType & GhostPrefabType.Server) != 0,
                     GUILayout.ExpandWidth(false), GUILayout.MaxWidth(90)))

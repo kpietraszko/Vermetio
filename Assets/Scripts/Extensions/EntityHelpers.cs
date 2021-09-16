@@ -33,5 +33,16 @@ namespace Vermetio
 
             return currentParent;
         }
+        
+        public static World GetWorldWith<T>(World.NoAllocReadOnlyCollection<World> worlds) where T : ComponentSystemBase
+        {
+            foreach (var world in worlds)
+            {
+                if (world.GetExistingSystem<T>() != null)
+                    return world;
+            }
+
+            return null;
+        }
     }
 }

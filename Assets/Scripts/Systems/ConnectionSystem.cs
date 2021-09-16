@@ -8,6 +8,7 @@ using Unity.NetCode;
 using Unity.Networking.Transport;
 using Unity.Transforms;
 using UnityEngine;
+using Vermetio;
 
 [UpdateInWorld(UpdateInWorld.TargetWorld.Default)]
 [AlwaysSynchronizeSystem]
@@ -37,7 +38,7 @@ public class ConnectionSystem : SystemBase
         // Destroy singleton to prevent system from running again
         EntityManager.DestroyEntity(GetSingletonEntity<InitGameComponent>());
 
-        var serverWorld = GetWorldWith<ServerSimulationSystemGroup>(World.All);
+        var serverWorld = EntityHelpers.GetWorldWith<ServerSimulationSystemGroup>(World.All);
 
         if (serverWorld != null)
         {
@@ -80,17 +81,6 @@ public class ConnectionSystem : SystemBase
             clientWorld.EntityManager.SetName(entity, "Connection");
             #endif
         }
-    }
-
-    private World GetWorldWith<T>(World.NoAllocReadOnlyCollection<World> worlds) where T : ComponentSystemBase
-    {
-        foreach (var world in worlds)
-        {
-            if (world.GetExistingSystem<T>() != null)
-                return world;
-        }
-
-        return null;
     }
 
     private IEnumerable<World> GetWorldsWith<T>(World.NoAllocReadOnlyCollection<World> worlds)

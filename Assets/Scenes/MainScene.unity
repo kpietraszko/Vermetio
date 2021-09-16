@@ -1248,7 +1248,7 @@ MonoBehaviour:
   _globalWindSpeed: 150
   _viewpoint: {fileID: 0}
   _camera: {fileID: 1695907644}
-  _timeProvider: {fileID: 909074733}
+  _timeProvider: {fileID: 0}
   _primaryLight: {fileID: 1442418599}
   _searchForPrimaryLightOnStartup: 1
   _material: {fileID: 2100000, guid: 9def92ac79181fe41b238e91663f0fad, type: 2}

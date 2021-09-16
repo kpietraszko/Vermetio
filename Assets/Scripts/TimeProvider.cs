@@ -9,6 +9,7 @@ using Unity.Core;
 using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
+using Vermetio;
 
 public class TimeProvider : TimeProviderBase
 {
@@ -67,7 +68,7 @@ public class TimeProvider : TimeProviderBase
 
     private float GetInterpolationTime()
     {
-        var clientWorld = GetWorldWith<ClientSimulationSystemGroup>(World.All);
+        var clientWorld = EntityHelpers.GetWorldWith<ClientSimulationSystemGroup>(World.All);
         if (clientWorld != null)
         {
             var clientSimSystemGroup = clientWorld.GetExistingSystem<ClientSimulationSystemGroup>();
@@ -75,7 +76,7 @@ public class TimeProvider : TimeProviderBase
                    clientSimSystemGroup.ServerTickDeltaTime;
         }
 
-        var serverWorld = GetWorldWith<ServerSimulationSystemGroup>(World.All);
+        var serverWorld = EntityHelpers.GetWorldWith<ServerSimulationSystemGroup>(World.All);
         if (serverWorld != null)
         {
             var serverSimSystemGroup = serverWorld.GetExistingSystem<ServerSimulationSystemGroup>();
@@ -83,16 +84,5 @@ public class TimeProvider : TimeProviderBase
         }
 
         return 0f;
-    }
-    
-    private World GetWorldWith<T>(World.NoAllocReadOnlyCollection<World> worlds) where T : ComponentSystemBase
-    {
-        foreach (var world in worlds)
-        {
-            if (world.GetExistingSystem<T>() != null)
-                return world;
-        }
-
-        return null;
     }
 }

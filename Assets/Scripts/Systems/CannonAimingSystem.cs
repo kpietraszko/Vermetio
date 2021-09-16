@@ -34,7 +34,7 @@ namespace Vermetio.Server
             var rttPerEntity = new NativeHashMap<Entity, float>(100, Allocator.TempJob);
 
             Entities
-                .ForEach((NetworkSnapshotAckComponent ack, CommandTargetComponent target) =>
+                .ForEach((in NetworkSnapshotAckComponent ack, in CommandTargetComponent target) =>
                 {
                     rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT / 1000); // ack.EstimatedRTT is in ms
                 }).Run();

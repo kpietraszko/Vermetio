@@ -5,12 +5,13 @@ using Unity.Entities;
 using Unity.NetCode;
 using Unity.Transforms;
 using UnityEngine;
+using Vermetio;
 
 public class CopyPlayerPositionToProxy : MonoBehaviour
 {
     void FixedUpdate()
     {
-        var world = GetWorldWith<ClientSimulationSystemGroup>(World.All);
+        var world = EntityHelpers.GetWorldWith<ClientSimulationSystemGroup>(World.All);
         if (world == null)
             return;
         
@@ -37,16 +38,5 @@ public class CopyPlayerPositionToProxy : MonoBehaviour
             transform.rotation = playerRotation;
             return;
         }
-    }
-    
-    private World GetWorldWith<T>(World.NoAllocReadOnlyCollection<World> worlds) where T : ComponentSystemBase
-    {
-        foreach (var world in worlds)
-        {
-            if (world.GetExistingSystem<T>() != null)
-                return world;
-        }
-
-        return null;
     }
 }

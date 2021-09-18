@@ -54,6 +54,7 @@ namespace Vermetio.Server
                 }).Run();
 
             Entities
+                .WithDisposeOnCompletion(rttPerEntity)
                 .ForEach((Entity playerEntity,
                     ref ShootParametersComponent shootParams,
                     ref PlayerInventoryComponent inventory, 

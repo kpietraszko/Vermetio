@@ -1,10 +1,10 @@
 {
   "MonoBehaviour": {
     "Version": 3,
-    "EnableBurstCompilation": true,
+    "EnableBurstCompilation": false,
     "EnableOptimisations": true,
-    "EnableSafetyChecks": false,
-    "EnableDebugInAllBuilds": false,
+    "EnableSafetyChecks": true,
+    "EnableDebugInAllBuilds": true,
     "UsePlatformSDKLinker": false,
     "CpuMinTargetX32": 0,
     "CpuMaxTargetX32": 0,

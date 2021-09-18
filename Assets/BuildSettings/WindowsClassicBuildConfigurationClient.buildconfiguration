@@ -13,15 +13,7 @@
             "BuildCurrentScene": false,
             "SceneInfos": [
                 {
-                    "Scene": "GlobalObjectId_V1-1-946e865eb270bb547a93a0673e1017b0-102900000-0",
-                    "AutoLoad": true
-                },
-                {
                     "Scene": "GlobalObjectId_V1-1-4a0d0c9c6f3acb041b62d5e0279bd85b-102900000-0",
-                    "AutoLoad": true
-                },
-                {
-                    "Scene": "GlobalObjectId_V1-1-beb7da61f22359844bdf6b711e1189b4-102900000-0",
                     "AutoLoad": true
                 }
             ]
@@ -51,6 +43,10 @@
             "ScriptingBackend": 0,
             "Il2CppCompilerConfiguration": 1,
             "UseIncrementalGC": false
+        },
+        {
+            "$type": "Unity.Build.Common.ScriptingDebuggerSettings, Unity.Build",
+            "WaitForManagedDebugger": true
         }
     ]
 }

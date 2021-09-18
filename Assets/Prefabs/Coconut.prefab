@@ -294,7 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ForcePrefabConversion: 0
   DefaultGhostMode: 0
-  SupportedGhostModes: 3
+  SupportedGhostModes: 1
   OptimizationMode: 0
   Importance: 1
   prefabId: dbb88a7fe23bdbd4ca8cddd2b83f0dff
@@ -308,7 +308,7 @@ MonoBehaviour:
   - Unity.Transforms.Rotation
   - Unity.Transforms.Translation
   PrefabTypeOverrides:
-  - Value: 7
+  - Value: 4
     OverrideIndex: 0
   SendTypeOverrides: []
   VariantOverrides:

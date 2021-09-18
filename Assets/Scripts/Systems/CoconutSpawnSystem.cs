@@ -14,9 +14,10 @@ namespace Vermetio.Server
     [UpdateInGroup(typeof(GhostSimulationSystemGroup))]
     public class CoconutSpawnSystem : SystemBase
     {
-        private const int TargetNumberOfCoconuts = 200;
+        public const int TargetNumberOfCoconuts = 60;
+
         // private const double Cooldown = 1f;
-        private EntityQuery _existingCoconutsQuery;
+        public EntityQuery _existingCoconutsQuery { get; private set; }
         private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
         protected override void OnCreate()
@@ -24,10 +25,10 @@ namespace Vermetio.Server
             base.OnCreate();
             _existingCoconutsQuery = GetEntityQuery(new EntityQueryDesc()
             {
-                All = new ComponentType[] {typeof(SimpleBuoyantComponent)},
-                None = new ComponentType[] {typeof(BulletTag)}
+                All = new ComponentType[] { typeof(SimpleBuoyantComponent) },
+                None = new ComponentType[] { typeof(BulletTag) }
             });
-            
+
             _endSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
         }
 
@@ -35,10 +36,18 @@ namespace Vermetio.Server
         {
             var existingCoconuts = _existingCoconutsQuery.CalculateEntityCount();
             var coconutsToSpawn = TargetNumberOfCoconuts - existingCoconuts;
-            var coconutPrefab = GetGhostPrefab<SimpleBuoyantComponent>(); // TODO: hack
-            var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
+            var coconutPrefab = GetGhostPrefab<CoconutAgeComponent>();
+            var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer();
+            var endFrameEcbParallel = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
             var elapsedTime = Time.ElapsedTime;
-            var random = new Random((uint) UnityEngine.Random.Range(1, int.MaxValue));
+            var random = new Random((uint)UnityEngine.Random.Range(1, int.MaxValue));
+
+            Entities
+                .ForEach((Entity entity, int entityInQueryIndex, CoconutSpawnCooldownComponent cooldown) =>
+                {
+                    if (cooldown.CooldownStartedAt + 1.0 <= elapsedTime) // 1 second cooldown
+                        endFrameEcb.RemoveComponent<CoconutSpawnCooldownComponent>(entity);
+                }).Run();
 
             Entities
                 .WithAll<CoconutSpawnPointTag>()
@@ -47,15 +56,18 @@ namespace Vermetio.Server
                 {
                     if (entityInQueryIndex >= coconutsToSpawn)
                         return;
-                    
-                    var coconut = endFrameEcb.Instantiate(entityInQueryIndex, coconutPrefab);
-                    endFrameEcb.SetComponent(entityInQueryIndex, coconut, new Translation() {Value = localToWorld.Position});
+
+                    var coconut = endFrameEcbParallel.Instantiate(entityInQueryIndex, coconutPrefab);
+                    endFrameEcbParallel.SetComponent(entityInQueryIndex, coconut,
+                        new Translation() { Value = localToWorld.Position });
                     random.InitState((uint)(random.state + entityInQueryIndex));
                     var randomInitialAge = random.NextFloat(0, 20f);
-                    endFrameEcb.SetComponent(entityInQueryIndex, coconut, new CoconutAgeComponent() { Age = randomInitialAge});
-                    // endFrameEcb.AddComponent(entityInQueryIndex, entity, new CoconutSpawnCooldownComponent() {CooldownStartedAt = elapsedTime});
+                    endFrameEcbParallel.SetComponent(entityInQueryIndex, coconut,
+                        new CoconutAgeComponent() { Age = randomInitialAge });
+                    endFrameEcbParallel.AddComponent(entityInQueryIndex, entity,
+                        new CoconutSpawnCooldownComponent() { CooldownStartedAt = elapsedTime });
                 }).Schedule();
-            
+
             _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
         }
 

@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks.Linq;
 using TMPro;
 using Unity.Entities;
 using Unity.NetCode;
-using Unity.NetCode.Editor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -25,7 +24,6 @@ namespace Vermetio.Client
         // Start is called before the first frame update
         async UniTaskVoid Start()
         {
-            Debug.Log("Start called");
             await foreach(var _ in UniTaskAsyncEnumerable.IntervalFrame(7, PlayerLoopTiming.PreLateUpdate))
             {
                 var count = GetCoconutCountFromInventory();
@@ -40,7 +38,7 @@ namespace Vermetio.Client
         {
             var world =
 #if UNITY_EDITOR
-                MultiplayerPlayModeControllerSystem.PresentedClient?.World;
+                Unity.NetCode.Editor.MultiplayerPlayModeControllerSystem.PresentedClient?.World;
 #else
                 EntityHelpers.GetWorldWith<ClientSimulationSystemGroup>(World.All);
 #endif

@@ -9,6 +9,7 @@ using Unity.Transforms;
 namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(ServerSimulationSystemGroup))]
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
     [UpdateAfter(typeof(BoatHitSystem))]
     public class DieSystem : SystemBase
     {

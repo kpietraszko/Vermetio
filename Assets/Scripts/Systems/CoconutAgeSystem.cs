@@ -11,6 +11,7 @@ using Unity.Transforms;
 namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostSimulationSystemGroup))]
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
     public class CoconutAgeSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;

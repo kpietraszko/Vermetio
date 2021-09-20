@@ -76,14 +76,10 @@ public class SampleBoatInputSystem : SystemBase
 
         if (mouse.leftButton.wasPressedThisFrame)
         {
-            // var clientTickRate = GetSingleton<ClientTickRate>();
-            // var ack = GetSingleton<NetworkSnapshotAckComponent>();
-            // var estimatedRTT = math.min(ack.EstimatedRTT, clientTickRate.MaxPredictAheadTimeMS);
-            // input.FinishRotationAt = Time.ElapsedTime + estimatedRTT; // probably wrong
             var shootParams = GetComponent<ShootParametersComponent>(localInputEntity);
-            var inventory = GetComponent<PlayerInventoryComponent>(localInputEntity);
-            if (inventory.Coconuts < 1)
-                return;
+            // var inventory = GetComponent<PlayerInventoryComponent>(localInputEntity);
+            // if (inventory.Coconuts < 1)
+            //     return;
             
             shootParams.LastShotRequestedAt = Time.ElapsedTime;
             SetComponent(localInputEntity, shootParams);

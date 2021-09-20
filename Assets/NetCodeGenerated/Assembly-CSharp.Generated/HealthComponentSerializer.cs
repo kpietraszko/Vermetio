@@ -29,8 +29,8 @@ namespace Assembly_CSharp.Generated
                     ComponentSize = UnsafeUtility.SizeOf<HealthComponent>(),
                     SnapshotSize = UnsafeUtility.SizeOf<Snapshot>(),
                     ChangeMaskBits = ChangeMaskBits,
-                    SendMask = GhostComponentSerializer.SendMask.Predicted,
-                    SendToOwner = SendToOwnerType.SendToOwner,
+                    SendMask = GhostComponentSerializer.SendMask.Interpolated | GhostComponentSerializer.SendMask.Predicted,
+                    SendToOwner = SendToOwnerType.All,
                     SendForChildEntities = 1,
                     VariantHash = 0,
                     CopyToSnapshot =

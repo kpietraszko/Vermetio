@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.67616475, g: 0.7551718, b: 0.80784315, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.0002
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000004, guid: 5aef678c33215464f9fa62bdc56738d7, type: 2}
+  m_LightingDataAsset: {fileID: 112000002, guid: 4f19dae26d1bc974984628dba1153905, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 9c7270845ba9f994e98ae01d102e363b, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -1980,7 +1980,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 1e-45, z: 3.1811e-41, w: 6e-44}
+  m_BoundingSphereOverride: {x: 0, y: 1e-45, z: 0, w: -2024.002}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -2361,7 +2361,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695907642}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da05aab3ba773644eb187d19c55bb05a, type: 3}
   m_Name: 
@@ -2373,7 +2373,7 @@ MonoBehaviour:
   _disableOcclusionCulling: 1
   _disablePixelLights: 1
   _disableShadows: 1
-  _textureSize: 1024
+  _textureSize: 256
   _clipPlaneOffset: 0.07
   _hdr: 1
   _stencil: 0

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4462998477885253044}
   - component: {fileID: 1876653257324319102}
   - component: {fileID: 7250597999067252519}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cliff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b275e5f92732148048d7b77e264ac30e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShapeType: 0
+  m_ShapeType: 30
   m_PrimitiveCenter:
     x: 0.34004593
     y: 3.5925426
@@ -110,19 +110,19 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 93.76949
-    Radius: 29.433716
-    Axis: 0
+    Height: 38.91867
+    Radius: 46.884747
+    Axis: 2
   m_Cylinder:
-    Height: 93.76949
-    Radius: 29.433716
-    Axis: 0
+    Height: 38.91867
+    Radius: 46.884747
+    Axis: 2
   m_CylinderSideCount: 20
   m_SphereRadius: 46.884747
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
-    m_SimplificationTolerance: 1.27
-    m_BevelRadius: 2.82
+    m_SimplificationTolerance: 1.4065424
+    m_BevelRadius: 0.05
     m_MinimumAngle: 2.5000002
   m_CustomMesh: {fileID: 0}
   m_ForceUnique: 0

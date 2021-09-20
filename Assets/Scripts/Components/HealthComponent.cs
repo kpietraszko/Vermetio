@@ -6,7 +6,7 @@ using Unity.NetCode;
 
 [Serializable]
 [GenerateAuthoringComponent]
-[GhostComponent(PrefabType = GhostPrefabType.AllPredicted, OwnerSendType = SendToOwnerType.SendToOwner)]
+[GhostComponent(PrefabType = GhostPrefabType.All)]
 public struct HealthComponent : IComponentData
 {
     [GhostField]

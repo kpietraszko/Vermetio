@@ -4,9 +4,8 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.NetCode;
 
-[Serializable]
 [GenerateAuthoringComponent]
-[GhostComponent(PrefabType = GhostPrefabType.AllPredicted, OwnerSendType = SendToOwnerType.SendToOwner)]
+[GhostComponent(PrefabType = GhostPrefabType.All)]
 public struct PlayerInventoryComponent : IComponentData
 {
     [GhostField]

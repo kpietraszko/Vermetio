@@ -57,6 +57,7 @@ namespace Vermetio.Server
                 );
             
             _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
+            _buildPhysicsWorld.AddInputDependencyToComplete(Dependency);
         }
         
         [BurstCompile]

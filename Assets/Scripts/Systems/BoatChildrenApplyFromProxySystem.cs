@@ -9,7 +9,7 @@ using Unity.Transforms;
 namespace Vermetio
 {
     [UpdateInGroup(typeof(GhostSimulationSystemGroup))]
-    [UpdateInWorld(UpdateInWorld.TargetWorld.ClientAndServer)]
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
     public class BoatChildrenApplyFromProxySystem : SystemBase
     {
         protected override void OnUpdate()

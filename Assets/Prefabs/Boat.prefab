@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 777112987026946711}
   - component: {fileID: -8442674190696574560}
   - component: {fileID: 7127417554883270754}
-  - component: {fileID: 3962973025001340303}
+  - component: {fileID: -3458404269313235540}
   m_Layer: 0
   m_Name: Boat
   m_TagString: Untagged
@@ -237,8 +237,10 @@ MonoBehaviour:
   Importance: 10
   prefabId: e0586d7bc2cba594a83c3d1ef7f9815b
   Name: boat
-  RefGameObjects: []
-  ComponentNames: []
+  RefGameObjects:
+  - {fileID: 4114318234614650026}
+  ComponentNames:
+  - Unity.Transforms.Rotation
   PrefabTypeOverrides: []
   SendTypeOverrides: []
   VariantOverrides: []
@@ -543,7 +545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Coconuts: 0
---- !u!114 &3962973025001340303
+--- !u!114 &-3458404269313235540
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

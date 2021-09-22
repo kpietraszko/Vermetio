@@ -244,7 +244,11 @@ namespace Unity.NetCode
 
                 for (int comp = 0; comp < numBaseComponents; ++comp)
                 {
-                    int compIdx = GhostComponentIndex[typeData.FirstComponent + comp].ComponentIndex;
+                    var index = typeData.FirstComponent + comp;
+                    if (GhostComponentIndex.Length <= index)
+                        continue; // ADDED BY ME
+                    
+                    int compIdx = GhostComponentIndex[index].ComponentIndex;
                     int serializerIdx = GhostComponentIndex[typeData.FirstComponent + comp].SerializerIndex;
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
                     if (compIdx >= ghostChunkComponentTypesLength)

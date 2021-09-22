@@ -237,10 +237,8 @@ MonoBehaviour:
   Importance: 10
   prefabId: e0586d7bc2cba594a83c3d1ef7f9815b
   Name: boat
-  RefGameObjects:
-  - {fileID: 4114318234614650026}
-  ComponentNames:
-  - Unity.Transforms.Rotation
+  RefGameObjects: []
+  ComponentNames: []
   PrefabTypeOverrides: []
   SendTypeOverrides: []
   VariantOverrides: []

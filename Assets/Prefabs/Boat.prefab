@@ -102,8 +102,9 @@ GameObject:
   - component: {fileID: 777112987026946711}
   - component: {fileID: -8442674190696574560}
   - component: {fileID: 7127417554883270754}
+  - component: {fileID: 3962973025001340303}
   m_Layer: 0
-  m_Name: boat
+  m_Name: Boat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -236,15 +237,11 @@ MonoBehaviour:
   Importance: 10
   prefabId: e0586d7bc2cba594a83c3d1ef7f9815b
   Name: boat
-  RefGameObjects:
-  - {fileID: 4114318234614650026}
-  ComponentNames:
-  - Unity.Transforms.Rotation
+  RefGameObjects: []
+  ComponentNames: []
   PrefabTypeOverrides: []
   SendTypeOverrides: []
-  VariantOverrides:
-  - Value: 14998767508557141177
-    OverrideIndex: 0
+  VariantOverrides: []
 --- !u!114 &3080096736190477122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,6 +543,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Coconuts: 0
+--- !u!114 &3962973025001340303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028933030943869725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 126b7c5163af2f543a2070820b88cda7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CageRotation:
+    value:
+      x: 0
+      y: 0
+      z: 0
+      w: 0
+  AxleRotation:
+    value:
+      x: 0
+      y: 0
+      z: 0
+      w: 0
 --- !u!1 &1031506611295282554
 GameObject:
   m_ObjectHideFlags: 0

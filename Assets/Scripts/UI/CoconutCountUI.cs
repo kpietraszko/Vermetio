@@ -52,11 +52,11 @@ namespace Vermetio.Client
 
             var playerEntity = world.EntityManager
                 .GetComponentData<CommandTargetComponent>(networkIdQuery.GetSingletonEntity()).targetEntity;
-            // if (!world.EntityManager.HasComponent<PlayerInventoryComponent>(playerEntity))
-            //     return null;
-            //
-            // var inventory = world.EntityManager.GetComponentData<PlayerInventoryComponent>(playerEntity);
-            return 0;
+            if (!world.EntityManager.HasComponent<PlayerInventoryComponent>(playerEntity))
+                return null;
+            
+            var inventory = world.EntityManager.GetComponentData<PlayerInventoryComponent>(playerEntity);
+            return inventory.Coconuts;
         }
     }
 }

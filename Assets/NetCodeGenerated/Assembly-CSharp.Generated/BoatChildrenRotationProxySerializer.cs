@@ -14,7 +14,7 @@ using Unity.Mathematics;
 namespace Assembly_CSharp.Generated
 {
     [BurstCompile]
-    public struct RotationSendChildGhostComponentSerializer
+    public struct BoatChildrenRotationProxyGhostComponentSerializer
     {
         static GhostComponentSerializer.State GetState()
         {
@@ -23,16 +23,16 @@ namespace Assembly_CSharp.Generated
             {
                 s_State = new GhostComponentSerializer.State
                 {
-                    GhostFieldsHash = 14052263069160443068,
+                    GhostFieldsHash = 2596386635959590070,
                     ExcludeFromComponentCollectionHash = 0,
-                    ComponentType = ComponentType.ReadWrite<Unity.Transforms.Rotation>(),
-                    ComponentSize = UnsafeUtility.SizeOf<Unity.Transforms.Rotation>(),
+                    ComponentType = ComponentType.ReadWrite<BoatChildrenRotationProxy>(),
+                    ComponentSize = UnsafeUtility.SizeOf<BoatChildrenRotationProxy>(),
                     SnapshotSize = UnsafeUtility.SizeOf<Snapshot>(),
                     ChangeMaskBits = ChangeMaskBits,
                     SendMask = GhostComponentSerializer.SendMask.Interpolated | GhostComponentSerializer.SendMask.Predicted,
                     SendToOwner = SendToOwnerType.All,
                     SendForChildEntities = 1,
-                    VariantHash = 14998767508557141177,
+                    VariantHash = 0,
                     CopyToSnapshot =
                         new PortableFunctionPointer<GhostComponentSerializer.CopyToFromSnapshotDelegate>(CopyToSnapshot),
                     CopyFromSnapshot =
@@ -61,12 +61,16 @@ namespace Assembly_CSharp.Generated
         public static GhostComponentSerializer.State State => GetState();
         public struct Snapshot
         {
-            public int Value_value_x;
-            public int Value_value_y;
-            public int Value_value_z;
-            public int Value_value_w;
+            public float CageRotationX;
+            public float CageRotationY;
+            public float CageRotationZ;
+            public float CageRotationW;
+            public float AxleRotationX;
+            public float AxleRotationY;
+            public float AxleRotationZ;
+            public float AxleRotationW;
         }
-        public const int ChangeMaskBits = 1;
+        public const int ChangeMaskBits = 2;
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.CopyToFromSnapshotDelegate))]
         private static void CopyToSnapshot(IntPtr stateData, IntPtr snapshotData, int snapshotOffset, int snapshotStride, IntPtr componentData, int componentStride, int count)
@@ -74,12 +78,16 @@ namespace Assembly_CSharp.Generated
             for (int i = 0; i < count; ++i)
             {
                 ref var snapshot = ref GhostComponentSerializer.TypeCast<Snapshot>(snapshotData, snapshotOffset + snapshotStride*i);
-                ref var component = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(componentData, componentStride*i);
+                ref var component = ref GhostComponentSerializer.TypeCast<BoatChildrenRotationProxy>(componentData, componentStride*i);
                 ref var serializerState = ref GhostComponentSerializer.TypeCast<GhostSerializerState>(stateData, 0);
-                snapshot.Value_value_x = (int) math.round(component.Value.value.x * 1000);
-                snapshot.Value_value_y = (int) math.round(component.Value.value.y * 1000);
-                snapshot.Value_value_z = (int) math.round(component.Value.value.z * 1000);
-                snapshot.Value_value_w = (int) math.round(component.Value.value.w * 1000);
+                snapshot.CageRotationX = component.CageRotation.value.x;
+                snapshot.CageRotationY = component.CageRotation.value.y;
+                snapshot.CageRotationZ = component.CageRotation.value.z;
+                snapshot.CageRotationW = component.CageRotation.value.w;
+                snapshot.AxleRotationX = component.AxleRotation.value.x;
+                snapshot.AxleRotationY = component.AxleRotation.value.y;
+                snapshot.AxleRotationZ = component.AxleRotation.value.z;
+                snapshot.AxleRotationW = component.AxleRotation.value.w;
             }
         }
         [BurstCompile]
@@ -104,11 +112,9 @@ namespace Assembly_CSharp.Generated
                 deserializerState.SnapshotTick = snapshotInterpolationData.Tick;
                 float snapshotInterpolationFactorRaw = snapshotInterpolationData.InterpolationFactor;
                 float snapshotInterpolationFactor = snapshotInterpolationFactorRaw;
-                ref var component = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(componentData, componentStride*i);
-                snapshotInterpolationFactor = snapshotInterpolationFactorRaw;
-                var Value_value_Before = new float4(snapshotBefore.Value_value_x * 0.001f, snapshotBefore.Value_value_y * 0.001f, snapshotBefore.Value_value_z * 0.001f, snapshotBefore.Value_value_w * 0.001f);
-                var Value_value_After = new float4(snapshotAfter.Value_value_x * 0.001f, snapshotAfter.Value_value_y * 0.001f, snapshotAfter.Value_value_z * 0.001f, snapshotAfter.Value_value_w * 0.001f);
-                component.Value.value = math.lerp(Value_value_Before, Value_value_After, snapshotInterpolationFactor);
+                ref var component = ref GhostComponentSerializer.TypeCast<BoatChildrenRotationProxy>(componentData, componentStride*i);
+                component.CageRotation = new quaternion(snapshotBefore.CageRotationX, snapshotBefore.CageRotationY, snapshotBefore.CageRotationZ, snapshotBefore.CageRotationW);
+                component.AxleRotation = new quaternion(snapshotBefore.AxleRotationX, snapshotBefore.AxleRotationY, snapshotBefore.AxleRotationZ, snapshotBefore.AxleRotationW);
 
             }
         }
@@ -118,12 +124,10 @@ namespace Assembly_CSharp.Generated
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.RestoreFromBackupDelegate))]
         private static void RestoreFromBackup(IntPtr componentData, IntPtr backupData)
         {
-            ref var component = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(componentData, 0);
-            ref var backup = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(backupData, 0);
-            component.Value.value.x = backup.Value.value.x;
-            component.Value.value.y = backup.Value.value.y;
-            component.Value.value.z = backup.Value.value.z;
-            component.Value.value.w = backup.Value.value.w;
+            ref var component = ref GhostComponentSerializer.TypeCast<BoatChildrenRotationProxy>(componentData, 0);
+            ref var backup = ref GhostComponentSerializer.TypeCast<BoatChildrenRotationProxy>(backupData, 0);
+            component.CageRotation = backup.CageRotation;
+            component.AxleRotation = backup.AxleRotation;
         }
 
         [BurstCompile]
@@ -133,10 +137,6 @@ namespace Assembly_CSharp.Generated
             ref var snapshot = ref GhostComponentSerializer.TypeCast<Snapshot>(snapshotData);
             ref var baseline1 = ref GhostComponentSerializer.TypeCast<Snapshot>(baseline1Data);
             ref var baseline2 = ref GhostComponentSerializer.TypeCast<Snapshot>(baseline2Data);
-            snapshot.Value_value_x = predictor.PredictInt(snapshot.Value_value_x, baseline1.Value_value_x, baseline2.Value_value_x);
-            snapshot.Value_value_y = predictor.PredictInt(snapshot.Value_value_y, baseline1.Value_value_y, baseline2.Value_value_y);
-            snapshot.Value_value_z = predictor.PredictInt(snapshot.Value_value_z, baseline1.Value_value_z, baseline2.Value_value_z);
-            snapshot.Value_value_w = predictor.PredictInt(snapshot.Value_value_w, baseline1.Value_value_w, baseline2.Value_value_w);
         }
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.CalculateChangeMaskDelegate))]
@@ -145,11 +145,15 @@ namespace Assembly_CSharp.Generated
             ref var snapshot = ref GhostComponentSerializer.TypeCast<Snapshot>(snapshotData);
             ref var baseline = ref GhostComponentSerializer.TypeCast<Snapshot>(baselineData);
             uint changeMask;
-            changeMask = (snapshot.Value_value_x != baseline.Value_value_x) ? 1u : 0;
-            changeMask |= (snapshot.Value_value_y != baseline.Value_value_y) ? (1u<<0) : 0;
-            changeMask |= (snapshot.Value_value_z != baseline.Value_value_z) ? (1u<<0) : 0;
-            changeMask |= (snapshot.Value_value_w != baseline.Value_value_w) ? (1u<<0) : 0;
-            GhostComponentSerializer.CopyToChangeMask(bits, changeMask, startOffset, 1);
+            changeMask = (snapshot.CageRotationX != baseline.CageRotationX ||
+                        snapshot.CageRotationY != baseline.CageRotationY ||
+                        snapshot.CageRotationZ != baseline.CageRotationZ ||
+                        snapshot.CageRotationW != baseline.CageRotationW) ? 1u : 0;
+            changeMask |= (snapshot.AxleRotationX != baseline.AxleRotationX ||
+                        snapshot.AxleRotationY != baseline.AxleRotationY ||
+                        snapshot.AxleRotationZ != baseline.AxleRotationZ ||
+                        snapshot.AxleRotationW != baseline.AxleRotationW) ? (1u<<1) : 0;
+            GhostComponentSerializer.CopyToChangeMask(bits, changeMask, startOffset, 2);
         }
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.SerializeDelegate))]
@@ -159,13 +163,19 @@ namespace Assembly_CSharp.Generated
             ref var baseline = ref GhostComponentSerializer.TypeCast<Snapshot>(baselineData);
             uint changeMask = GhostComponentSerializer.CopyFromChangeMask(changeMaskData, startOffset, ChangeMaskBits);
             if ((changeMask & (1 << 0)) != 0)
-                writer.WritePackedIntDelta(snapshot.Value_value_x, baseline.Value_value_x, compressionModel);
-            if ((changeMask & (1 << 0)) != 0)
-                writer.WritePackedIntDelta(snapshot.Value_value_y, baseline.Value_value_y, compressionModel);
-            if ((changeMask & (1 << 0)) != 0)
-                writer.WritePackedIntDelta(snapshot.Value_value_z, baseline.Value_value_z, compressionModel);
-            if ((changeMask & (1 << 0)) != 0)
-                writer.WritePackedIntDelta(snapshot.Value_value_w, baseline.Value_value_w, compressionModel);
+            {
+                writer.WritePackedFloatDelta(snapshot.CageRotationX, baseline.CageRotationX, compressionModel);
+                writer.WritePackedFloatDelta(snapshot.CageRotationY, baseline.CageRotationY, compressionModel);
+                writer.WritePackedFloatDelta(snapshot.CageRotationZ, baseline.CageRotationZ, compressionModel);
+                writer.WritePackedFloatDelta(snapshot.CageRotationW, baseline.CageRotationW, compressionModel);
+            }
+            if ((changeMask & (1 << 1)) != 0)
+            {
+                writer.WritePackedFloatDelta(snapshot.AxleRotationX, baseline.AxleRotationX, compressionModel);
+                writer.WritePackedFloatDelta(snapshot.AxleRotationY, baseline.AxleRotationY, compressionModel);
+                writer.WritePackedFloatDelta(snapshot.AxleRotationZ, baseline.AxleRotationZ, compressionModel);
+                writer.WritePackedFloatDelta(snapshot.AxleRotationW, baseline.AxleRotationW, compressionModel);
+            }
         }
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.DeserializeDelegate))]
@@ -175,31 +185,45 @@ namespace Assembly_CSharp.Generated
             ref var baseline = ref GhostComponentSerializer.TypeCast<Snapshot>(baselineData);
             uint changeMask = GhostComponentSerializer.CopyFromChangeMask(changeMaskData, startOffset, ChangeMaskBits);
             if ((changeMask & (1 << 0)) != 0)
-                snapshot.Value_value_x = reader.ReadPackedIntDelta(baseline.Value_value_x, compressionModel);
+            {
+                snapshot.CageRotationX = reader.ReadPackedFloatDelta(baseline.CageRotationX, compressionModel);
+                snapshot.CageRotationY = reader.ReadPackedFloatDelta(baseline.CageRotationY, compressionModel);
+                snapshot.CageRotationZ = reader.ReadPackedFloatDelta(baseline.CageRotationZ, compressionModel);
+                snapshot.CageRotationW = reader.ReadPackedFloatDelta(baseline.CageRotationW, compressionModel);
+            }
             else
-                snapshot.Value_value_x = baseline.Value_value_x;
-            if ((changeMask & (1 << 0)) != 0)
-                snapshot.Value_value_y = reader.ReadPackedIntDelta(baseline.Value_value_y, compressionModel);
+            {
+                snapshot.CageRotationX = baseline.CageRotationX;
+                snapshot.CageRotationY = baseline.CageRotationY;
+                snapshot.CageRotationZ = baseline.CageRotationZ;
+                snapshot.CageRotationW = baseline.CageRotationW;
+            }
+            if ((changeMask & (1 << 1)) != 0)
+            {
+                snapshot.AxleRotationX = reader.ReadPackedFloatDelta(baseline.AxleRotationX, compressionModel);
+                snapshot.AxleRotationY = reader.ReadPackedFloatDelta(baseline.AxleRotationY, compressionModel);
+                snapshot.AxleRotationZ = reader.ReadPackedFloatDelta(baseline.AxleRotationZ, compressionModel);
+                snapshot.AxleRotationW = reader.ReadPackedFloatDelta(baseline.AxleRotationW, compressionModel);
+            }
             else
-                snapshot.Value_value_y = baseline.Value_value_y;
-            if ((changeMask & (1 << 0)) != 0)
-                snapshot.Value_value_z = reader.ReadPackedIntDelta(baseline.Value_value_z, compressionModel);
-            else
-                snapshot.Value_value_z = baseline.Value_value_z;
-            if ((changeMask & (1 << 0)) != 0)
-                snapshot.Value_value_w = reader.ReadPackedIntDelta(baseline.Value_value_w, compressionModel);
-            else
-                snapshot.Value_value_w = baseline.Value_value_w;
+            {
+                snapshot.AxleRotationX = baseline.AxleRotationX;
+                snapshot.AxleRotationY = baseline.AxleRotationY;
+                snapshot.AxleRotationZ = baseline.AxleRotationZ;
+                snapshot.AxleRotationW = baseline.AxleRotationW;
+            }
         }
         #if UNITY_EDITOR || DEVELOPMENT_BUILD
         [BurstCompile]
         [MonoPInvokeCallback(typeof(GhostComponentSerializer.ReportPredictionErrorsDelegate))]
         private static void ReportPredictionErrors(IntPtr componentData, IntPtr backupData, ref UnsafeList<float> errors)
         {
-            ref var component = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(componentData, 0);
-            ref var backup = ref GhostComponentSerializer.TypeCast<Unity.Transforms.Rotation>(backupData, 0);
+            ref var component = ref GhostComponentSerializer.TypeCast<BoatChildrenRotationProxy>(componentData, 0);
+            ref var backup = ref GhostComponentSerializer.TypeCast<BoatChildrenRotationProxy>(backupData, 0);
             int errorIndex = 0;
-            errors[errorIndex] = math.max(errors[errorIndex], math.distance(component.Value.value, backup.Value.value));
+            errors[errorIndex] = math.max(errors[errorIndex], math.distance(component.CageRotation.value, backup.CageRotation.value));
+            ++errorIndex;
+            errors[errorIndex] = math.max(errors[errorIndex], math.distance(component.AxleRotation.value, backup.AxleRotation.value));
             ++errorIndex;
         }
         private static int GetPredictionErrorNames(ref FixedString512 names)
@@ -207,7 +231,11 @@ namespace Assembly_CSharp.Generated
             int nameCount = 0;
             if (nameCount != 0)
                 names.Append(new FixedString32(","));
-            names.Append(new FixedString64("Value.value"));
+            names.Append(new FixedString64("CageRotation"));
+            ++nameCount;
+            if (nameCount != 0)
+                names.Append(new FixedString32(","));
+            names.Append(new FixedString64("AxleRotation"));
             ++nameCount;
             return nameCount;
         }

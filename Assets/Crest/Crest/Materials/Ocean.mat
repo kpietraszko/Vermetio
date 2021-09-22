@@ -121,7 +121,7 @@ Material:
     - _NormalsStrengthOverall: 1
     - _Offset: 0.00008
     - _OverrideReflectionCubemap: 0
-    - _PlanarReflectionIntensity: 0.655
+    - _PlanarReflectionIntensity: 0.227
     - _PlanarReflectionNormalsStrength: 24
     - _PlanarReflections: 1
     - _ProceduralSky: 0

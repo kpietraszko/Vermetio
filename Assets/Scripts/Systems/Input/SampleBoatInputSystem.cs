@@ -77,9 +77,9 @@ public class SampleBoatInputSystem : SystemBase
         if (mouse.leftButton.wasPressedThisFrame)
         {
             var shootParams = GetComponent<ShootParametersComponent>(localInputEntity);
-            // var inventory = GetComponent<PlayerInventoryComponent>(localInputEntity);
-            // if (inventory.Coconuts < 1)
-            //     return;
+            var inventory = GetComponent<PlayerInventoryComponent>(localInputEntity);
+            if (inventory.Coconuts < 1)
+                return;
             
             shootParams.LastShotRequestedAt = Time.ElapsedTime;
             SetComponent(localInputEntity, shootParams);

@@ -1,0 +1,45 @@
+fileFormatVersion: 2
+guid: 346a279444e0bd44cad6df5f30235f12
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 3d72b6e5c6d96654aa8e47361b1c4bac, type: 3}
+  Curve:
+    serializedVersion: 2
+    curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 6.7629857
+      outSlope: 6.7629857
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.104827285
+      value: 0.70894545
+      inSlope: 2.983827
+      outSlope: 2.983827
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: -0.0030136108
+      inSlope: -0.7953315
+      outSlope: -0.7953315
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    preInfinity: 2
+    postInfinity: 2
+    rotationOrder: 4
+  Resolution: 32
+  Format: 0

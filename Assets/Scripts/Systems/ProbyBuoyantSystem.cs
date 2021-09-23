@@ -105,7 +105,7 @@ namespace Vermetio.Server
             if (!collProvider.RetrieveSucceeded(status))
             {
                 #if UNITY_EDITOR
-                Debug.LogWarning($"query failed: {(CollProviderBakedFFT.QueryStatus) status} on tick {tick}");
+                // Debug.LogWarning($"query failed: {(CollProviderBakedFFT.QueryStatus) status} on tick {tick}");
                 // Debug.Log($"Fail at {tick}");
                 #endif
                 entitiesStartingIndex.Dispose();

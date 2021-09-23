@@ -102,7 +102,6 @@ GameObject:
   - component: {fileID: 777112987026946711}
   - component: {fileID: -8442674190696574560}
   - component: {fileID: 7127417554883270754}
-  - component: {fileID: -3458404269313235540}
   m_Layer: 0
   m_Name: Boat
   m_TagString: Untagged
@@ -129,6 +128,8 @@ Transform:
   - {fileID: 7899605511377138162}
   - {fileID: 6312745619137118363}
   - {fileID: 8379461229959110483}
+  - {fileID: 7854086055693185456}
+  - {fileID: 4188777491349740820}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -237,11 +238,15 @@ MonoBehaviour:
   Importance: 10
   prefabId: e0586d7bc2cba594a83c3d1ef7f9815b
   Name: boat
-  RefGameObjects: []
-  ComponentNames: []
+  RefGameObjects:
+  - {fileID: 4114318234614650026}
+  ComponentNames:
+  - Unity.Transforms.Rotation
   PrefabTypeOverrides: []
   SendTypeOverrides: []
-  VariantOverrides: []
+  VariantOverrides:
+  - Value: 14998767508557141177
+    OverrideIndex: 0
 --- !u!114 &3080096736190477122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,30 +548,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Coconuts: 0
---- !u!114 &-3458404269313235540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1028933030943869725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 126b7c5163af2f543a2070820b88cda7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CageRotation:
-    value:
-      x: 0
-      y: 0
-      z: 0
-      w: 0
-  AxleRotation:
-    value:
-      x: 0
-      y: 0
-      z: 0
-      w: 0
 --- !u!1 &1031506611295282554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,6 +1198,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5db3b4f6e5dc81d4c97c55f4ea3fa24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &4316886310238098016
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4188777491349740820}
+  m_Layer: 0
+  m_Name: NOTE that I would also like to send TurretAxle rotation, but skipping for
+    now, too deep
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4188777491349740820
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4316886310238098016}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 363755345700655527}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4384116970284812327
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,6 +1553,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &5857365637349670060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7854086055693185456}
+  m_Layer: 0
+  m_Name: '"Cylinder" rotation needs to be sent to clients'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7854086055693185456
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5857365637349670060}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 363755345700655527}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6125866740707043806
 GameObject:
   m_ObjectHideFlags: 0

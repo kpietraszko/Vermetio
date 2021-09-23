@@ -16,6 +16,7 @@ namespace Assembly_CSharp.Generated
             ghostCollectionSystem.AddSerializer(PlayerInventoryComponentGhostComponentSerializer.State);
             ghostCollectionSystem.AddSerializer(TranslationLowPrecGhostComponentSerializer.State);
             ghostCollectionSystem.AddSerializer(RotationLowPrecGhostComponentSerializer.State);
+            ghostCollectionSystem.AddSerializer(RotationSendChildGhostComponentSerializer.State);
         }
 
         protected override void OnUpdate()

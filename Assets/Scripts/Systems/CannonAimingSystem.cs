@@ -45,7 +45,6 @@ namespace Vermetio.Server
                 .WithReadOnly(rttPerEntity)
                 .WithDisposeOnCompletion(rttPerEntity)
                 .ForEach((Entity playerEntity, 
-                    ref BoatChildrenRotationProxy proxy, 
                     in PredictedGhostComponent prediction,
                     in BoatCageReference cageReference,
                     in DynamicBuffer<BoatInput> inputBuffer,
@@ -72,10 +71,16 @@ namespace Vermetio.Server
                     Debug.DrawLine(cageLtw.Position, cageLtw.Position + Flatten(math.normalize(input.AimPosition - cageLtw.Position) * 10), Color.green, deltaTime);
                     // if (math.abs(angleToReticle) < 3f) // close enough
                     //     return;
+                    
+                    SetComponent(cageReference.Cage, new Rotation()
+                    {
+                        // Value = math.mul(rotation.Value, 
+                        //         quaternion.AxisAngle(new float3(0, 1, 0),
+                        //             math.sign(angleToReticle) * (deltaTime / shootParams.MinimumShotDelay) *
+                        //             math.radians(180f)))
+                        Value = quaternion.AxisAngle(new float3(0, 1, 0), math.radians(angleToReticle))
 
-                    // var proxy = GetComponent<BoatChildrenRotationProxy>(playerEntity);
-                    proxy.CageRotation = quaternion.AxisAngle(new float3(0, 1, 0), math.radians(angleToReticle));
-                    // SetComponent(playerEntity, proxy);
+                    });
                 }).Run();
             
             var bulletPrefab = EntityHelpers.GetGhostPrefab<CoconutAgeComponent>(EntityManager); 
@@ -135,7 +140,7 @@ namespace Vermetio.Server
             Entities
                 .WithName("Rotate_cannon_axle")
                 .WithAll<MovableBoatComponent>()
-                .ForEach((ref BoatChildrenRotationProxy proxy, in ShootParametersComponent shootParams) =>
+                .ForEach((in CannonAxleReference axleReference, in ShootParametersComponent shootParams) =>
                 {
                     if (!shootParams.TargetLegit)
                         return;
@@ -146,7 +151,7 @@ namespace Vermetio.Server
                     
                     var angle = new float3(1, 0, 0).SignedAngleDeg(new float3(0, 1, 0), math.normalize(shootParams.Velocity));
                     var axleRotation = quaternion.AxisAngle(new float3(1, 0, 0), math.radians(math.abs(angle))); // buggy when close to boat
-                    proxy.AxleRotation = axleRotation;
+                    SetComponent(axleReference.Axle, new Rotation() { Value = axleRotation });
                 }).Schedule();
 
             // Dependency = JobHandle.CombineDependencies(Dependency, prepareJob, rotateAxleJob);

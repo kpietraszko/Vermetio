@@ -37,7 +37,7 @@ namespace Vermetio.Server
             
             Dependency = new CollisionEventJob
                 {
-                    BulletTagsPerEntity = GetComponentDataFromEntity<BulletTag>(),
+                    BulletTagsPerEntity = GetComponentDataFromEntity<BulletComponent>(),
                     SpawnedByPerEntity = GetComponentDataFromEntity<SpawnedByComponent>(),
                     GhostOwnersPerEntity = GetComponentDataFromEntity<GhostOwnerComponent>(), 
                     HealthPerEntity = GetComponentDataFromEntity<HealthComponent>(), 
@@ -58,7 +58,7 @@ namespace Vermetio.Server
         struct CollisionEventJob : ICollisionEventsJob
         {
             // public EntityCommandBuffer Ecb;
-            [ReadOnly] public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
+            [ReadOnly] public ComponentDataFromEntity<BulletComponent> BulletTagsPerEntity;
             [ReadOnly] public ComponentDataFromEntity<SpawnedByComponent> SpawnedByPerEntity;
             [ReadOnly] public ComponentDataFromEntity<GhostOwnerComponent> GhostOwnersPerEntity;
             public ComponentDataFromEntity<HealthComponent> HealthPerEntity;

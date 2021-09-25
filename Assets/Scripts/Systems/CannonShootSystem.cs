@@ -151,7 +151,7 @@ namespace Vermetio.Server
             var bullet = ecb.Instantiate(bulletPrefab);
             ecb.SetComponent(bullet, new Translation() {Value = spawnPointLTW.Position});
             ecb.AddComponent(bullet, new SpawnedByComponent() {Player = playerEntity});
-            ecb.AddComponent<BulletTag>(bullet);
+            ecb.AddComponent<BulletComponent>(bullet);
         }
 
         private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common

@@ -26,7 +26,7 @@ namespace Vermetio.Server
             _existingCoconutsQuery = GetEntityQuery(new EntityQueryDesc()
             {
                 All = new ComponentType[] { typeof(SimpleBuoyantComponent) },
-                None = new ComponentType[] { typeof(BulletTag) }
+                None = new ComponentType[] { typeof(BulletComponent) }
             });
 
             _endSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();

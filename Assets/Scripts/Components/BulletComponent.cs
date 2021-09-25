@@ -5,6 +5,7 @@ using Unity.Mathematics;
 
 [Serializable]
 [GenerateAuthoringComponent]
-public struct BulletTag : IComponentData
+public struct BulletComponent : IComponentData
 {
+    public int FiredByNetworkId;
 }

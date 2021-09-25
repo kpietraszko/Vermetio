@@ -84,6 +84,7 @@ Shader "Crest/Ocean URP"
 		_PlanarReflectionNormalsStrength("Planar Reflections Distortion", Float) = 1
 		// Multiplier to adjust how intense the reflection is
 		_PlanarReflectionIntensity("Planar Reflection Intensity", Range(0.0, 1.0)) = 1.0
+		_CustomFresnelRamp("_CustomFresnelRamp", 2D) = "white" {}
 
 		[Header(Procedural Skybox)]
 		// Enable a simple procedural skybox, not suitable for realistic reflections, but can be useful to give control over reflection colour

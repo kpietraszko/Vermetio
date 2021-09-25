@@ -38,7 +38,7 @@ namespace Vermetio.Server
 
             if (existingCoconuts > maxCoconuts)
             {
-                Entities.WithNone<BulletTag>().ForEach((Entity entity, in CoconutAgeComponent age) => // finds oldest coconut
+                Entities.WithNone<BulletComponent>().ForEach((Entity entity, in CoconutAgeComponent age) => // finds oldest coconut
                 {
                     if (age.Age > largestAge)
                     {

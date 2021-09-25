@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Sim_Settings_Foam
   m_EditorClassIdentifier: 
   _version: 0
-  _foamFadeRate: 0.74
-  _waveFoamStrength: 1.76
-  _waveFoamCoverage: 0.768
+  _foamFadeRate: 5.84
+  _waveFoamStrength: 3.61
+  _waveFoamCoverage: 0.923
   _shorelineFoamMaxDepth: 1.65
   _shorelineFoamStrength: 2.18
   _renderTextureGraphicsFormat: 45

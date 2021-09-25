@@ -35,7 +35,7 @@ namespace Vermetio.Server
             var deltaTime = Time.DeltaTime;
 
             Entities
-                .WithAll<BulletTag>().WithNone<BulletFiredComponent>()
+                .WithAll<BulletComponent>().WithNone<BulletFiredComponent>()
                 .ForEach((Entity entity, int entityInQueryIndex, ref LocalToWorld localToWorld, ref PhysicsVelocity pv,
                     in PhysicsMass pm, in PhysicsGravityFactor gravityFactor, in SpawnedByComponent spawnedBy) =>
                 {

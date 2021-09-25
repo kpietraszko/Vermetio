@@ -45,7 +45,7 @@ float CalculateFresnelReflectionCoefficient(float cosTheta)
 
 float CalculateFresnelCustom(float cosTheta)
 {
-	return tex2D(_CustomFresnelRamp, float2(cosTheta, 0.5)).x;
+    return tex2D(_CustomFresnelRamp, float2(cosTheta, 0.5)).x;
 }
 
 void ApplyReflectionSky(in const half3 i_view, in const half3 i_n_pixel, in const half3 i_lightDir, in const half i_shadow, in const half4 i_screenPos, in const float i_pixelZ, in const half i_weight, inout half3 io_col)

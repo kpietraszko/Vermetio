@@ -104,6 +104,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 14, y: 14}
         m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_c624c8fc9efe4cc89ce629d775e5b594_Out_0:
+        m_Texture: {fileID: 2800000, guid: bd65f6ce0e8f8db4db4a1e0a2153fd30, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -121,9 +125,9 @@ Material:
     - USEFRESNEL: 1
     - Vector1_16be3bc032404115ad2560d843f49a91: 25.22
     - Vector1_49c4e8179c26493baeeba6ef6082c33a: 0.18
-    - Vector1_73ea1934d6024198b50463c77e8b2eb5: 1
+    - Vector1_73ea1934d6024198b50463c77e8b2eb5: 0.63
     - Vector1_76865e748c854bac8534f9a35d793e57: 2
-    - Vector1_84dfffd0d15a4dbfa20a66d27ac8fc41: 0.07
+    - Vector1_84dfffd0d15a4dbfa20a66d27ac8fc41: 0.1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1.95

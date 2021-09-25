@@ -122,7 +122,7 @@ Material:
     - _Moving: 0.17
     - _NormalsScale: 17
     - _NormalsStrength: 0.185
-    - _NormalsStrengthOverall: 0.936
+    - _NormalsStrengthOverall: 1
     - _Offset: 0.00008
     - _OverrideReflectionCubemap: 0
     - _PlanarReflectionIntensity: 0.227
@@ -149,14 +149,14 @@ Material:
     - _StencilFunction: 0
     - _SubSurfaceBase: 1.81
     - _SubSurfaceDepthMax: 24.5
-    - _SubSurfaceDepthPower: 4.99
+    - _SubSurfaceDepthPower: 3.88
     - _SubSurfaceHeightLerp: 1
     - _SubSurfaceHeightMax: 100
     - _SubSurfaceHeightPower: 4.07
     - _SubSurfaceScattering: 1
     - _SubSurfaceShallowColour: 1
-    - _SubSurfaceSun: 5.3
-    - _SubSurfaceSunFallOff: 5.58
+    - _SubSurfaceSun: 4.8
+    - _SubSurfaceSunFallOff: 9.93
     - _TexelSize: 0.125
     - _TextureRes: 1024
     - _Transparency: 1
@@ -169,7 +169,7 @@ Material:
     - _WaveFoamBubblesStrength: 0.637
     - _WaveFoamCoverage: 0.38
     - _WaveFoamFeather: 0.471
-    - _WaveFoamLightScale: 0.86
+    - _WaveFoamLightScale: 1.392
     - _WaveFoamNormalStrength: 1.6
     - _WaveFoamNormalsY: 0.253
     - _WaveFoamSpecularBoost: 0.15
@@ -187,7 +187,7 @@ Material:
     - _SkyBase: {r: 0.4341537, g: 0.5394797, b: 0.60382754, a: 1}
     - _SkyTowardsSun: {r: 0.9473069, g: 0.9473069, b: 0.9473069, a: 1}
     - _SubSurface: {r: 0, g: 0.48, b: 0.36, a: 1}
-    - _SubSurfaceColour: {r: 0.08235292, g: 0.42745098, b: 0.37568623, a: 1}
+    - _SubSurfaceColour: {r: 0.08235292, g: 0.39442345, b: 0.42745098, a: 1}
     - _SubSurfaceShallowCol: {r: 0.552, g: 1, b: 1, a: 1}
     - _SubSurfaceShallowColShadow: {r: 0.14509805, g: 0.22745098, b: 0.21176471, a: 1}
     - _SubSurfaceShallowColour: {r: 0.41999996, g: 0.75, b: 0.69, a: 1}

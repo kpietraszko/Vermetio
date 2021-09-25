@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.0002
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.13588801, g: 0.18692204, b: 0.304, a: 1}
+  m_AmbientSkyColor: {r: 0.023153365, g: 0.048171833, b: 0.10702311, a: 1}
   m_AmbientEquatorColor: {r: 0.30946895, g: 0.3662527, b: 0.4125427, a: 1}
   m_AmbientGroundColor: {r: 0, g: 0.010960094, b: 0.03189604, a: 1}
   m_AmbientIntensity: 1.28
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000002, guid: 4f19dae26d1bc974984628dba1153905, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 9c7270845ba9f994e98ae01d102e363b, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -949,7 +949,7 @@ MonoBehaviour:
   _cameraMaxTerrainHeight: 100
   _forceAlwaysUpdateDebug: 0
   _hideDepthCacheCam: 1
-  _savedCache: {fileID: 2800000, guid: b6788c92b406fea45b81781c4b3ef948, type: 3}
+  _savedCache: {fileID: 2800000, guid: 8a4addbd813a1e649ad7ef5da8300021, type: 3}
   _runValidationOnStart: 1
 --- !u!4 &466947835
 Transform:
@@ -1991,7 +1991,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.205528
+      value: 12.6
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1999,19 +1999,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.62871987
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.77763194
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2019,7 +2019,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 102.089
       objectReference: {fileID: 0}
     - target: {fileID: 738619946203523601, guid: 18349df102ba9a743a62a87c953c4ae7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -2044,7 +2044,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 363755345700655527, guid: e0586d7bc2cba594a83c3d1ef7f9815b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.9
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 363755345700655527, guid: e0586d7bc2cba594a83c3d1ef7f9815b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2182,7 +2182,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1.1
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

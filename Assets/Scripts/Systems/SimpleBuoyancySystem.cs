@@ -148,7 +148,10 @@ namespace Vermetio.Server
                     }
 
                     if (HasComponent<BulletComponent>(entity)) // bullet is no longer a bullet once in water
+                    {
                         endFrameEcb.RemoveComponent<BulletComponent>(entityInQueryIndex, entity);
+                        endFrameEcb.AddComponent<CoconutAgeComponent>(entityInQueryIndex, entity);
+                    }
 
                     damping = new PhysicsDamping() {Angular = damping.Angular, Linear = 1.5f};
                     var up = new float3(0f, 1f, 0f);

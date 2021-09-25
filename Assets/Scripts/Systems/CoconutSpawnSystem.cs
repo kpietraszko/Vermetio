@@ -25,7 +25,7 @@ namespace Vermetio.Server
             base.OnCreate();
             _existingCoconutsQuery = GetEntityQuery(new EntityQueryDesc()
             {
-                All = new ComponentType[] { typeof(SimpleBuoyantComponent) },
+                All = new ComponentType[] { typeof(CoconutAgeComponent) },
                 None = new ComponentType[] { typeof(BulletComponent) }
             });
 

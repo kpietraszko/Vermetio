@@ -31,7 +31,7 @@ namespace Vermetio.Server
         
         protected override void OnUpdate()
         {
-            var bulletPrefab = GetGhostPrefab<CoconutAgeComponent>();
+            var bulletPrefab = GetGhostPrefab<BulletComponent>();
             var commandTargetPerEntity = GetComponentDataFromEntity<CommandTargetComponent>(true);
 
             var ecb = new EntityCommandBuffer(Allocator.Temp);//_endSimulationEcbSystem.CreateCommandBuffer();
@@ -151,7 +151,7 @@ namespace Vermetio.Server
             var bullet = ecb.Instantiate(bulletPrefab);
             ecb.SetComponent(bullet, new Translation() {Value = spawnPointLTW.Position});
             ecb.AddComponent(bullet, new SpawnedByComponent() {Player = playerEntity});
-            ecb.AddComponent<BulletComponent>(bullet);
+            ecb.SetComponent(bullet, new BulletComponent() { FiredByNetworkId = 0 }); // TODO
         }
 
         private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common

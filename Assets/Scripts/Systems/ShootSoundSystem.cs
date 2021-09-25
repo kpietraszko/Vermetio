@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Vermetio.Client
@@ -27,30 +28,19 @@ namespace Vermetio.Client
         protected override void OnUpdate()
         {
             var endFrameEcb = _commandBufferSystem.CreateCommandBuffer();
-            var shouldPlayShootSound = new NativeArray<bool>(1, Allocator.Temp);
-
-            Entities
-                .WithAll<CoconutAgeComponent>() // TODO: just for audio test, change this
-                .WithNone<BulletFiredSoundPlayedComponent>()
-                .ForEach((Entity entity) =>
-                {
-                    Debug.Log("Will play sound");
-                    shouldPlayShootSound[0] = true;
-                    endFrameEcb.AddComponent<BulletFiredSoundPlayedComponent>(entity);
-                }).Run();
-
-            if (!shouldPlayShootSound[0])
-                return;
-            
-            Debug.Log("Will play sound");
 
             Entities
                 .WithoutBurst()
-                .WithAll<MovableBoatComponent>() // TODO: this shoots from every boat, make this only shoot from players who shot this frame
-                .ForEach((AudioSource audioSource) =>
+                .WithAll<BulletComponent>()
+                .WithNone<BulletFiredSoundPlayedComponent>()
+                .ForEach((Entity entity, AudioSource audioSource, in LocalToWorld ltw) =>
                 {
+                    Debug.Log("Will play sound");
                     audioSource.PlayOneShot(audioSource.clip);
+                    
+                    endFrameEcb.AddComponent<BulletFiredSoundPlayedComponent>(entity);
                 }).Run();
+
         }
     }
 }

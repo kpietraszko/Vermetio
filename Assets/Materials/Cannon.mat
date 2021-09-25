@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Cannon
   m_Shader: {fileID: -6465566751694194690, guid: 01ee899635a49964383cda31decd8f10, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: USEFRESNEL_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -19,6 +19,14 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_9d66114049c747378fe2fa693671ceac:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_ffb40565dbb24b7cbf52d99a6a4382ca:
+        m_Texture: {fileID: 2800000, guid: a2e557499fa57d645bef30230a36d3b1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -100,6 +108,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - USEFRESNEL: 1
+    - Vector1_040fc78c859945b09a7f2ac9093bb891: 0.09
+    - Vector1_8853abb8e1254c6dadcdaa99f9ce7955: 1
+    - Vector1_a7f64ba791394109ae49588db349d23a: 0.439
     - Vector1_b20cdbf079824906a47cb74862cb0b42: 7
     - _AlphaClip: 0
     - _AnimTime: 0
@@ -129,7 +141,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_1f01de2d657842d991a3287b028c6207: {r: 0.85882354, g: 0.7058824, b: 0.4627451, a: 1}
+    - Color_1f01de2d657842d991a3287b028c6207: {r: 0.6901961, g: 0.56078434, b: 0.28627452, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

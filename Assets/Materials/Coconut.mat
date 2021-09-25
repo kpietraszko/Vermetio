@@ -8,18 +8,25 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Coconut
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_ShaderKeywords: _EMISSION _NORMALMAP
+  m_Shader: {fileID: -6465566751694194690, guid: a92222389e610aa42a9c56644c10c45a, type: 3}
+  m_ShaderKeywords: USEFRESNEL_ON _EMISSION _NORMALMAP
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_1a31bc139c7d411ab6bf1d0be7f216e9:
+        m_Texture: {fileID: 2800000, guid: a2e557499fa57d645bef30230a36d3b1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_891f394694e34cf488098509c9b9ae78:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -81,6 +88,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - USEFRESNEL: 1
+    - Vector1_49c4e8179c26493baeeba6ef6082c33a: 0.323
+    - Vector1_73ea1934d6024198b50463c77e8b2eb5: 1
+    - Vector1_84dfffd0d15a4dbfa20a66d27ac8fc41: 0.05
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 0.62
@@ -109,6 +120,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_31169cddf50541efb9986457e63a95c7: {r: 0.6784314, g: 0.4509804, b: 0.23137255, a: 1}
     - _BaseColor: {r: 0.679, g: 0.45241237, b: 0.23086, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0.426, g: 0.15523438, b: 0.039191976, a: 1}

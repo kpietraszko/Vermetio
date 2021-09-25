@@ -22,7 +22,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Brass
   m_Shader: {fileID: -6465566751694194690, guid: a92222389e610aa42a9c56644c10c45a, type: 3}
-  m_ShaderKeywords: BOOLEAN_C66615A369A843A3BF511BF0A73D4D21_ON
+  m_ShaderKeywords: BOOLEAN_C66615A369A843A3BF511BF0A73D4D21_ON USEFRESNEL_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
@@ -102,9 +102,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - BOOLEAN_C66615A369A843A3BF511BF0A73D4D21: 1
-    - Vector1_49c4e8179c26493baeeba6ef6082c33a: 0.215
+    - USEFRESNEL: 1
+    - Vector1_49c4e8179c26493baeeba6ef6082c33a: 0.232
     - Vector1_73ea1934d6024198b50463c77e8b2eb5: 1
-    - Vector1_84dfffd0d15a4dbfa20a66d27ac8fc41: 0.06
+    - Vector1_84dfffd0d15a4dbfa20a66d27ac8fc41: 0.16
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

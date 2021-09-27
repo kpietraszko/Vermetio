@@ -10,9 +10,9 @@ Material:
   m_Name: Ocean
   m_Shader: {fileID: 4800000, guid: 986f7c6732e8a6e4881407d7f15f25c3, type: 3}
   m_ShaderKeywords: _APPLYNORMALMAPPING_ON _CLIPSURFACE_ON _COMPUTEDIRECTIONALLIGHT_ON
-    _DEBUGMULTIPLYBYLIGHT0COLOR_ON _FOAM3DLIGHTING_ON _FOAM_ON _PLANARREFLECTIONS_ON
-    _PROJECTION_PERSPECTIVE _SHADOWS_ON _SUBSURFACEHEIGHTLERP_ON _SUBSURFACESCATTERING_ON
-    _SUBSURFACESHALLOWCOLOUR_ON _TRANSPARENCY_ON _VARYSMOOTHNESSOVERDISTANCE_ON
+    _DEBUGMULTIPLYBYLIGHT0COLOR_ON _FOAM_ON _PLANARREFLECTIONS_ON _PROJECTION_PERSPECTIVE
+    _SHADOWS_ON _SUBSURFACEHEIGHTLERP_ON _SUBSURFACESCATTERING_ON _SUBSURFACESHALLOWCOLOUR_ON
+    _TRANSPARENCY_ON _VARYSMOOTHNESSOVERDISTANCE_ON
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -112,7 +112,7 @@ Material:
     - _DirectionalLightFallOff: 275
     - _Flow: 0
     - _Foam: 1
-    - _Foam3DLighting: 1
+    - _Foam3DLighting: 0
     - _FoamBubbleParallax: 0.355
     - _FoamScale: 18.7
     - _FresnelPower: 3.12
@@ -138,7 +138,7 @@ Material:
     - _Roughness: 0
     - _S: 1
     - _Shadows: 1
-    - _ShorelineFoamMinDepth: 0.27
+    - _ShorelineFoamMinDepth: 0.32
     - _SkyDirectionality: 0.809
     - _Smoothness: 0.779
     - _SmoothnessFar: 0.486
@@ -169,8 +169,8 @@ Material:
     - _WaveFoamBubblesStrength: 0.637
     - _WaveFoamCoverage: 0.38
     - _WaveFoamFeather: 0.471
-    - _WaveFoamLightScale: 1.392
-    - _WaveFoamNormalStrength: 1.6
+    - _WaveFoamLightScale: 1.174
+    - _WaveFoamNormalStrength: 0
     - _WaveFoamNormalsY: 0.253
     - _WaveFoamSpecularBoost: 0.15
     - _WaveFoamSpecularFallOff: 293
@@ -180,9 +180,9 @@ Material:
     - _DepthFogDensity: {r: 0.25, g: 0.17, b: 0.17, a: 0.7}
     - _Diffuse: {r: 0, g: 0.13904555, b: 0.322, a: 1}
     - _DiffuseGrazing: {r: 0.14440192, g: 0.35713622, b: 0.5188679, a: 1}
-    - _DiffuseShadow: {r: 0.07326001, g: 0.21048121, b: 0.333, a: 1}
+    - _DiffuseShadow: {r: 0.10280802, g: 0.24025832, b: 0.36200002, a: 1}
     - _FoamBubbleColor: {r: 0.6383054, g: 0.8301887, b: 0.8243741, a: 0.6117647}
-    - _FoamWhiteColor: {r: 1, g: 0.99634784, b: 0.97199994, a: 0.6862745}
+    - _FoamWhiteColor: {r: 0.709, g: 0.7062196, b: 0.6895372, a: 0.6862745}
     - _SkyAwayFromSun: {r: 0.043735042, g: 0.12477186, b: 0.2874409, a: 1}
     - _SkyBase: {r: 0.4341537, g: 0.5394797, b: 0.60382754, a: 1}
     - _SkyTowardsSun: {r: 0.9473069, g: 0.9473069, b: 0.9473069, a: 1}

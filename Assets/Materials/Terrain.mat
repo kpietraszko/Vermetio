@@ -32,6 +32,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_494cbfe4586749159d257108c8422b8f:
+        m_Texture: {fileID: 2800000, guid: d1a1945593261924c8a308679c6b7c1a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -170,7 +174,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HeightTransition: 0
-    - _MainTextureScale: 0.2
+    - _MainTextureScale: 0.04
     - _Metallic: 0
     - _Metallic0: 0
     - _Metallic1: 0

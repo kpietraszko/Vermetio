@@ -59,7 +59,7 @@ SpeedTreeImporter:
   bestWindQuality: 5
   hasBillboard: 1
   lODSettings:
-  - height: 0.12084051
+  - height: 0.0041406197
     castShadows: 1
     receiveShadows: 1
     useLightProbes: 1
@@ -68,7 +68,7 @@ SpeedTreeImporter:
     enableHue: 1
     enableSubsurface: 0
     windQuality: 5
-  - height: 0.025329655
+  - height: 0.0041406197
     castShadows: 1
     receiveShadows: 1
     useLightProbes: 1

@@ -690,6 +690,27 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "35f85c20a9b04e34bd73f700e0318dbb",
+    "m_Id": 1810750270,
+    "m_DisplayName": "Texture offset",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Vector2_308beb88b77e4243ad90b56ff1e11f6c",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "3f2ef3d78e650381b4bd6e9bf6f90034",
     "m_Id": 0,
@@ -1691,6 +1712,27 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "c49e97f4fefe437fa00b61fe83e12816",
+    "m_Id": -190971049,
+    "m_DisplayName": "Texture tiling",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Vector2_1b58c6bbb80647b8b6709468b2c379cb",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 1.0,
+        "y": 1.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
     "m_ObjectId": "c6e12f627ea0378f9a32f66f5aaab67a",
     "m_Id": -1085833363,
@@ -1765,6 +1807,12 @@
             "m_Id": "cffe77b66776c38b931d8d63e77a6c2e"
         },
         {
+            "m_Id": "c49e97f4fefe437fa00b61fe83e12816"
+        },
+        {
+            "m_Id": "35f85c20a9b04e34bd73f700e0318dbb"
+        },
+        {
             "m_Id": "0cd828f7d842d181acdfbca92f261936"
         }
     ],
@@ -1782,7 +1830,9 @@
         "ec3d2a3e-013e-4d8c-b3c8-180c801fe231",
         "61da7cf3-0a0e-4dc9-861b-0bcbb356d9b9",
         "d53d7fb1-bdff-4db0-8aa9-fb619a84c268",
-        "3a53d368-9eb2-47d2-9da4-1da66377abd5"
+        "3a53d368-9eb2-47d2-9da4-1da66377abd5",
+        "9b3b44bf-84a5-47d2-a73b-ebbb37339f3a",
+        "d82a9c6c-92c7-4751-9783-2148983e4503"
     ],
     "m_PropertyIds": [
         -1339499534,
@@ -1790,7 +1840,9 @@
         -184326269,
         1624519043,
         -1815989655,
-        -1176398737
+        -1176398737,
+        -190971049,
+        1810750270
     ]
 }
 

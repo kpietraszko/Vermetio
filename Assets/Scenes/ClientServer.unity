@@ -3174,26 +3174,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3743200308110971105, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_ScaleInLightmap
-      value: 0.15600002
-      objectReference: {fileID: 0}
-    - target: {fileID: 3743200308110971111, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_ScaleInLightmap
-      value: 0.29140693
-      objectReference: {fileID: 0}
-    - target: {fileID: 3743200308127172261, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_AnimateCrossFading
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3743200308127172261, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_LODs.Array.data[0].screenRelativeHeight
-      value: 0.014376
-      objectReference: {fileID: 0}
-    - target: {fileID: 3743200308127172261, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_LODs.Array.data[1].screenRelativeHeight
-      value: 0.0134
-      objectReference: {fileID: 0}
     - target: {fileID: 7416764079229035212, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
       propertyPath: m_RootOrder
       value: 47

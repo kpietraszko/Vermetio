@@ -25,6 +25,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build server
-        run: |
-          cd "C:\Program Files\Unity\2020.3.19f1\Editor"
-          Unity.exe -batchmode -quit -nographics -project Vermetio -executeMethod BuildRunner.BuildServer
+        run: .\buildServer.ps1

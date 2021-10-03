@@ -25,4 +25,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build server
-        run: Vermetio\BuildScripts\buildServer.ps1
+        run: |
+          cd Vermetio\BuildScripts
+          buildServer.ps1

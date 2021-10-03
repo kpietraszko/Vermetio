@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Leaves_3
-  m_Shader: {fileID: -6465566751694194690, guid: 9920c1f1781549a46ba081a2a15a16ec, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: bf36778a400a0894b86a1f49c422fa62, type: 3}
   m_ShaderKeywords: BACKFACENORMALMODE_MIRROR EFFECT_BUMP EFFECT_HUE_VARIATION GEOM_TYPE_LEAF
     _WINDQUALITY_BEST
   m_LightmapFlags: 2
@@ -20,6 +20,14 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_300EB541:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_4cd7be7a0b804f15b9c9b3a077d26067:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: accfd802ffccef54295c2df37645a2f2, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -34,6 +42,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: b15094df28b3a074fb23b0d7e6a30823, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexture:
+        m_Texture: {fileID: 2800000, guid: b15094df28b3a074fb23b0d7e6a30823, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2DLOD_46110e8e7fae49638f379077c929a45b_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 3e35576cd6c3ce7489d203ca571f1e27, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularMap:
+        m_Texture: {fileID: 2800000, guid: d0e1c20e327de28419350b06240864d5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SubsurfaceTex:
@@ -55,6 +75,7 @@ Material:
     m_Floats:
     - BACKFACENORMALMODE: 1
     - EFFECT_EXTRA_TEX: 0
+    - Vector1_8606F96E: 0
     - _AlphaClipThreshold: 0.1
     - _Cull: 0
     - _Cutoff: 0.33
@@ -63,6 +84,7 @@ Material:
     - _Metallic: 0
     - _NormalMapKwToggle: 1
     - _OldHueVarBehavior: 0
+    - _Smoothness: 0.12
     - _SubsurfaceIndirect: 0.25
     - _SubsurfaceKwToggle: 0
     - _WINDQUALITY: 4
@@ -71,7 +93,11 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _HueVariation: {r: 1, g: 0.5, b: 0, a: 0.1}
     - _HueVariationColor: {r: 1, g: 0.5, b: 0, a: 0.2}
+    - _MainColor: {r: 1, g: 1, b: 1, a: 0}
+    - _Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecularColor: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
     - _SubsurfaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Tiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8699183980114860708
 MonoBehaviour:

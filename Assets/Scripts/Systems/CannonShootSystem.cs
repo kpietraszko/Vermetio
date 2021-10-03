@@ -31,7 +31,7 @@ namespace Vermetio.Server
         
         protected override void OnUpdate()
         {
-            var bulletPrefab = GetGhostPrefab<CoconutAgeComponent>();
+            var bulletPrefab = GetGhostPrefab<BulletComponent>();
             var commandTargetPerEntity = GetComponentDataFromEntity<CommandTargetComponent>(true);
 
             var ecb = new EntityCommandBuffer(Allocator.Temp);//_endSimulationEcbSystem.CreateCommandBuffer();
@@ -50,6 +50,9 @@ namespace Vermetio.Server
             Entities
                 .ForEach((in NetworkSnapshotAckComponent ack, in CommandTargetComponent target) =>
                 {
+                    if (target.targetEntity == Entity.Null)
+                        return;
+                    
                     rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT / 1000); // ack.EstimatedRTT is in ms // this sometimes duplicates keys for some reason
                 }).Run();
 
@@ -78,7 +81,7 @@ namespace Vermetio.Server
                     var afterCooldown = (elapsedTime - inputTravelTime) - shootParams.LastShotRequestedAt > shootParams.MinimumShotDelay;
                     if (afterCooldown && shootParams.TargetLegit)
                     {
-                        shootParams.LastShotRequestedAt = elapsedTime - inputTravelTime;
+                        shootParams.LastShotRequestedAt = elapsedTime/* - inputTravelTime*/;
                         // Debug.Log($"{rtt}");
 
                         var spawnAtTick = tick;
@@ -151,7 +154,7 @@ namespace Vermetio.Server
             var bullet = ecb.Instantiate(bulletPrefab);
             ecb.SetComponent(bullet, new Translation() {Value = spawnPointLTW.Position});
             ecb.AddComponent(bullet, new SpawnedByComponent() {Player = playerEntity});
-            ecb.AddComponent<BulletTag>(bullet);
+            ecb.SetComponent(bullet, new BulletComponent() { FiredByNetworkId = 0 }); // TODO
         }
 
         private Entity GetGhostPrefab<T>() where T : struct // TODO: move to common

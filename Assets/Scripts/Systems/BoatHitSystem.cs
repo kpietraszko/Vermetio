@@ -37,7 +37,7 @@ namespace Vermetio.Server
             
             Dependency = new CollisionEventJob
                 {
-                    BulletTagsPerEntity = GetComponentDataFromEntity<BulletTag>(),
+                    BulletTagsPerEntity = GetComponentDataFromEntity<BulletComponent>(),
                     SpawnedByPerEntity = GetComponentDataFromEntity<SpawnedByComponent>(),
                     GhostOwnersPerEntity = GetComponentDataFromEntity<GhostOwnerComponent>(), 
                     HealthPerEntity = GetComponentDataFromEntity<HealthComponent>(), 
@@ -58,7 +58,7 @@ namespace Vermetio.Server
         struct CollisionEventJob : ICollisionEventsJob
         {
             // public EntityCommandBuffer Ecb;
-            [ReadOnly] public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
+            [ReadOnly] public ComponentDataFromEntity<BulletComponent> BulletTagsPerEntity;
             [ReadOnly] public ComponentDataFromEntity<SpawnedByComponent> SpawnedByPerEntity;
             [ReadOnly] public ComponentDataFromEntity<GhostOwnerComponent> GhostOwnersPerEntity;
             public ComponentDataFromEntity<HealthComponent> HealthPerEntity;
@@ -66,11 +66,9 @@ namespace Vermetio.Server
 
             public void Execute(CollisionEvent e)
             {
-                var bulletEntity = BulletTagsPerEntity.HasComponent(e.EntityA) ? e.EntityA :
-                    BulletTagsPerEntity.HasComponent(e.EntityB) ? e.EntityB : Entity.Null;
-                
-                var ghostOwnerEntity = GhostOwnersPerEntity.HasComponent(e.EntityA) ? e.EntityA :
-                    GhostOwnersPerEntity.HasComponent(e.EntityB) ? e.EntityB : Entity.Null;
+                var bulletEntity = BulletTagsPerEntity.GetEntityFromEvent(e);
+
+                var ghostOwnerEntity = GhostOwnersPerEntity.GetEntityFromEvent(e);
                 
                 if (bulletEntity == Entity.Null || ghostOwnerEntity == Entity.Null)
                     return;

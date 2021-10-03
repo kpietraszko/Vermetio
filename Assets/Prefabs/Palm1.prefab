@@ -86,6 +86,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Palm_Desktop
       objectReference: {fileID: 0}
+    - target: {fileID: 100014, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100016, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 400008, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -130,26 +138,82 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2300002, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 0.18255678
+      value: 0.29140693
       objectReference: {fileID: 0}
     - target: {fileID: 2300004, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
       propertyPath: m_ScaleInLightmap
-      value: 0.10131862
+      value: 0.15600002
       objectReference: {fileID: 0}
     - target: {fileID: 13500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
       propertyPath: m_Radius
       value: 2.99
       objectReference: {fileID: 0}
     - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_Size
+      value: 101.868004
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_FadeMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LODs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_AnimateCrossFading
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LocalReferencePoint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LocalReferencePoint.y
+      value: 32.482315
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LocalReferencePoint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LODs.Array.data[0].renderers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
       propertyPath: m_LODs.Array.data[0].screenRelativeHeight
-      value: 0.14570346
+      value: 0.020947874
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LODs.Array.data[1].renderers.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
       propertyPath: m_LODs.Array.data[1].screenRelativeHeight
-      value: 0.039000005
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LODs.Array.data[2].screenRelativeHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LODs.Array.data[0].renderers.Array.data[1].renderer
+      value: 
+      objectReference: {fileID: 3743200308133566309}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LODs.Array.data[1].renderers.Array.data[0].renderer
+      value: 
+      objectReference: {fileID: 3743200308133566309}
+    - target: {fileID: 20500000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+      propertyPath: m_LODs.Array.data[2].renderers.Array.data[0].renderer
+      value: 
+      objectReference: {fileID: 3743200308133566309}
     - target: {fileID: 22700000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
       propertyPath: m_ScaleInLightmap
       value: 0.033124957
@@ -159,5 +223,10 @@ PrefabInstance:
 --- !u!4 &3743200308112871949 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400008, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
+  m_PrefabInstance: {fileID: 3743200308113000581}
+  m_PrefabAsset: {fileID: 0}
+--- !u!227 &3743200308133566309 stripped
+BillboardRenderer:
+  m_CorrespondingSourceObject: {fileID: 22700000, guid: 5c2ecb53217ee6d47845944d5e81b5a6, type: 3}
   m_PrefabInstance: {fileID: 3743200308113000581}
   m_PrefabAsset: {fileID: 0}

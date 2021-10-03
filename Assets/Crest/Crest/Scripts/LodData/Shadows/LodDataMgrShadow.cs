@@ -89,20 +89,6 @@ namespace Crest
                 }
             }
 
-#if CREST_URP
-            if (RenderPipelineHelper.IsUniversal && !SampleShadowsURP.Created
-#if UNITY_EDITOR
-                // Not excited about this but it seems that the SampleShadows may not be immediately created when in edit mode. TODO - detect directly on render
-                // pipeline renderer asset?
-                && UnityEditor.EditorApplication.isPlaying
-#endif
-                )
-            {
-                Debug.LogError("To support shadowing, a Custom renderer must be configured on the pipeline asset, and this custom renderer data must have the Sample Shadows feature added. "
-                    + $"See documentation here: {Internal.Constants.HELP_URL_BASE_USER}ocean-simulation.html#shadows", GraphicsSettings.renderPipelineAsset);
-            }
-#endif
-
 #if UNITY_EDITOR
             if (OceanRenderer.Instance.OceanMaterial != null
                 && OceanRenderer.Instance.OceanMaterial.HasProperty(MATERIAL_KEYWORD_PROPERTY)

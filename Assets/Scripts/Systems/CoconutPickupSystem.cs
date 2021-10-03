@@ -44,7 +44,7 @@ namespace Vermetio.Server
                 {
                     CoconutsPerEntity = GetComponentDataFromEntity<CoconutAgeComponent>(),
                     InventoriesPerEntity = GetComponentDataFromEntity<PlayerInventoryComponent>(), 
-                    BulletTagsPerEntity = GetComponentDataFromEntity<BulletTag>(),
+                    BulletTagsPerEntity = GetComponentDataFromEntity<BulletComponent>(),
                     PickupCooldownsPerEntity = GetComponentDataFromEntity<CoconutPickupCooldownComponent>(), 
                     Ecb = endFrameEcb,
                     ElapsedTime = elapsedTime
@@ -65,7 +65,7 @@ namespace Vermetio.Server
         {
             public ComponentDataFromEntity<PlayerInventoryComponent> InventoriesPerEntity;
             [ReadOnly] public ComponentDataFromEntity<CoconutAgeComponent> CoconutsPerEntity;
-            [ReadOnly] public ComponentDataFromEntity<BulletTag> BulletTagsPerEntity;
+            [ReadOnly] public ComponentDataFromEntity<BulletComponent> BulletTagsPerEntity;
             [ReadOnly] public ComponentDataFromEntity<CoconutPickupCooldownComponent> PickupCooldownsPerEntity;
             public EntityCommandBuffer Ecb;
             public double ElapsedTime;

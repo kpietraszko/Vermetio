@@ -37,6 +37,12 @@ public class SampleBoatInputSystem : SystemBase
             AddInputBuffers();
             return;
         }
+
+        if (!GetBufferFromEntity<BoatInput>(true).HasComponent(localInputEntity))
+        {
+            Debug.LogError("Player entity is fucked");
+            return;
+        }
         
         var tick = World.GetExistingSystem<ClientSimulationSystemGroup>().ServerTick;
 
@@ -77,9 +83,13 @@ public class SampleBoatInputSystem : SystemBase
         if (mouse.leftButton.wasPressedThisFrame)
         {
             var shootParams = GetComponent<ShootParametersComponent>(localInputEntity);
-            // var inventory = GetComponent<PlayerInventoryComponent>(localInputEntity);
-            // if (inventory.Coconuts < 1)
-            //     return;
+            // don't even try to send a shot if during cooldown
+            if (Time.ElapsedTime - shootParams.LastShotRequestedAt < shootParams.MinimumShotDelay)
+                return;
+
+            var inventory = GetComponent<PlayerInventoryComponent>(localInputEntity);
+            if (inventory.Coconuts < 1)
+                return;
             
             shootParams.LastShotRequestedAt = Time.ElapsedTime;
             SetComponent(localInputEntity, shootParams);

@@ -57,6 +57,7 @@ half3 ScatterColour(
 	// base colour
 	float v = abs(i_view.y);
 	half3 col = lerp(_Diffuse, _DiffuseGrazing, 1. - pow(v, 1.0));
+	// col = floor(col / (1 / 4)) * (1 / 4);
 
 #if _SHADOWS_ON
 	col = lerp(_DiffuseShadow, col, shadow);
@@ -79,6 +80,7 @@ half3 ScatterColour(
 		half towardsSun = pow(max(0., dot(i_lightDir, -i_view)), _SubSurfaceSunFallOff);
 		// URP version was: col += (_SubSurfaceBase + _SubSurfaceSun * towardsSun) * _SubSurfaceColour.rgb * lightColour * shadow;
 		half3 subsurface = (_SubSurfaceBase + _SubSurfaceSun * towardsSun) * _SubSurfaceColour.rgb * lightColour * shadow;
+		// float3 subsurfacePosterized = floor(subsurface / (1 / 12)) * (1 / 12);
 		if (!i_underwater)
 		{
 			subsurface *= (1.0 - v * v) * sss;

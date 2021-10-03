@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000004, guid: 4f19dae26d1bc974984628dba1153905, type: 2}
+  m_LightingDataAsset: {fileID: 0}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 9c7270845ba9f994e98ae01d102e363b, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -291,6 +291,8 @@ MonoBehaviour:
     enabled: 1
   - prefab: {fileID: 7477081914441570866, guid: e0586d7bc2cba594a83c3d1ef7f9815b, type: 3}
     enabled: 1
+  - prefab: {fileID: 8080581829221530458, guid: 7bcea81dc6f1cbf46af7102f65d9bda6, type: 3}
+    enabled: 1
 --- !u!4 &222666375
 Transform:
   m_ObjectHideFlags: 0
@@ -318,7 +320,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8520222691718690185, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8863730947970231035, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_RootOrder
@@ -1937,7 +1939,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8520222691718690185, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8863730947970231035, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_RootOrder
@@ -3172,18 +3174,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3743200308110971105, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_ScaleInLightmap
-      value: 0.15600002
-      objectReference: {fileID: 0}
-    - target: {fileID: 3743200308110971111, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_ScaleInLightmap
-      value: 0.29140693
-      objectReference: {fileID: 0}
-    - target: {fileID: 3743200308127172261, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
-      propertyPath: m_AnimateCrossFading
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7416764079229035212, guid: 35e6e7fb99b862c4082da8dca45acdd8, type: 3}
       propertyPath: m_RootOrder
       value: 47
@@ -3327,6 +3317,13 @@ MonoBehaviour:
   - Value: 16882179680978693687
     OverrideIndex: 1
   - Value: 10137082255859595637
+    OverrideIndex: 2
+  SendForChildrenOverrides:
+  - Value: 18446744073709551615
+    OverrideIndex: 0
+  - Value: 18446744073709551615
+    OverrideIndex: 1
+  - Value: 18446744073709551615
     OverrideIndex: 2
 --- !u!1 &8520222691993040164
 GameObject:

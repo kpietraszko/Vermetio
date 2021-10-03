@@ -8,9 +8,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Cliff
-  m_Shader: {fileID: -6465566751694194690, guid: d5e2203b5c97f8f46953e6bf5600a1e3, type: 3}
-  m_ShaderKeywords: _GEOMETRY_CUSTOM_ST _HEIGHTMAP _NORMALMAP _OCCLUSIONMAP _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-    _SPECULAR_SETUP _TESSELLATION_CLIPPING _TESSELLATION_DISTANCE _TESSELLATION_PHONG
+  m_Shader: {fileID: -6465566751694194690, guid: bf36778a400a0894b86a1f49c422fa62, type: 3}
+  m_ShaderKeywords: BOOLEAN_C66615A369A843A3BF511BF0A73D4D21_ON USEFRESNEL_ON _NORMALMAP
+    _OCCLUSIONMAP _PARALLAXMAP _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -24,6 +24,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: d55aafcc065add14d8fe040a5a38a030, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_1a31bc139c7d411ab6bf1d0be7f216e9:
+        m_Texture: {fileID: 2800000, guid: a2e557499fa57d645bef30230a36d3b1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_1f2c15c368ae4590a5f462e8ba92534a:
         m_Texture: {fileID: 2800000, guid: 3e35576cd6c3ce7489d203ca571f1e27, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -32,8 +36,24 @@ Material:
         m_Texture: {fileID: 2800000, guid: e743380507c646b4b9860042caac4d31, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - Texture2D_300EB541:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_4cd7be7a0b804f15b9c9b3a077d26067:
+        m_Texture: {fileID: 2800000, guid: 3e35576cd6c3ce7489d203ca571f1e27, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_4e314093261d44e2a4a0559702c51a0d:
         m_Texture: {fileID: 2800000, guid: 1fe06a42179644841b8328a17e1a4465, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_799e915798a047f5956a783c1755105e:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_891f394694e34cf488098509c9b9ae78:
+        m_Texture: {fileID: 2800000, guid: 3e35576cd6c3ce7489d203ca571f1e27, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_d0094a4dbfb145b19812d3a7eff83099:
@@ -41,7 +61,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 1fe06a42179644841b8328a17e1a4465, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 14, y: 14}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -74,6 +94,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 14, y: 14}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexture:
+        m_Texture: {fileID: 2800000, guid: d0e1c20e327de28419350b06240864d5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -88,13 +112,25 @@ Material:
         m_Texture: {fileID: 2800000, guid: 6a26706b4a2bf4a41a742661294d7bf1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2DLOD_46110e8e7fae49638f379077c929a45b_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 3e35576cd6c3ce7489d203ca571f1e27, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecularMap:
         m_Texture: {fileID: 2800000, guid: e743380507c646b4b9860042caac4d31, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TessellationMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 14, y: 14}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_c624c8fc9efe4cc89ce629d775e5b594_Out_0:
+        m_Texture: {fileID: 2800000, guid: bd65f6ce0e8f8db4db4a1e0a2153fd30, type: 3}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
@@ -109,11 +145,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - BOOLEAN_C66615A369A843A3BF511BF0A73D4D21: 1
+    - HAS_WIND: 0
+    - USEFRESNEL: 1
+    - Vector1_0ab9c18e950d437caedba256224243cc: 0
     - Vector1_16be3bc032404115ad2560d843f49a91: 25.22
+    - Vector1_49c4e8179c26493baeeba6ef6082c33a: 0.18
+    - Vector1_73ea1934d6024198b50463c77e8b2eb5: 0.63
     - Vector1_76865e748c854bac8534f9a35d793e57: 2
+    - Vector1_84dfffd0d15a4dbfa20a66d27ac8fc41: 0.1
+    - Vector1_8606F96E: 0
     - _AlphaClip: 0
     - _Blend: 0
-    - _BumpScale: 1.07
+    - _BumpScale: 1.95
     - _ClearCoat: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -133,12 +177,14 @@ Material:
     - _HeightBlurSamples: 8
     - _HeightBlurSize: 0
     - _HeightStrength: 1
+    - _MainTextureScale: 0.2
+    - _MainTint_VariationIntensity: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
+    - _Parallax: 0.08
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.217
+    - _Smoothness: 0.073
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -157,13 +203,23 @@ Material:
     - _TessellationTriangleClipBias: 0
     - _TessellationTriangleClipping: 1
     - _VertexColorMode: 0
+    - _Wind_Density: 0
+    - _Wind_Direction: 0
+    - _Wind_Speed: 0
+    - _Wind_Strength: 0
     - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - Color_31169cddf50541efb9986457e63a95c7: {r: 0.572, g: 0.5493016, b: 0.51298416, a: 1}
+    - _BaseColor: {r: 0.6792453, g: 0.65945596, b: 0.6311855, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MainColor: {r: 0.794, g: 0.794, b: 0.794, a: 0}
+    - _MainTint: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
+    - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularColor: {r: 0.688, g: 0.6583216, b: 0.5773804, a: 0.6392157}
+    - _Tiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &7916559898735176687
 MonoBehaviour:

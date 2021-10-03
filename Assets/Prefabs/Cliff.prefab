@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4462998477885253044}
   - component: {fileID: 1876653257324319102}
   - component: {fileID: 7250597999067252519}
-  m_Layer: 3
+  - component: {fileID: 9043377157933227772}
+  m_Layer: 0
   m_Name: Cliff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,3 +226,15 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
+--- !u!114 &9043377157933227772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75376203192266923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72208d92f0766b84db08f23c581747e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

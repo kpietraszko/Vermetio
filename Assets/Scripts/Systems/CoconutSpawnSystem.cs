@@ -12,6 +12,7 @@ using Random = Unity.Mathematics.Random;
 namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostSimulationSystemGroup))]
+    [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
     public class CoconutSpawnSystem : SystemBase
     {
         public const int TargetNumberOfCoconuts = 60;

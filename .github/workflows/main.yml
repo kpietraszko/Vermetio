@@ -26,4 +26,4 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build server
         shell: pwsh
-        run: BuildScripts\buildServer.ps1
+        run: Vermetio\BuildScripts\buildServer.ps1

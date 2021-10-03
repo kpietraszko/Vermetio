@@ -25,5 +25,6 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build server
-        shell: pwsh
-        run: buildServer.ps1
+        run: |
+          cd BuildScripts
+          .\buildServer.ps1

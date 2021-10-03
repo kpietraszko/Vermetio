@@ -72,7 +72,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleCurveTexture_2488bf4076484b43a1f184a9525ea980_Texture2D2A13FE9B_126430952:
-        m_Texture: {fileID: 9087122996380140936, guid: 499a5a1468529f742b5a5bfa2742324c, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleCurveTexture_4a1c69d6a8944d15ad249e9fd0393468_Texture2D2A13FE9B_126430952:
@@ -88,11 +88,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleCurveTexture_887c4fd1562247dc90a3978c95596678_Texture2D2A13FE9B_126430952:
-        m_Texture: {fileID: 9087122996380140936, guid: 499a5a1468529f742b5a5bfa2742324c, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleCurveTexture_894520fa45b7448886e070db434e1cf0_Texture2D2A13FE9B_126430952:
-        m_Texture: {fileID: 9087122996380140936, guid: 346a279444e0bd44cad6df5f30235f12, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:

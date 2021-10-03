@@ -50,6 +50,9 @@ namespace Vermetio.Server
             Entities
                 .ForEach((in NetworkSnapshotAckComponent ack, in CommandTargetComponent target) =>
                 {
+                    if (target.targetEntity == Entity.Null)
+                        return;
+                    
                     rttPerEntity.Add(target.targetEntity, ack.EstimatedRTT / 1000); // ack.EstimatedRTT is in ms // this sometimes duplicates keys for some reason
                 }).Run();
 

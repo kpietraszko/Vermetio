@@ -245,8 +245,9 @@ MonoBehaviour:
   - Unity.Transforms.Rotation
   PrefabTypeOverrides: []
   SendTypeOverrides: []
-  VariantOverrides:
-  - Value: 14998767508557141177
+  VariantOverrides: []
+  SendForChildrenOverrides:
+  - Value: 1
     OverrideIndex: 0
 --- !u!114 &3080096736190477122
 MonoBehaviour:

@@ -5,7 +5,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace Vermetio.Client

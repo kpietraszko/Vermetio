@@ -318,6 +318,13 @@ MonoBehaviour:
     OverrideIndex: 1
   - Value: 10137082255859595637
     OverrideIndex: 2
+  SendForChildrenOverrides:
+  - Value: 18446744073709551615
+    OverrideIndex: 0
+  - Value: 18446744073709551615
+    OverrideIndex: 1
+  - Value: 18446744073709551615
+    OverrideIndex: 2
 --- !u!114 &895779231170848824
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -89,16 +89,6 @@ namespace Crest
                 }
             }
 
-#if CREST_URP
-            if (RenderPipelineHelper.IsUniversal && !SampleShadowsURP.Created
-#if UNITY_EDITOR
-                // Not excited about this but it seems that the SampleShadows may not be immediately created when in edit mode. TODO - detect directly on render
-                // pipeline renderer asset?
-                && UnityEditor.EditorApplication.isPlaying
-#endif
-                )
-#endif
-
 #if UNITY_EDITOR
             if (OceanRenderer.Instance.OceanMaterial != null
                 && OceanRenderer.Instance.OceanMaterial.HasProperty(MATERIAL_KEYWORD_PROPERTY)

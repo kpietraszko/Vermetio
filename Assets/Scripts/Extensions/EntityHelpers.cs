@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.NetCode;
+using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -43,6 +44,12 @@ namespace Vermetio
             }
 
             return null;
+        }
+
+        public static Entity GetEntityFromEvent<T>(this ComponentDataFromEntity<T> dictionary, CollisionEvent collisionEvent) where T : struct, IComponentData
+        {
+            return dictionary.HasComponent(collisionEvent.EntityA) ? collisionEvent.EntityA :
+                dictionary.HasComponent(collisionEvent.EntityB) ? collisionEvent.EntityB : Entity.Null;
         }
     }
 }

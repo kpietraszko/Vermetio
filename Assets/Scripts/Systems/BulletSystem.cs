@@ -1,3 +1,4 @@
+using Latios;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -14,7 +15,7 @@ namespace Vermetio.Server
 {
     [UpdateInGroup(typeof(GhostPredictionSystemGroup))]
     [UpdateInWorld(UpdateInWorld.TargetWorld.Server)] // no client side prediction for now
-    public class BulletSystem : SystemBase
+    public class BulletSystem : SubSystem
     {
         private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
@@ -31,7 +32,7 @@ namespace Vermetio.Server
 
         protected override void OnUpdate()
         {
-            var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
+            var syncPointEcb = latiosWorld.syncPoint.CreateEntityCommandBuffer().AsParallelWriter();//_endSimulationEcbSystem.CreateCommandBuffer().AsParallelWriter();
             var deltaTime = Time.DeltaTime;
 
             Entities
@@ -41,12 +42,12 @@ namespace Vermetio.Server
                 {
                     var shootParams = GetComponent<ShootParametersComponent>(spawnedBy.Player);
 
-                    endFrameEcb.AddComponent<BulletFiredComponent>(entityInQueryIndex, entity);
+                    syncPointEcb.AddComponent<BulletFiredComponent>(entityInQueryIndex, entity);
                     pm.GetImpulseFromForce(shootParams.Velocity, ForceMode.VelocityChange, deltaTime, out var impulse, out var impulseMass);
                     pv.ApplyLinearImpulse(impulseMass, impulse);
                 }).Schedule();
             
-            _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
+            // _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }

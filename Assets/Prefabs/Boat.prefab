@@ -215,7 +215,7 @@ MonoBehaviour:
   DragInWaterUp: 3
   DragInWaterRight: 0.7
   DragInWaterForward: 0.1
-  EnginePower: 11
+  EnginePower: 16
   TurnPower: 900000
   PlayerControlled: 1
   EngineBias: 0
@@ -285,7 +285,7 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
-  m_GravityFactor: 1
+  m_GravityFactor: 4
   m_OverrideDefaultMassDistribution: 0
   m_CenterOfMass:
     x: 0
@@ -535,7 +535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4dafd2b0b6c3874ba74cfeb8de1b16a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Value: 2
+  Value: 3
 --- !u!114 &7127417554883270754
 MonoBehaviour:
   m_ObjectHideFlags: 0

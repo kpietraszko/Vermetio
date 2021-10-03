@@ -42,6 +42,27 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.latios.latiosframework": {
+      "version": "file:com.latios.latiosframework",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.entities": "0.17.0-preview.41",
+        "com.unity.audio.dspgraph": "0.1.0-preview.17"
+      }
+    },
+    "com.unity.audio.dspgraph": {
+      "version": "0.1.0-preview.17",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.burst": "1.4.1",
+        "com.unity.media.utilities": "0.1.0-preview.9",
+        "com.unity.modules.audio": "1.0.0",
+        "com.unity.modules.video": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.build-report-inspector": {
       "version": "0.2.2-preview",
       "depth": 0,
@@ -172,6 +193,16 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.media.utilities": {
+      "version": "0.1.0-preview.9",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.burst": "1.4.1"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.netcode": {

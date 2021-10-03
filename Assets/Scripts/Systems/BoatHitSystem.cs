@@ -66,11 +66,9 @@ namespace Vermetio.Server
 
             public void Execute(CollisionEvent e)
             {
-                var bulletEntity = BulletTagsPerEntity.HasComponent(e.EntityA) ? e.EntityA :
-                    BulletTagsPerEntity.HasComponent(e.EntityB) ? e.EntityB : Entity.Null;
-                
-                var ghostOwnerEntity = GhostOwnersPerEntity.HasComponent(e.EntityA) ? e.EntityA :
-                    GhostOwnersPerEntity.HasComponent(e.EntityB) ? e.EntityB : Entity.Null;
+                var bulletEntity = BulletTagsPerEntity.GetEntityFromEvent(e);
+
+                var ghostOwnerEntity = GhostOwnersPerEntity.GetEntityFromEvent(e);
                 
                 if (bulletEntity == Entity.Null || ghostOwnerEntity == Entity.Null)
                     return;

@@ -9,7 +9,8 @@ using Vermetio;
 
 public class CopyPlayerPositionToProxy : MonoBehaviour
 {
-    void FixedUpdate()
+    
+    void Update()
     {
         var world = EntityHelpers.GetWorldWith<ClientSimulationSystemGroup>(World.All);
         if (world == null)
@@ -34,8 +35,7 @@ public class CopyPlayerPositionToProxy : MonoBehaviour
             var playerPosition = world.EntityManager.GetComponentData<Translation>(entities[i]).Value;
             var playerRotation = world.EntityManager.GetComponentData<Rotation>(entities[i]).Value;
             // Debug.Log($"{playerPosition}");
-            transform.position = playerPosition;
-            transform.rotation = playerRotation;
+            transform.SetPositionAndRotation(playerPosition, playerRotation);
             return;
         }
     }

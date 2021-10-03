@@ -78,7 +78,7 @@ namespace Vermetio.Server
                     var afterCooldown = (elapsedTime - inputTravelTime) - shootParams.LastShotRequestedAt > shootParams.MinimumShotDelay;
                     if (afterCooldown && shootParams.TargetLegit)
                     {
-                        shootParams.LastShotRequestedAt = elapsedTime - inputTravelTime;
+                        shootParams.LastShotRequestedAt = elapsedTime/* - inputTravelTime*/;
                         // Debug.Log($"{rtt}");
 
                         var spawnAtTick = tick;

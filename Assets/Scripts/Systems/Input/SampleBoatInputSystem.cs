@@ -37,6 +37,12 @@ public class SampleBoatInputSystem : SystemBase
             AddInputBuffers();
             return;
         }
+
+        if (!GetBufferFromEntity<BoatInput>(true).HasComponent(localInputEntity))
+        {
+            Debug.LogError("Player entity is fucked");
+            return;
+        }
         
         var tick = World.GetExistingSystem<ClientSimulationSystemGroup>().ServerTick;
 

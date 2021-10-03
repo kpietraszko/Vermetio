@@ -43,7 +43,6 @@ namespace Vermetio.Server
                 // .WithoutBurst()
                 .WithName("Boat_cage_rotation")
                 .WithReadOnly(rttPerEntity)
-                .WithDisposeOnCompletion(rttPerEntity)
                 .ForEach((Entity playerEntity, 
                     in PredictedGhostComponent prediction,
                     in BoatCageReference cageReference,
@@ -55,8 +54,7 @@ namespace Vermetio.Server
                         return;
                     
                     var rtt = rttPerEntity[playerEntity];
-                    var snapshotTravelTime = rtt / 2d;
-                    var afterCooldown = elapsedTime + snapshotTravelTime - shootParams.LastShotRequestedAt > shootParams.MinimumShotDelay;
+                    var afterCooldown = IsAfterCooldown(rtt, elapsedTime, shootParams);
                     if (!afterCooldown)
                         return;
                     
@@ -94,10 +92,16 @@ namespace Vermetio.Server
             
             Dependency = Entities
                 .WithName("Prepare_shot_velocity") // could be slow, 2 indirect lookups
+                .WithDisposeOnCompletion(rttPerEntity)
                 .WithAll<MovableBoatComponent>()
-                .ForEach((Entity entity, int entityInQueryIndex, ref ShootParametersComponent shootParams, in BulletSpawnPointReference spawnPointReference, in LocalToWorld ltw) =>
+                .ForEach((Entity playerEntity, int entityInQueryIndex, ref ShootParametersComponent shootParams, in BulletSpawnPointReference spawnPointReference, in LocalToWorld ltw) =>
                 {
-                    var inputBuffer = GetBuffer<BoatInput>(entity);
+                    var rtt = rttPerEntity[playerEntity];
+                    var afterCooldown = IsAfterCooldown(rtt, elapsedTime, shootParams);
+                    if (!afterCooldown)
+                        return;
+                    
+                    var inputBuffer = GetBuffer<BoatInput>(playerEntity);
                     inputBuffer.GetDataAtTick(tick, out var input);
 
                     var spawnPoint = GetComponent<LocalToWorld>(spawnPointReference.BulletSpawnPoint).Position;
@@ -157,6 +161,14 @@ namespace Vermetio.Server
             // Dependency = JobHandle.CombineDependencies(Dependency, prepareJob, rotateAxleJob);
 
             _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
+        }
+
+        private static bool IsAfterCooldown(float rtt, double elapsedTime, ShootParametersComponent shootParams)
+        {
+            var snapshotTravelTime = rtt / 2d;
+            var afterCooldown = elapsedTime /*+ snapshotTravelTime*/ - shootParams.LastShotRequestedAt >
+                                shootParams.MinimumShotDelay;
+            return afterCooldown;
         }
 
         private static float3 Flatten(float3 vector) => new float3(vector.x, 0f, vector.z);

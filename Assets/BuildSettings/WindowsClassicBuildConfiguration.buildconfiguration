@@ -20,7 +20,7 @@
         },
         {
             "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
-            "OutputDirectory": "C:\\Unity\\ServerBuild"
+            "OutputDirectory": "ServerBuild"
         },
         {
             "$type": "NetCodeConversionSettings, Unity.NetCode.Authoring.Hybrid",
@@ -40,7 +40,7 @@
             "$type": "Unity.Build.Classic.ClassicBuildProfile, Unity.Build.Classic",
             "$version": 1,
             "Platform": "win",
-            "Configuration": 3
+            "Configuration": 1
         },
         {
             "$type": "Unity.Build.Classic.EnableHeadlessMode, Unity.Build.Classic"

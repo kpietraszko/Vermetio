@@ -22,11 +22,11 @@
             "$type": "Unity.Build.Classic.ClassicBuildProfile, Unity.Build.Classic",
             "$version": 1,
             "Platform": "win",
-            "Configuration": 3
+            "Configuration": 2
         },
         {
             "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
-            "OutputDirectory": "C:\\Unity\\ClientBuild"
+            "OutputDirectory": "ClientBuild"
         },
         {
             "$type": "NetCodeConversionSettings, Unity.NetCode.Authoring.Hybrid",

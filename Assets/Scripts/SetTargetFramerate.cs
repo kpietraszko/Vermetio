@@ -9,11 +9,11 @@ public class SetTargetFramerate : MonoBehaviour
     {
         Application.targetFrameRate = 60;
     }
-
-    [ContextMenu("Test Build")]
-    public void TestBuild()
-    {
-        BuildRunner.BuildServer();
-    }
+    //
+    // [ContextMenu("Test Build")]
+    // public void TestBuild()
+    // {
+    //     BuildRunner.BuildServer();
+    // }
 
 }

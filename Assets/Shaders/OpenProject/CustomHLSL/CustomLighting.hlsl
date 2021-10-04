@@ -40,7 +40,7 @@ void MainLight_float(float3 WorldPos, out float3 Direction, out float3 Color, ou
 }
 
 
-void DirectSpecular_float(float Smoothness, float3 Direction, float3 WorldNormal, float3 WorldView, out float3 Out)
+void DirectSpecular_float(float Smoothness, float3 Direction, float3 WorldNormal, float3 WorldView, out half3 Out)
 {
     float4 White = 1;
 

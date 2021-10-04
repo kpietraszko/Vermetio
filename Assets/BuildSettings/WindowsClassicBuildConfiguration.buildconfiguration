@@ -20,7 +20,7 @@
         },
         {
             "$type": "Unity.Build.Common.OutputBuildDirectory, Unity.Build",
-            "OutputDirectory": "ServerBuild"
+            "OutputDirectory": "Builds\\ServerBuild"
         },
         {
             "$type": "NetCodeConversionSettings, Unity.NetCode.Authoring.Hybrid",

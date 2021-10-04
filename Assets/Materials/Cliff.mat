@@ -9,8 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Cliff
   m_Shader: {fileID: -6465566751694194690, guid: bf36778a400a0894b86a1f49c422fa62, type: 3}
-  m_ShaderKeywords: BOOLEAN_C66615A369A843A3BF511BF0A73D4D21_ON USEFRESNEL_ON _NORMALMAP
-    _OCCLUSIONMAP _PARALLAXMAP _SPECULAR_SETUP
+  m_ShaderKeywords: _NORMALMAP _OCCLUSIONMAP _PARALLAXMAP _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -184,7 +183,7 @@ Material:
     - _Parallax: 0.08
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.073
+    - _Smoothness: 0.082
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1

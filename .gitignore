@@ -37,3 +37,6 @@ sysinfo.txt
 *.unitypackage
 
 *.log
+
+ServerBuild/
+ClientBuild/

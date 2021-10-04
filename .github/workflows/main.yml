@@ -30,3 +30,8 @@ jobs:
         run: |
           cd BuildScripts
           .\buildServer.ps1
+          
+      - name: Build client
+        run: |
+          cd BuildScripts
+          .\buildClient.ps1

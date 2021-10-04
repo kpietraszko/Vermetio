@@ -6,7 +6,6 @@ public class BuildRunner
 {
     public static void BuildServer()
     {
-        Debug.Log("Dummy change");
         var bc = AssetDatabase.LoadAssetAtPath<BuildConfiguration>(
             "Assets/BuildSettings/WindowsClassicBuildConfiguration.buildconfiguration");
         var result = bc.Build(); //This will build your game

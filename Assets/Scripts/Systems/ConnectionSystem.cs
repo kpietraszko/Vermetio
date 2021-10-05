@@ -73,8 +73,8 @@ public class ConnectionSystem : SystemBase
             });
                 
             // Client worlds automatically connect to localhost
-            NetworkEndPoint ep = NetworkEndPoint.Parse("10.147.18.239", 7979); // NetworkEndPoint.LoopbackIpv4;
-            // ep.Port = 7979;
+            NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4; //NetworkEndPoint.Parse("10.147.18.239", 7979); // NetworkEndPoint.LoopbackIpv4;
+            ep.Port = 7979;
             Debug.Log("Connecting...");
             var entity = network.Connect(ep);
             #if UNITY_EDITOR

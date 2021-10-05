@@ -549,10 +549,10 @@ RectTransform:
   m_Father: {fileID: 178608329}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 74.69505, y: -18.535}
-  m_SizeDelta: {x: 0, y: 27.07}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 27.07, y: 0}
   m_Pivot: {x: 0.5000019, y: 0.5}
 --- !u!114 &150529246
 MonoBehaviour:
@@ -1823,7 +1823,7 @@ MonoBehaviour:
   _globalWindSpeed: 150
   _viewpoint: {fileID: 0}
   _camera: {fileID: 1695907644}
-  _timeProvider: {fileID: 0}
+  _timeProvider: {fileID: 909074733}
   _primaryLight: {fileID: 1442418599}
   _searchForPrimaryLightOnStartup: 1
   _material: {fileID: 2100000, guid: 9def92ac79181fe41b238e91663f0fad, type: 2}

@@ -1,4 +1,4 @@
-﻿using Latios;
+﻿/*using Latios;
 using Latios.Systems;
 using Unity.Entities;
 
@@ -12,4 +12,4 @@ public class LatiosSyncPointPlayback : RootSuperSystem
         latiosWorld.syncPoint = GetOrCreateAndAddSystem<SyncPointPlaybackSystem>();
         GetOrCreateAndAddSystem(typeof(SceneManagerSystem));
     }
-}
+}*/

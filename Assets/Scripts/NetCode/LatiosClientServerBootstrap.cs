@@ -1,4 +1,4 @@
-﻿using Latios;
+﻿/*using Latios;
 using Unity.Entities;
 using Unity.NetCode;
 
@@ -51,4 +51,4 @@ namespace Vermetio.Client.NetCode
             return true;
         }
     }
-}
+}*/

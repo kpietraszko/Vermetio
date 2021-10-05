@@ -120,7 +120,7 @@ Material:
     - BACKFACENORMALMODE: 1
     - EFFECT_EXTRA_TEX: 0
     - Vector1_0ab9c18e950d437caedba256224243cc: 1
-    - Vector1_8606F96E: 0
+    - Vector1_8606F96E: 0.03
     - _AlphaClip: 0
     - _AlphaClipThreshold: 0.1
     - _BillboardKwToggle: 0

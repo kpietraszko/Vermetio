@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Cliff
-  m_Shader: {fileID: -6465566751694194690, guid: bf36778a400a0894b86a1f49c422fa62, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: a6c49873656da9e4eb442af8048299e8, type: 3}
   m_ShaderKeywords: _NORMALMAP _OCCLUSIONMAP _PARALLAXMAP _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -149,11 +149,12 @@ Material:
     - USEFRESNEL: 1
     - Vector1_0ab9c18e950d437caedba256224243cc: 0
     - Vector1_16be3bc032404115ad2560d843f49a91: 25.22
+    - Vector1_3e3b6395fabf49c3b4ec6a4211e480d5: 1.2
     - Vector1_49c4e8179c26493baeeba6ef6082c33a: 0.18
     - Vector1_73ea1934d6024198b50463c77e8b2eb5: 0.63
     - Vector1_76865e748c854bac8534f9a35d793e57: 2
     - Vector1_84dfffd0d15a4dbfa20a66d27ac8fc41: 0.1
-    - Vector1_8606F96E: 0
+    - Vector1_8606F96E: 0.04
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1.95

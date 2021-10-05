@@ -1,4 +1,4 @@
-﻿using Latios;
+﻿/*using Latios;
 using Latios.Systems;
 using Unity.Entities;
 
@@ -11,4 +11,4 @@ public class LatiosPreSync : RootSuperSystem
         EnableSystemSorting = false;
         GetOrCreateAndAddSystem(typeof(PreSyncPointGroup));
     }
-}
+}*/

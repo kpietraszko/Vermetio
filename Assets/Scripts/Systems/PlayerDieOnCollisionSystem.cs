@@ -1,4 +1,3 @@
-using Latios;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -14,7 +13,7 @@ namespace Vermetio.Server
 {
     [UpdateInWorld(UpdateInWorld.TargetWorld.Server)]
     [UpdateAfter(typeof(StepPhysicsWorld))]
-    public class PlayerDieOnCollisionSystem : SubSystem
+    public class PlayerDieOnCollisionSystem : SystemBase
     {
         private StepPhysicsWorld _stepPhysicsWorld;
         private BuildPhysicsWorld _buildPhysicsWorld;
@@ -50,7 +49,7 @@ namespace Vermetio.Server
                     Dependency
                 );
             
-            latiosWorld.syncPoint.AddJobHandleForProducer(Dependency);
+            // latiosWorld.syncPoint.AddJobHandleForProducer(Dependency);
             _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
             // playerByNetworkId.Dispose(Dependency);
         }

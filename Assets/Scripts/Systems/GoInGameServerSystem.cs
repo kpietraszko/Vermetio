@@ -45,7 +45,7 @@ namespace Vermetio.Server
                     var y = GetComponent<Translation>(boatPrefab).Value.y;
                     var randomPosition = rnd.NextFloat3(new float3(-215, y, -331), new float3(280, y, -107));
                     Debug.Log("Spawned player boat");
-                    ecb.SetComponent(player, new Translation() {Value = randomPosition});
+                    ecb.SetComponent(player, new Translation() {Value = new float3(-81.6f, y, -167.4f)});
                     ecb.SetComponent(player, new GhostOwnerComponent { NetworkId = networkIdFromEntity[reqSrc.SourceConnection].Value});
                     ecb.AddBuffer<BoatInput>(player);
                     ecb.SetComponent(reqSrc.SourceConnection, new CommandTargetComponent {targetEntity = player});

@@ -138,7 +138,7 @@ Material:
     - _Roughness: 0
     - _S: 1
     - _Shadows: 1
-    - _ShorelineFoamMinDepth: 0.32
+    - _ShorelineFoamMinDepth: 0.68
     - _SkyDirectionality: 0.809
     - _Smoothness: 0.779
     - _SmoothnessFar: 0.486

@@ -1832,11 +1832,11 @@ MonoBehaviour:
   _gravityMultiplier: 1
   _minTexelsPerWave: 3
   _minScale: 8
-  _maxScale: 64
+  _maxScale: -1
   _dropDetailHeightBasedOnWaves: 0.2
   _lodDataResolution: 384
   _geometryDownSampleFactor: 2
-  _lodCount: 6
+  _lodCount: 4
   _underwaterCullLimit: 0.001
   _renderingLayerMask: 255
   _simSettingsAnimatedWaves: {fileID: 11400000, guid: 3728e003960a24b46a070af9046a1e17, type: 2}
@@ -2842,8 +2842,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1695907642}
-  m_LocalRotation: {x: -0.1516329, y: 0.84825885, z: -0.36607417, w: -0.35136035}
-  m_LocalPosition: {x: 67.7, y: 150, z: -109.600006}
+  m_LocalRotation: {x: -0.15163289, y: 0.84825885, z: -0.36607417, w: -0.35136032}
+  m_LocalPosition: {x: 105, y: 150, z: 180}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3348,8 +3348,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 548558693647917774}
-  m_LocalRotation: {x: -0.1516329, y: 0.84825885, z: -0.36607417, w: -0.35136035}
-  m_LocalPosition: {x: 67.7, y: 150, z: -109.600006}
+  m_LocalRotation: {x: -0.15163289, y: 0.84825885, z: -0.36607417, w: -0.35136032}
+  m_LocalPosition: {x: 105, y: 150, z: 180}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 548558693587097833}
@@ -3408,7 +3408,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &548558693647917775
 MonoBehaviour:
   m_ObjectHideFlags: 0

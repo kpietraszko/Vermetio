@@ -48,7 +48,7 @@ namespace Vermetio.Server
                     
                     using (StreamWriter sw = new StreamWriter("boatPosition.csv", true))
                     {
-                        sw.WriteLine($"{localToWorld.Position.x},{localToWorld.Position.z}");
+                        sw.WriteLine($"{localToWorld.Position.x};{localToWorld.Position.z}");
                     }
 
                     // if (tick % 60 == 0)

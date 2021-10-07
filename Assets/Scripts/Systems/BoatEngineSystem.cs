@@ -1,3 +1,4 @@
+using System.IO;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -31,6 +32,7 @@ namespace Vermetio.Server
 
             Entities
                 .WithNone<BoatFullyAboveWaterTag>()
+                .WithoutBurst()
                 .ForEach((DynamicBuffer<BoatInput> keyboardInputBuffer, ref Translation translation,
                     ref Rotation rotation,
                     ref PhysicsMass pm, ref PhysicsVelocity pv, in LocalToWorld localToWorld,
@@ -43,6 +45,11 @@ namespace Vermetio.Server
 
                     if (math.abs(keyboardInput.Throttle) < 0.001f) // don't add force OR ROTATION if no throttle
                         return;
+                    
+                    using (StreamWriter sw = new StreamWriter("boatPosition.csv", true))
+                    {
+                        sw.WriteLine($"{localToWorld.Position.x},{localToWorld.Position.z}");
+                    }
 
                     // if (tick % 60 == 0)
                     //     Debug.Log($"{math.length(pv.Linear)}");
@@ -68,7 +75,7 @@ namespace Vermetio.Server
 
                     pv.ApplyAngularImpulse(pm,
                         rotationAxis * math.sign(angleToTarget) * probyBuoyant.TurnPower * deltaTime);
-                }).Schedule();
+                }).Run();
         }
     }
 }

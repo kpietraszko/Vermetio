@@ -114,7 +114,7 @@ Material:
     - _Foam: 1
     - _Foam3DLighting: 0
     - _FoamBubbleParallax: 0.355
-    - _FoamScale: 15.6
+    - _FoamScale: 10.1
     - _FresnelPower: 3.12
     - _Invert: 1
     - _LightIntensityMultiplier: 1.52

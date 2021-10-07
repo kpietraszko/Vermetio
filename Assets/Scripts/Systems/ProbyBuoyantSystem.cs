@@ -85,7 +85,7 @@ namespace Vermetio.Server
 
             Entities
                 .WithName("Prepare_query_points")
-                .WithoutBurst() // rethink, this will be slow
+                .WithoutBurst() // TODO: rethink, this will be slow
                 .ForEach((Entity entity, in LocalToWorld localToWorld, in ProbyBuoyantComponent buoyantComponent, in DynamicBuffer<ForcePoint> forcePoints) =>
                 {
                     for (int i = 0; i < forcePoints.Length; i++)

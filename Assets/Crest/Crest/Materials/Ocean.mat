@@ -9,7 +9,7 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Ocean
   m_Shader: {fileID: 4800000, guid: 986f7c6732e8a6e4881407d7f15f25c3, type: 3}
-  m_ShaderKeywords: _APPLYNORMALMAPPING_ON _CLIPSURFACE_ON _COMPUTEDIRECTIONALLIGHT_ON
+  m_ShaderKeywords: _APPLYNORMALMAPPING_ON _CAUSTICS_ON _CLIPSURFACE_ON _COMPUTEDIRECTIONALLIGHT_ON
     _DEBUGMULTIPLYBYLIGHT0COLOR_ON _FOAM_ON _PLANARREFLECTIONS_ON _PROJECTION_PERSPECTIVE
     _SHADOWS_ON _SUBSURFACEHEIGHTLERP_ON _SUBSURFACESCATTERING_ON _SUBSURFACESHALLOWCOLOUR_ON
     _TRANSPARENCY_ON _VARYSMOOTHNESSOVERDISTANCE_ON
@@ -86,16 +86,16 @@ Material:
     - _ApplyFlowToNormals: 0
     - _ApplyNormalMapping: 1
     - _BumpAmt: 0.514
-    - _Caustics: 0
+    - _Caustics: 1
     - _CausticsBase: 0.07
     - _CausticsBias: 0.7
     - _CausticsDepthOfField: 0.33
     - _CausticsDistortionScale: 10
     - _CausticsDistortionStrength: 0.075
     - _CausticsFocalDepth: 2
-    - _CausticsStrength: 3.2
+    - _CausticsStrength: 10
     - _CausticsTextureAverage: 0.07
-    - _CausticsTextureScale: 5
+    - _CausticsTextureScale: 10.4
     - _ClipSurface: 1
     - _ClipUnderTerrain: 0
     - _CompileShaderWithDebugInfo: 0
@@ -121,8 +121,8 @@ Material:
     - _MipBias: 0
     - _Moving: 0.17
     - _NormalsScale: 17
-    - _NormalsStrength: 0.185
-    - _NormalsStrengthOverall: 1
+    - _NormalsStrength: 0.232
+    - _NormalsStrengthOverall: 3.13
     - _Offset: 0.00008
     - _OverrideReflectionCubemap: 0
     - _PlanarReflectionIntensity: 0.227
@@ -130,7 +130,7 @@ Material:
     - _PlanarReflections: 1
     - _ProceduralSky: 0
     - _Projection: 1
-    - _ReflectionBlur: 0.4
+    - _ReflectionBlur: 1.97
     - _RefractAmt: 0
     - _RefractionStrength: 1.875
     - _RefractiveIndexOfAir: 1.094

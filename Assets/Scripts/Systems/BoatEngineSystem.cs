@@ -50,6 +50,8 @@ namespace Vermetio.Server
                     {
                         sw.WriteLine($"{localToWorld.Position.x};{localToWorld.Position.z}");
                     }
+                    
+                    localToWorld.Position.DrawCross(11f, Color.green, 1/60f);
 
                     // if (tick % 60 == 0)
                     //     Debug.Log($"{math.length(pv.Linear)}");

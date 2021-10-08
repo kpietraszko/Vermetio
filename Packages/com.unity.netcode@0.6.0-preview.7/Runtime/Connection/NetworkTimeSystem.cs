@@ -232,7 +232,7 @@ namespace Unity.NetCode
             var idiff = (uint)currentInterpolationFrames;
             interpolateTargetTick = predictTargetTick - idiff;
             var subidiff = currentInterpolationFrames - idiff;
-            subidiff -= subInterpolateTargetTick+subPredictTargetTick;
+            subidiff -= subPredictTargetTick;
             if (subidiff < 0)
             {
                 ++interpolateTargetTick;

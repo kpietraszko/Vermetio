@@ -4,6 +4,7 @@
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.e7.ecs.line-renderer": "git://github.com/5argon/ECSLineRenderer.git",
     "com.havok.physics": "0.6.0-preview.3",
+    "com.laurenth.lightingtools-lightprobesvolumes": "https://github.com/laurenth-personal/LightingTools.LightProbesVolumes.git",
     "com.tayx.graphy": "https://github.com/Tayx94/graphy.git",
     "com.unity.build-report-inspector": "0.2.2-preview",
     "com.unity.cinemachine": "2.8.0",

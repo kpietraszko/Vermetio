@@ -148,7 +148,7 @@ namespace Vermetio.Server
             Entities
                 .WithName("Rotate_cannon_axle")
                 .WithAll<MovableBoatComponent>()
-                .ForEach((in CannonAxleReference axleReference, in ShootParametersComponent shootParams) =>
+                .ForEach((ref BoatChildrenRotationProxy proxy, in CannonAxleReference axleReference, in ShootParametersComponent shootParams) =>
                 {
                     if (!shootParams.TargetLegit)
                         return;
@@ -159,7 +159,8 @@ namespace Vermetio.Server
                     
                     var angle = new float3(1, 0, 0).SignedAngleDeg(new float3(0, 1, 0), math.normalize(shootParams.Velocity));
                     var axleRotation = quaternion.AxisAngle(new float3(1, 0, 0), math.radians(math.abs(angle))); // buggy when close to boat
-                    SetComponent(axleReference.Axle, new Rotation() { Value = axleRotation });
+                    proxy.AxleRotation = axleRotation;
+                    // SetComponent(axleReference.Axle, new Rotation() { Value = axleRotation });
                 }).Schedule();
 
             // Dependency = JobHandle.CombineDependencies(Dependency, prepareJob, rotateAxleJob);

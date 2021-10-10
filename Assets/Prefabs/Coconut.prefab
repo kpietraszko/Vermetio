@@ -316,6 +316,13 @@ MonoBehaviour:
     OverrideIndex: 1
   - Value: 10137082255859595637
     OverrideIndex: 2
+  SendForChildrenOverrides:
+  - Value: 18446744073709551615
+    OverrideIndex: 0
+  - Value: 18446744073709551615
+    OverrideIndex: 1
+  - Value: 18446744073709551615
+    OverrideIndex: 2
 --- !u!114 &895779231170848824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,8 +335,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f662c797119a714b983870d337cbe2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RaiseObject: 1
-  BuoyancyCoeff: 4
+  RaiseObject: 1.5
+  BuoyancyCoeff: 6
   AccelerateDownhill: 0.222
   ForceHeightOffset: -0.3
   DragInWaterUp: 3

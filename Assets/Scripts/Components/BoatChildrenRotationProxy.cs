@@ -15,10 +15,6 @@ using UnityEngine;
 [GhostComponent]
 public struct BoatChildrenRotationProxy : IComponentData
 {
-    [GhostField] 
-    // [HideInInspector]
-    public quaternion CageRotation;
-
     [GhostField]
     // [HideInInspector]
     public quaternion AxleRotation;

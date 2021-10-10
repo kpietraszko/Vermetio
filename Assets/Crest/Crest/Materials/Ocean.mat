@@ -122,11 +122,11 @@ Material:
     - _Moving: 0.17
     - _NormalsScale: 17
     - _NormalsStrength: 0.232
-    - _NormalsStrengthOverall: 3.13
+    - _NormalsStrengthOverall: 3
     - _Offset: 0.00008
     - _OverrideReflectionCubemap: 0
-    - _PlanarReflectionIntensity: 0.227
-    - _PlanarReflectionNormalsStrength: 24
+    - _PlanarReflectionIntensity: 0.057
+    - _PlanarReflectionNormalsStrength: 5.99
     - _PlanarReflections: 1
     - _ProceduralSky: 0
     - _Projection: 1

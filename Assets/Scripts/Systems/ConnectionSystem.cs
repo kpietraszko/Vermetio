@@ -72,9 +72,14 @@ public class ConnectionSystem : SystemBase
                 MaxSimulationStepsPerFrame = 1
             });
                 
-            // Client worlds automatically connect to localhost
-            NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4; //NetworkEndPoint.Parse("10.147.18.239", 7979); // NetworkEndPoint.LoopbackIpv4;
+            // Client worlds automatically connect to localhost or ip passed through command line argument
+            NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4;
             ep.Port = 7979;
+
+            var ipFromArg = GetArg("-ip");
+            if (ipFromArg != null)
+                ep = NetworkEndPoint.Parse(ipFromArg, 7979);
+                
             Debug.Log("Connecting...");
             var entity = network.Connect(ep);
             #if UNITY_EDITOR
@@ -93,8 +98,16 @@ public class ConnectionSystem : SystemBase
         }
     }
     
-    private bool IsClientButNotThin()
+    private static string GetArg(string name)
     {
-        return World.GetExistingSystem<ClientSimulationSystemGroup>() != null && !TryGetSingleton<ThinClientComponent>(out _);
+        var args = System.Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == name && args.Length > i + 1)
+            {
+                return args[i + 1];
+            }
+        }
+        return null;
     }
 }

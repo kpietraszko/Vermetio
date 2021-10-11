@@ -8,7 +8,7 @@ Shader "Crest/Ocean URP"
 	{
 		[Header(Normals)]
 		// Strength of the final surface normal (includes both wave normal and normal map)
-		_NormalsStrengthOverall( "Overall Normal Strength", Range( 0.0, 4.0 ) ) = 1.0
+		_NormalsStrengthOverall( "Overall Normal Strength", Range( 0.0, 6.0 ) ) = 1.0
 		// Whether to add normal detail from a texture. Can be used to add visual detail to the water surface
 		[Toggle] _ApplyNormalMapping("Use Normal Map", Float) = 1
 		// Normal map texture (should be set to Normals type in the properties)

@@ -92,6 +92,7 @@ public class SampleBoatInputSystem : SystemBase
                 return;
             
             shootParams.LastShotRequestedAt = Time.ElapsedTime;
+            Debug.Log($"I: {Time.ElapsedTime}");
             SetComponent(localInputEntity, shootParams);
             input.Shoot = true;
         }

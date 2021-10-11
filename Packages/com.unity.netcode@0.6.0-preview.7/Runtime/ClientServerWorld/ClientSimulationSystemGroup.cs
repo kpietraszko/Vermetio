@@ -25,6 +25,7 @@ namespace Unity.NetCode
         public float InterpolationTickFraction => m_interpolationTickFraction;
         public float ServerTickFraction => m_serverTickFraction;
         public uint InterpolationTick => m_interpolationTick;
+        public double CurrentTime => m_currentTime; // Added by me, use carefully
         private uint m_serverTick;
         private uint m_interpolationTick;
         private float m_serverTickFraction;

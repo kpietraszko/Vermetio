@@ -23,7 +23,7 @@ public class SampleBoatInputSystem : SystemBase
     protected override void OnCreate()
     {
         RequireSingletonForUpdate<NetworkIdComponent>();
-        _rayTraceHelper = new RayTraceHelper(600f, 1f);
+        _rayTraceHelper = new RayTraceHelper(1000f, 1f);
         Segments.Core.CreateBatch(out _batch, Resources.Load<Material>("Materials/DirectionLine"));
     }
     
@@ -76,6 +76,12 @@ public class SampleBoatInputSystem : SystemBase
         var aimPosition = new float3(camPosition + ray.direction * distanceFromCam);
 
         input.AimPosition = aimPosition;
+        if (math.distance(aimPosition, playerPos) < 73)
+        {
+            _batch.buffer.Clear();
+            return;
+        }
+        
         DrawAimCircle(camPosition, aimPosition, playerPos);
 
         input.Shoot = false;
@@ -92,7 +98,6 @@ public class SampleBoatInputSystem : SystemBase
                 return;
             
             shootParams.LastShotRequestedAt = Time.ElapsedTime;
-            Debug.Log($"I: {Time.ElapsedTime}");
             SetComponent(localInputEntity, shootParams);
             input.Shoot = true;
         }

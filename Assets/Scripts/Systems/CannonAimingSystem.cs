@@ -119,6 +119,7 @@ namespace Vermetio.Server
 
                     if (discriminant < 0 || math.length(toTarget) < 2 * math.distance(ltw.Position, spawnPoint))
                     {
+                        // Debug.Log($"Bad shot with distance from boat {math.distance(ltw.Position, input.AimPosition)}");
                         // Target to far to hit with given max speed
                         shootParams.TargetLegit = false;
                         return;

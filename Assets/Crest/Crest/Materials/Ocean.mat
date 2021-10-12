@@ -114,7 +114,7 @@ Material:
     - _Foam: 1
     - _Foam3DLighting: 0
     - _FoamBubbleParallax: 0.355
-    - _FoamScale: 7.1
+    - _FoamScale: 4.8
     - _FresnelPower: 3.12
     - _Invert: 1
     - _LightIntensityMultiplier: 1.52
@@ -130,7 +130,7 @@ Material:
     - _PlanarReflections: 1
     - _ProceduralSky: 0
     - _Projection: 1
-    - _ReflectionBlur: 1.97
+    - _ReflectionBlur: 3.06
     - _RefractAmt: 0
     - _RefractionStrength: 1.875
     - _RefractiveIndexOfAir: 1.094
@@ -138,7 +138,7 @@ Material:
     - _Roughness: 0
     - _S: 1
     - _Shadows: 1
-    - _ShorelineFoamMinDepth: 0.68
+    - _ShorelineFoamMinDepth: 1.41
     - _SkyDirectionality: 0.809
     - _Smoothness: 0.779
     - _SmoothnessFar: 0.486
@@ -163,7 +163,7 @@ Material:
     - _Underwater: 0
     - _Update: 0.083
     - _VarySmoothnessOverDistance: 1
-    - _WaveFoamBubblesCoverage: 1.13
+    - _WaveFoamBubblesCoverage: 1.79
     - _WaveFoamBubblesFeather: 0.32
     - _WaveFoamBubblesStart: 0.115
     - _WaveFoamBubblesStrength: 0.637
@@ -182,7 +182,7 @@ Material:
     - _DiffuseGrazing: {r: 0.14440192, g: 0.35713622, b: 0.5188679, a: 1}
     - _DiffuseShadow: {r: 0.10280802, g: 0.24025832, b: 0.36200002, a: 1}
     - _FoamBubbleColor: {r: 0.6383054, g: 0.8301887, b: 0.8243741, a: 0.6117647}
-    - _FoamWhiteColor: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 0.6862745}
+    - _FoamWhiteColor: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 0.8862745}
     - _SkyAwayFromSun: {r: 0.043735042, g: 0.12477186, b: 0.2874409, a: 1}
     - _SkyBase: {r: 0.4341537, g: 0.5394797, b: 0.60382754, a: 1}
     - _SkyTowardsSun: {r: 0.9473069, g: 0.9473069, b: 0.9473069, a: 1}

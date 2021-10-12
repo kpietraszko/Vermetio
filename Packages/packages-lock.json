@@ -49,6 +49,17 @@
       "dependencies": {},
       "hash": "27b34f653614b1eff9437d449446956fe5ad42a9"
     },
+    "com.reese.nav": {
+      "version": "https://github.com/reeseschultz/ReeseUnityDemos.git#nav",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.entities": "0.17.0-preview.42",
+        "com.unity.physics": "0.6.0-preview.3",
+        "com.unity.rendering.hybrid": "0.11.0-preview.44"
+      },
+      "hash": "2bf96f298f302e344ac20577cb34b23225607025"
+    },
     "com.tayx.graphy": {
       "version": "https://github.com/Tayx94/graphy.git",
       "depth": 0,

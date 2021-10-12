@@ -15,7 +15,6 @@ namespace Vermetio.Client
         protected override void OnUpdate()
         {
             var elapsedTime = World.GetExistingSystem<ClientSimulationSystemGroup>().CurrentTime;
-            Debug.Log($"A: {elapsedTime}");
             var tickRate = default(ClientServerTickRate);
             if (HasSingleton<ClientServerTickRate>())
             {
@@ -28,12 +27,12 @@ namespace Vermetio.Client
             if (HasSingleton<ClientTickRate>())
                 clientTickRate = GetSingleton<ClientTickRate>();
 
-            var interpolationBuffer = clientTickRate.InterpolationTimeNetTicks * (1f / tickRate.NetworkTickRate);
+            // var interpolationBuffer = clientTickRate.InterpolationTimeNetTicks * (1f / tickRate.NetworkTickRate);
             
             Entities.ForEach((in ShootParametersComponent shootParams, in CannonReference cannonRef) =>
             {
                 var timeSinceShotRequested = elapsedTime - shootParams.LastShotRequestedAt;
-                var timeAnimationShouldTake = shootParams.MinimumShotDelay; //+ interpolationBuffer;
+                var timeAnimationShouldTake = shootParams.MinimumShotDelay + 0.03f; //+ interpolationBuffer; // assuming 30 ms is minimal rtt
                 // Debug.Log($"{timeSinceShotRequested} / {timeAnimationShouldTake}");
                 var animTime = math.clamp(timeSinceShotRequested / timeAnimationShouldTake, 0.0, 1.0);
                 SetComponent(cannonRef.Cannon, new AnimTimeProperty() { Value = (float)animTime});

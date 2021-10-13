@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Reese.Nav;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.NetCode;
 using Unity.Transforms;

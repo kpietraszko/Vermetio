@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1876653257324319102}
   - component: {fileID: 7250597999067252519}
   - component: {fileID: 9043377157933227772}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cliff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ MonoBehaviour:
         Category25: 1
         Category26: 1
         Category27: 1
-        Category28: 1
+        Category28: 0
         Category29: 1
         Category30: 1
         Category31: 1

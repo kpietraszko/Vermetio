@@ -1,4 +1,6 @@
 // #if !UNITY_EDITOR
+
+using Reese.Nav;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -22,6 +24,11 @@ public class RemovePhysicsOnClient : SystemBase
             ecb.RemoveComponent<PhysicsVelocity>(entity);
             ecb.RemoveComponent<PhysicsMass>(entity);
             // ecb.RemoveComponent<PhysicsCollider>(entity);
+        }).Run();
+
+        Entities.WithAny<NavAgent>().ForEach((Entity entity) =>
+        {
+            ecb.RemoveComponent<NavAgent>(entity);
         }).Run();
     }
 }

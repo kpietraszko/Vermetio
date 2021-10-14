@@ -31,6 +31,9 @@ namespace Vermetio.Client
             
             Entities.ForEach((in ShootParametersComponent shootParams, in CannonReference cannonRef) =>
             {
+                if (shootParams.LastShotRequestedAt == default)
+                    return;
+                
                 var timeSinceShotRequested = elapsedTime - shootParams.LastShotRequestedAt;
                 var timeAnimationShouldTake = shootParams.MinimumShotDelay + 0.03f; //+ interpolationBuffer; // assuming 30 ms is minimal rtt
                 // Debug.Log($"{timeSinceShotRequested} / {timeAnimationShouldTake}");

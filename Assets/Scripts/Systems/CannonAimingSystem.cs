@@ -56,8 +56,11 @@ namespace Vermetio.Server
                 {
                     if (!GhostPredictionSystemGroup.ShouldPredict(tick, prediction))
                         return;
+
+
+                    float rtt;
+                    rttPerEntity.TryGetValue(playerEntity, out rtt); // if false this is a bot
                     
-                    var rtt = rttPerEntity[playerEntity];
                     var afterCooldown = IsAfterCooldown(rtt, elapsedTime, shootParams);
                     if (!afterCooldown)
                         return;

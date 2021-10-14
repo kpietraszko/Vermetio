@@ -26,7 +26,10 @@ namespace Reese.Nav.Quadrant
             => QuadrantHashMap = new NativeMultiHashMap<int, QuadrantData>(0, Allocator.Persistent);
 
         protected override void OnDestroy()
-            => QuadrantHashMap.Dispose();
+        {
+            if (QuadrantHashMap.IsCreated)
+                QuadrantHashMap.Dispose();
+        }
 
         protected override void OnUpdate()
         {

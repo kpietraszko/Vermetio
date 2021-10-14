@@ -137,7 +137,9 @@ public class SampleBoatInputSystem : SystemBase
                 if (parent.Value != localInputEntity)
                     return;
 
-                lineSegment = new LineSegment(playerPosition + targetHeading * 24f, playerPosition + targetHeading * 29f,
+                var offset = math.up() * 1f;
+
+                lineSegment = new LineSegment(playerPosition + targetHeading * 24f + offset, playerPosition + targetHeading * 29f + offset,
                     lineSegment.lineWidth);
 
                 var barelyTurning = math.abs(math.dot(targetHeading, math.normalize(playerForward))) > 0.985f;

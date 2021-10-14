@@ -215,8 +215,8 @@ MonoBehaviour:
   DragInWaterUp: 2.7
   DragInWaterRight: 0.7
   DragInWaterForward: 0.1
-  EnginePower: 18
-  TurnPower: 1400000
+  EnginePower: 27
+  TurnPower: 1800000
   PlayerControlled: 1
   EngineBias: 0
   TurnBias: 0

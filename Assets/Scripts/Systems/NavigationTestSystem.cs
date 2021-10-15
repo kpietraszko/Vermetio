@@ -16,6 +16,11 @@ namespace Vermetio.Server
         private NavSystem _navSystem;
         private Segments.Batch _batch;
 
+        private struct LerpingStateComponent : ISystemStateComponentData
+        {
+            public float3 PreviousWaypoint;
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -40,23 +45,20 @@ namespace Vermetio.Server
                         CustomLerp = true,
                         WorldPoint = new float3(-55f, 0f, 380f)
                     });
-                    
+
                     EntityManager.SetName(entity, "AIBoat");
                 }).Run();
 
-            Entities.ForEach((NavProblem problem) =>
-            {
-                Debug.LogError($"{problem.Value}");
-            }).Run();
-            
+            Entities.ForEach((in NavProblem problem) => { Debug.LogError($"{problem.Value}"); }).Run();
+
             var settings = _navSystem.Settings;
             var buffer = _batch.buffer;
-            
+
             Entities.ForEach((Entity entity, in DynamicBuffer<NavPathBufferElement> pathBuffer, in LocalToWorld ltw) =>
             {
                 if (pathBuffer.Length == 0)
                     return;
-                
+
                 var drawPathOffset = math.up() * 5f;
                 var index = 0;
                 buffer.Length = 0;
@@ -77,62 +79,93 @@ namespace Vermetio.Server
                 Segments.Plot.Line(buffer, ref index, startLast, endLast);
             }).Run();
 
-            var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
-            var boatInputs = GetBufferFromEntity<BoatInput>();
-
             Entities
+                .WithStructuralChanges() // TODO: just for now
                 .WithNone<NavProblem>()
-                .WithAll<NavCustomLerping>().ForEach((Entity entity, DynamicBuffer<NavPathBufferElement> pathBuffer, in Translation translation) =>
+                .WithAll<NavPathBufferElement>()
+                .WithNone<LerpingStateComponent>()
+                .ForEach((Entity entity, in Translation translation) =>
                 {
-                    if (pathBuffer.Length == 0)
-                    {
-                        Debug.Log("Nowhere to go");
-                        ecb.AppendToBuffer(entity, new BoatInput()
-                        {
-
-                            Throttle = 0,
-                            Tick = tick + 1, // ??
-                        });
-                        return;
-                    }
-
-                    var pathBufferIndex = pathBuffer.Length - 1;
-
-                    // Debug.Log($"Distance {math.distance(translation.Value, pathBuffer[pathBufferIndex].Value)}");
-
-                    if (NavUtil.ApproxEquals(translation.Value, pathBuffer[pathBufferIndex].Value,
-                        settings.StoppingDistance))
-                        pathBuffer.RemoveAt(pathBufferIndex);
-
-                    if (pathBuffer.Length == 0)
-                    {
-                        Debug.Log("Reached destination");
-                        ecb.AppendToBuffer(entity, new BoatInput()
-                        {
-
-                            Throttle = 0,
-                            Tick = tick + 1, // ??
-                        });
-                        return;
-                    }
-
-                    pathBufferIndex = pathBuffer.Length - 1;
-
-                    if (!boatInputs.HasComponent(entity))
-                    {
-                        ecb.AddBuffer<BoatInput>(entity);
-                    }
-
-                    var heading = math.normalizesafe(pathBuffer[pathBufferIndex].Value - translation.Value);
-                    ecb.AppendToBuffer(entity, new BoatInput()
-                    {
-
-                        Throttle = 1,
-                        Tick = tick + 1, // ??
-                        TargetDirection = heading
-                    });
+                    EntityManager.AddComponent<LerpingStateComponent>(entity);
+                    EntityManager.SetComponentData(entity,
+                        new LerpingStateComponent() { PreviousWaypoint = translation.Value });
                 }).Run();
             
+            var tick = World.GetExistingSystem<ServerSimulationSystemGroup>().ServerTick;
+            var boatInputs = GetBufferFromEntity<BoatInput>();
+            
+            Entities
+                .WithNone<NavProblem>()
+                .WithAll<NavCustomLerping>().ForEach(
+                    (Entity entity, DynamicBuffer<NavPathBufferElement> pathBuffer, ref LerpingStateComponent lerpingState, in Translation translation) =>
+                    {
+                        if (pathBuffer.Length == 0)
+                        {
+                            Debug.Log("Nowhere to go");
+                            ecb.AppendToBuffer(entity, new BoatInput()
+                            {
+                                Throttle = 0,
+                                Tick = tick + 1, // ??
+                            });
+                            return;
+                        }
+                        
+                        var pathBufferIndex = pathBuffer.Length - 1;
+                        var throttle = 1f;
+
+                        // Debug.Log($"Distance {math.distance(translation.Value, pathBuffer[pathBufferIndex].Value)}");
+
+                        var agentDistanceFromPrevWaypoint = math.distance(translation.Value, lerpingState.PreviousWaypoint);
+                        var currentWaypointDistanceFromPrev = math.distance(pathBuffer[pathBufferIndex].Value, lerpingState.PreviousWaypoint);
+                        
+                        if (NavUtil.ApproxEquals(translation.Value, pathBuffer[pathBufferIndex].Value, settings.StoppingDistance) ||
+                            agentDistanceFromPrevWaypoint > currentWaypointDistanceFromPrev) // within stopping distance or overshot
+                        {
+                            lerpingState.PreviousWaypoint = pathBuffer[pathBufferIndex].Value;
+                            pathBuffer.RemoveAt(pathBufferIndex);
+                        }
+                        else if (NavUtil.ApproxEquals(translation.Value, pathBuffer[pathBufferIndex].Value,
+                            settings.StoppingDistance * 2)) // slow down if close
+                        {
+                            throttle = 0.6f;
+                        }
+
+                        if (pathBuffer.Length == 0)
+                        {
+                            Debug.Log("Reached destination");
+                            ecb.AppendToBuffer(entity, new BoatInput()
+                            {
+                                Throttle = 0,
+                                Tick = tick + 1, // ??
+                            });
+                            return;
+                        }
+
+                        pathBufferIndex = pathBuffer.Length - 1;
+
+                        if (!boatInputs.HasComponent(entity))
+                        {
+                            ecb.AddBuffer<BoatInput>(entity);
+                        }
+
+                        var heading = math.normalizesafe(pathBuffer[pathBufferIndex].Value - translation.Value);
+                        ecb.AppendToBuffer(entity, new BoatInput()
+                        {
+                            Throttle = throttle,
+                            Tick = tick + 1, // ??
+                            TargetDirection = heading
+                        });
+                    }).Run();
+
+            Entities
+                .WithStructuralChanges()
+                .WithNone<NavCustomLerping>()
+                .WithAll<LerpingStateComponent>()
+                .ForEach((Entity entity) =>
+                {
+                    EntityManager.RemoveComponent<LerpingStateComponent>(entity);
+                }).Run();
+
             ecb.Playback(EntityManager);
         }
 

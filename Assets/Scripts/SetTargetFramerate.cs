@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SetTargetFramerate : MonoBehaviour
 {
+    public AnimationCurve Curve;
     // Start is called before the first frame update
     void Start()
     {

@@ -34,7 +34,7 @@ namespace Vermetio.Server
             var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer();
 
             Entities
-                .ForEach((Entity entity, int entityInQueryIndex, CoconutPickupCooldownComponent cooldown) =>
+                .ForEach((Entity entity, int entityInQueryIndex, in CoconutPickupCooldownComponent cooldown) =>
                 {
                     if (cooldown.CooldownStartedAt + 1.0 <= elapsedTime) // 1 second cooldown
                         endFrameEcb.RemoveComponent<CoconutPickupCooldownComponent>(entity);

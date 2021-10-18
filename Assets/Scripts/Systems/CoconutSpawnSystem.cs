@@ -44,7 +44,7 @@ namespace Vermetio.Server
             var random = new Random((uint)UnityEngine.Random.Range(1, int.MaxValue));
 
             Entities
-                .ForEach((Entity entity, int entityInQueryIndex, CoconutSpawnCooldownComponent cooldown) =>
+                .ForEach((Entity entity, int entityInQueryIndex, in CoconutSpawnCooldownComponent cooldown) =>
                 {
                     if (cooldown.CooldownStartedAt + 1.0 <= elapsedTime) // 1 second cooldown
                         endFrameEcb.RemoveComponent<CoconutSpawnCooldownComponent>(entity);

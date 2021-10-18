@@ -59,6 +59,34 @@
         "com.unity.rendering.hybrid": "0.11.0-preview.44"
       }
     },
+    "com.solidalloy.generic-unity-objects": {
+      "version": "2.11.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.solidalloy.util": "1.33.0",
+        "com.solidalloy.type-references": "2.11.2",
+        "com.unity.settings-manager": "1.0.3"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.solidalloy.type-references": {
+      "version": "2.11.2",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.solidalloy.util": "1.33.0",
+        "com.unity.settings-manager": "1.0.3"
+      },
+      "url": "https://package.openupm.com"
+    },
+    "com.solidalloy.util": {
+      "version": "1.33.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "com.tayx.graphy": {
       "version": "https://github.com/Tayx94/graphy.git",
       "depth": 0,
@@ -122,9 +150,9 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.entities": {
-      "version": "0.17.0-preview.42",
+      "version": "file:com.unity.entities",
       "depth": 0,
-      "source": "registry",
+      "source": "embedded",
       "dependencies": {
         "com.unity.burst": "1.4.1",
         "com.unity.properties": "1.5.0-preview",
@@ -137,8 +165,7 @@
         "com.unity.jobs": "0.8.0-preview.23",
         "com.unity.scriptablebuildpipeline": "1.9.0",
         "com.unity.platforms": "0.10.0-preview.10"
-      },
-      "url": "https://packages.unity.com"
+      }
     },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
@@ -348,6 +375,13 @@
         "com.unity.properties": "1.6.0-preview",
         "com.unity.test-framework.performance": "2.3.1-preview"
       },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.settings-manager": {
+      "version": "1.0.3",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.shadergraph": {

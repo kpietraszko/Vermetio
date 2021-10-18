@@ -48,7 +48,7 @@ namespace Reese.Nav
                     ) return;
 
                     var agentPosition = localToWorldFromEntity[entity].Position;
-                    Debug.Log($"{entity}");
+                    // Debug.Log($"{entity}");
                     var worldPosition = agentPosition;
                     var worldDestination = NavUtil.MultiplyPoint3x4(
                         localToWorldFromEntity[agent.DestinationSurface].Value,

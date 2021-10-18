@@ -55,6 +55,19 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
-  }
+    "com.unity.modules.xr": "1.0.0",
+    "com.solidalloy.generic-unity-objects": "2.11.2"
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.openupm",
+        "com.solidalloy.generic-unity-objects",
+        "com.solidalloy.type-references",
+        "com.solidalloy.util"
+      ]
+    }
+  ]
 }

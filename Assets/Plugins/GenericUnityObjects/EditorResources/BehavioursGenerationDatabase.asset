@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e34fec35c2bb4f2880a04272d23fbc31, type: 3}
+  m_Name: BehavioursGenerationDatabase
+  m_EditorClassIdentifier: 
+  _genericArgumentKeys: []
+  _genericArgumentValues:
+  - _array: []
+  _genericTypeValues: []
+  _genericTypeKeys:
+  - _typeNameAndAssembly: Tayx.Graphy.Utils.G_Singleton`1, Tayx.Graphy
+    _guid: dbf324bd9d0eaf7408f3b72ed03e2588
+    AssemblyGUID: 06b1033e4d081154899f7f61cc18b692
+    _argNames:
+    - T
+    _componentName: 
+    _order: 0

@@ -1127,10 +1127,10 @@ GameObject:
   - component: {fileID: 669122231}
   - component: {fileID: 669122230}
   - component: {fileID: 669122229}
-  - component: {fileID: 669122232}
   - component: {fileID: 669122233}
   - component: {fileID: 669122234}
   - component: {fileID: 669122228}
+  - component: {fileID: 669122232}
   m_Layer: 3
   m_Name: WaterPlane
   m_TagString: Untagged
@@ -1358,8 +1358,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AgentTypeID: 0
   m_CollectObjects: 0
-  m_Size: {x: 3000, y: 2, z: 3000}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -1372,7 +1372,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 6
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: 4e5d44ec5e73fd341bdb2275bfbd5be3, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 7ee728f8e53a25d4d974bbaa3f6320b8, type: 2}
 --- !u!114 &669122233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2042,7 +2042,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8520222691718690185, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8863730947970231035, guid: dbb88a7fe23bdbd4ca8cddd2b83f0dff, type: 3}
       propertyPath: m_RootOrder
@@ -2144,14 +2144,6 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat
-      objectReference: {fileID: 0}
-    - target: {fileID: 4885768470970430959, guid: ba7890c4306385943905218853b526ef, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8597390108947850378, guid: ba7890c4306385943905218853b526ef, type: 3}
-      propertyPath: offset.y
-      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}

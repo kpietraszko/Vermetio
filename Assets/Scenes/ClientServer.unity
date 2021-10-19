@@ -293,6 +293,8 @@ MonoBehaviour:
     enabled: 1
   - prefab: {fileID: 8080581829221530458, guid: 7bcea81dc6f1cbf46af7102f65d9bda6, type: 3}
     enabled: 1
+  - prefab: {fileID: 7477081914441570866, guid: ba7890c4306385943905218853b526ef, type: 3}
+    enabled: 1
 --- !u!4 &222666375
 Transform:
   m_ObjectHideFlags: 0
@@ -1372,7 +1374,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 6
   m_BuildHeightMesh: 0
-  m_NavMeshData: {fileID: 23800000, guid: 7ee728f8e53a25d4d974bbaa3f6320b8, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: cccf37b48d1ded04992999cb5ddc8d19, type: 2}
 --- !u!114 &669122233
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1823033127, guid: 74bf7c0d855fad749a6392bba114bd9a, type: 3}
-  m_Name: ActionRoamSix
+  m_Script: {fileID: -1809788951, guid: 607d286fb4a113949b680f1e08a5b02a, type: 3}
+  m_Name: ActionAttack
   m_EditorClassIdentifier: 
   _considerations:
-  - {fileID: 11400000, guid: 01bc9ec9a0984114a9bf93189d17d6f7, type: 2}
   - {fileID: 11400000, guid: 9710b053c74a8bd48be8fcb41ffb28fd, type: 2}

@@ -17,6 +17,7 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering.HighDefinition;
 #endif
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 #if !UNITY_2020_3_OR_NEWER
 #error This version of Crest requires Unity 2020.3 or later.
@@ -490,6 +491,10 @@ namespace Crest
             if (_timeProvider != null)
             {
                 PushTimeProvider(_timeProvider);
+            }
+            else
+            {
+                Debug.LogError("This game requires a custom time provider and it's not assigned!");
             }
 
             if (!_primaryLight && _searchForPrimaryLightOnStartup)

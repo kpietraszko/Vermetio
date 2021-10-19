@@ -18,5 +18,8 @@ MonoBehaviour:
   - _keys:
     - _collection:
       - _typeNameAndAssembly: RoamActionComponent, Assembly-CSharp
+    - _collection:
+      - _typeNameAndAssembly: AttackActionComponent, Assembly-CSharp
     _values:
     - _typeNameAndAssembly: ConcreteClass_74bf7c0d855fad749a6392bba114bd9a, Action_RoamActionComponent
+    - _typeNameAndAssembly: ConcreteClass_607d286fb4a113949b680f1e08a5b02a, Action_AttackActionComponent

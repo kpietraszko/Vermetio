@@ -15,12 +15,18 @@ MonoBehaviour:
   _genericArgumentKeys:
   - _typeNameAndAssembly: RoamActionComponent, Assembly-CSharp
     _guid: 34525b727257a254ca5a54e7e13d3ee0
+  - _typeNameAndAssembly: AttackActionComponent, Assembly-CSharp
+    _guid: 60bf72e4e8e44c10889c67c64fef5260
   _genericArgumentValues:
   - _array:
     - _arguments:
       - _typeNameAndAssembly: RoamActionComponent, Assembly-CSharp
         _guid: 34525b727257a254ca5a54e7e13d3ee0
       _assemblyGUID: 74bf7c0d855fad749a6392bba114bd9a
+    - _arguments:
+      - _typeNameAndAssembly: AttackActionComponent, Assembly-CSharp
+        _guid: 60bf72e4e8e44c10889c67c64fef5260
+      _assemblyGUID: 607d286fb4a113949b680f1e08a5b02a
   _genericTypeValues:
   - _array:
     - _typeNameAndAssembly: Vermetio.AI.Action`1, Assembly-CSharp
@@ -28,6 +34,12 @@ MonoBehaviour:
       AssemblyGUID: 
       _argNames:
       - TAction
+    - _typeNameAndAssembly: Vermetio.AI.Action`1, Assembly-CSharp
+      _guid: 6261f997483dbf844bd5118fa62890ca
+      AssemblyGUID: 
+      _argNames:
+      - TAction
+  - _array:
     - _typeNameAndAssembly: Vermetio.AI.Action`1, Assembly-CSharp
       _guid: 6261f997483dbf844bd5118fa62890ca
       AssemblyGUID: 

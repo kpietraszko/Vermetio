@@ -21,12 +21,10 @@ public class AIBrainAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
             if (!firstActionDefRef.IsCreated)
                 firstActionDefRef = actionDefBlobRef;
-
         }
 
         dstManager.AddComponentData(entity, new AIBrainComponent() { CurrentAction = firstActionDefRef });
         //action1.GetType().BaseType.GetGenericArguments()[0]
-        
         ;
     }
 

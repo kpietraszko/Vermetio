@@ -615,7 +615,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: ENABLE_HYBRID_RENDERER_V2;DISABLE_GENERIC_OBJECT_EDITOR;DOTS_HYBRID_COMPONENTS_DEBUG
+    1: ENABLE_HYBRID_RENDERER_V2;DISABLE_GENERIC_OBJECT_EDITOR
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

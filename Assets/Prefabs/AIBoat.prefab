@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 5942454678032692310}
   - component: {fileID: -7929960071233452748}
   - component: {fileID: 8597390108947850378}
-  - component: {fileID: 425096524534840267}
+  - component: {fileID: 5531508102978920379}
   m_Layer: 0
   m_Name: AIBoat
   m_TagString: Untagged
@@ -579,7 +579,7 @@ MonoBehaviour:
   type: Boat
   offset: {x: 0, y: 4, z: 0}
   isTerrainCapable: 0
---- !u!114 &425096524534840267
+--- !u!114 &5531508102978920379
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -588,11 +588,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1028933030943869725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceed2d6f32981c746b7e85f205f7b7ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 6770ac872708e0847b54a142808a8e96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actions:
-  - {fileID: 11400000, guid: 47da33a10ef11824f9e45b54bfa9a7b3, type: 2}
 --- !u!1 &1031506611295282554
 GameObject:
   m_ObjectHideFlags: 0

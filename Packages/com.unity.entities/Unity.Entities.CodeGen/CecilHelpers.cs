@@ -909,7 +909,7 @@ namespace Unity.Entities.CodeGen
 
             if (cursor.OpCode.FlowControl == FlowControl.Call)
                 return false;
-
+            
             return true;
         }
 

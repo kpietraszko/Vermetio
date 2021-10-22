@@ -7,9 +7,9 @@ namespace Vermetio.AI
 {
     public interface IActionComponent : IComponentData
     {
+        public int ActionId { get; }
         public BlobAssetReference<ActionDef> ActionDef { get; }
-        public float CurrentScore { get; set; }
 
-        public IActionComponent Initialize(BlobAssetReference<ActionDef> actionDef);
+        public IActionComponent Initialize(int actionId, BlobAssetReference<ActionDef> actionDef);
     }
 }

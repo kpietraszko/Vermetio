@@ -11,9 +11,9 @@ namespace Vermetio.AI
         SCurve = 2
     }
     
-    [CreateAssetMenu(fileName = "ActionConsideration", menuName = "AI/Consideration")]
+    // [CreateAssetMenu(fileName = "ActionConsideration", menuName = "AI/Consideration")]
     [Serializable]
-    public class ActionConsideration : ExpandableGenericScriptableObject
+    public class ActionConsideration/* : ExpandableGenericScriptableObject*/
     {
         public ConsiderationInputType InputType;
         public CurveType CurveType;

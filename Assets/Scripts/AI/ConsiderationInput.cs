@@ -1,7 +1,11 @@
 ﻿namespace Vermetio.AI
 {
-    public enum ConsiderationInputType
+    public enum ConsiderationInputType : int
     {
-        
+        MyHealth,
+        MyAmmo,
+        DistanceToEnemy,
+        TargetHealth, 
+        Count
     }
 }

@@ -13,5 +13,27 @@ MonoBehaviour:
   m_Name: ActionRoamSix
   m_EditorClassIdentifier: 
   _considerations:
-  - {fileID: 11400000, guid: 01bc9ec9a0984114a9bf93189d17d6f7, type: 2}
-  - {fileID: 11400000, guid: 9710b053c74a8bd48be8fcb41ffb28fd, type: 2}
+  - InputType: 0
+    CurveType: 1
+    CurveM: 1
+    CurveK: 2
+    CurveB: 3
+    CurveC: 4
+    _curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - InputType: 1
+    CurveType: 2
+    CurveM: 2
+    CurveK: 4
+    CurveB: 6
+    CurveC: 8
+    _curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4

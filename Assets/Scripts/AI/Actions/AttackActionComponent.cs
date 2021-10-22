@@ -7,15 +7,15 @@ using Vermetio.AI;
 [Serializable]
 public struct AttackActionComponent : IActionComponent
 {
+    public int ActionId { get; private set; }
     public BlobAssetReference<ActionDef> ActionDef { get; private set; }
-    public float CurrentScore { get; set; }
-    public Entity TargetEnemy;
 
-    public IActionComponent Initialize(BlobAssetReference<ActionDef> actionDef)
+    public IActionComponent Initialize(int actionId, BlobAssetReference<ActionDef> actionDef)
     {
         return new AttackActionComponent()
         {
-            ActionDef = actionDef
+            ActionId = actionId, 
+            // ActionDef = actionDef
         };
     }
 }

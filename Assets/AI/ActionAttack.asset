@@ -13,4 +13,27 @@ MonoBehaviour:
   m_Name: ActionAttack
   m_EditorClassIdentifier: 
   _considerations:
-  - {fileID: 11400000, guid: 9710b053c74a8bd48be8fcb41ffb28fd, type: 2}
+  - InputType: 0
+    CurveType: 1
+    CurveM: 3
+    CurveK: 4
+    CurveB: 5
+    CurveC: 6
+    _curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - InputType: 2
+    CurveType: 1
+    CurveM: 4
+    CurveK: 5
+    CurveB: 6
+    CurveC: 7
+    _curve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4

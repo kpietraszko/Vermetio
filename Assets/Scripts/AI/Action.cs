@@ -22,17 +22,43 @@ namespace Vermetio.AI
         // private string ActionName;
         
         [SerializeField]
-        public ActionConsideration[] _considerations;
+        private ActionConsideration[] _considerations;
 
         private TAction _dummyComponent = new TAction(); 
 
-        public override void AddActionComponent(EntityManager entityManager, Entity entity, int actionId)
+        public override void ConvertToBlobAndAddActionComponent(EntityManager entityManager, Entity entity, int actionId)
         {
-            // var actionDefBlobAssetRef = builder.CreateBlobAssetReference<ActionDef>(Allocator.Persistent);
-            var actionComponent = (TAction) _dummyComponent.Initialize(actionId, default);
+            using var builder = new BlobBuilder(Allocator.TempJob);
+            ref var actionBlobAsset = ref builder.ConstructRoot<ActionDef>();
+            actionBlobAsset = new ActionDef()
+            {
+                ActionName = new FixedString32(name)
+            };
+            var considerations = builder.Allocate(ref actionBlobAsset.Considerations, _considerations.Length);
+
+            for (int i = 0; i < _considerations.Length; i++)
+            {
+                var cons = _considerations[i];
+                considerations[i] = new ConsiderationDef()
+                {
+                    // ConsiderationName = new FixedString64($"{this.name} - {cons.InputType}"), 
+                    InputType = cons.InputType, 
+                    Curve = new ConsiderationCurve()
+                    {
+                        CurveType = cons.CurveType, 
+                        B = cons.CurveB, 
+                        C = cons.CurveC, 
+                        K = cons.CurveK, 
+                        M = cons.CurveM
+                    }
+                };
+            }
+            
+            var actionDefBlobAssetRef = builder.CreateBlobAssetReference<ActionDef>(Allocator.Persistent);
+            // can't do new TAction because compiler gets confused for some reason
+            var actionComponent = (TAction)_dummyComponent.Initialize(actionId, actionDefBlobAssetRef); 
             // Adding a specific component per action to then compare it to actions I'm iterating over and execute specific action's code
             entityManager.AddComponentData(entity, actionComponent);
-            
         }
     }
 }

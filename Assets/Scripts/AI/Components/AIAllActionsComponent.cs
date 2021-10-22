@@ -8,5 +8,5 @@ using Vermetio.AI;
 public struct AIAllActionsComponent : IComponentData
 {
     public int AllActionsCount;
-    public BlobAssetReference<AIAllActionsBlob> AllActionsDefs;
+    // public BlobAssetReference<AIAllActionsBlob> AllActionsDefs;
 }

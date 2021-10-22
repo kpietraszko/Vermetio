@@ -15,7 +15,7 @@ public struct AttackActionComponent : IActionComponent
         return new AttackActionComponent()
         {
             ActionId = actionId, 
-            // ActionDef = actionDef
+            ActionDef = actionDef
         };
     }
 }

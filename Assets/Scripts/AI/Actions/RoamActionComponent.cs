@@ -16,7 +16,7 @@ public struct RoamActionComponent : IActionComponent
         return new RoamActionComponent()
         {
             ActionId = actionId, 
-            // ActionDef = actionDef
+            ActionDef = actionDef
         };
     }
 }

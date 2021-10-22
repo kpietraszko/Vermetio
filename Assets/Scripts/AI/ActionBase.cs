@@ -5,6 +5,6 @@ namespace Vermetio.AI
     public abstract class ActionBase : ExpandableGenericScriptableObject
     {
         public abstract ActionConsideration[] Considerations { get; }
-        public abstract void AddActionComponent(EntityManager entityManager, Entity entity, int actionId);
+        public abstract void ConvertToBlobAndAddActionComponent(EntityManager entityManager, Entity entity, int actionId);
     }
 }

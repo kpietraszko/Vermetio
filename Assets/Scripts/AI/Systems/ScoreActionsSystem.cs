@@ -43,16 +43,11 @@ public class ScoreActionsSystem : SystemBase
         public Entity Target; // optional
     }
 
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-        RequireSingletonForUpdate<AIAllActionsComponent>();
-    }
-
     protected override void OnUpdate()
     {
         _allActionsQuery = GetEntityQuery(typeof(AIAllActionsComponent));
-        _allActionsEntity = _allActionsQuery.GetSingletonEntity();
+        if (!TryGetSingletonEntity<AIAllActionsComponent>(out _allActionsEntity))
+            return;
         
         var considerationsPerEntity = new NativeMultiHashMap<Entity, ConsiderationPermutation>(_aiBrainsQuery.CalculateEntityCount(), Allocator.TempJob);
 

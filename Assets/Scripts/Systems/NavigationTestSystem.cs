@@ -46,7 +46,9 @@ namespace Vermetio.Server
                         WorldPoint = new float3(-55f, 0f, 380f)
                     });
 
+                    #if UNITY_EDITOR
                     EntityManager.SetName(entity, "AIBoat");
+                    #endif
                 }).Run();
 
             Entities.ForEach((in NavProblem problem) => { Debug.LogError($"{problem.Value}"); }).Run();

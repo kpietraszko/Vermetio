@@ -20,7 +20,7 @@ public class ScoreActionsSystem : SystemBase
     private static Entity _allActionsEntity;
     private EntityQuery _aiBrainsQuery;
     private NativeMultiHashMap<Entity, ConsiderationPermutation> _considerationsPerEntity; // static or not?
-    // private static BlobAssetReference<ActionDef> _actionDefRef; // static or not?
+    private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
     public struct ConsiderationPermutation
     {
@@ -36,11 +36,18 @@ public class ScoreActionsSystem : SystemBase
         }
     }
 
-    public struct ActionScorePermutation
+    // used internally here, but also as a component on AI agent
+    public struct ActionPermutation : IComponentData
     {
         public int ActionId;
         public float Score;
         public Entity Target; // optional
+    }
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        _endSimulationEcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
     protected override void OnUpdate()
@@ -52,14 +59,14 @@ public class ScoreActionsSystem : SystemBase
         var considerationsPerEntity = new NativeMultiHashMap<Entity, ConsiderationPermutation>(_aiBrainsQuery.CalculateEntityCount(), Allocator.TempJob);
 
         // for every action type I need a list of Consideration
-                Entities.WithNone<Prefab>().WithAll<AIBrainComponent>()
+                Entities.WithNone<Prefab>().WithAll<AIAgentComponent>()
                     .ForEach((Entity entity, in HealthComponent health) =>
                     {
                         considerationsPerEntity.Add(entity, 
                             new ConsiderationPermutation(ConsiderationInputType.MyHealth, health.Value / 3f));
                     }).Run();
         
-                Entities.WithNone<Prefab>().WithAll<AIBrainComponent>()
+                Entities.WithNone<Prefab>().WithAll<AIAgentComponent>()
                     .ForEach((Entity entity, in PlayerInventoryComponent inventory) =>
                     {
                         considerationsPerEntity.Add(entity,
@@ -67,8 +74,8 @@ public class ScoreActionsSystem : SystemBase
                     }).Run();
 
                 var testAiBrains = _aiBrainsQuery.ToEntityArray(Allocator.TempJob);
-                Entities.WithNone<Prefab>().WithAll<AIBrainComponent>().WithDisposeOnCompletion(testAiBrains)
-                    .ForEach((Entity entity, in AIBrainComponent aiBrain) =>
+                Entities.WithNone<Prefab>().WithAll<AIAgentComponent>().WithDisposeOnCompletion(testAiBrains)
+                    .ForEach((Entity entity, in AIAgentComponent aiBrain) =>
                     {
                         // imagine I'm getting enemies position here
                         var distanceToEnemy1 = 100f;
@@ -85,7 +92,7 @@ public class ScoreActionsSystem : SystemBase
         _considerationsPerEntity = considerationsPerEntity;
 
         var allActionsComponent = GetComponent<AIAllActionsComponent>(_allActionsEntity);
-        var actionsPermutations = new NativeMultiHashMap<Entity, ActionScorePermutation>(allActionsComponent.AllActionsCount * 2, Allocator.TempJob);
+        var actionsPermutations = new NativeMultiHashMap<Entity, ActionPermutation>(allActionsComponent.AllActionsCount * 2, Allocator.TempJob);
         MergeInActionPermutations(actionsPermutations, EntityManager.GetComponentData<RoamActionComponent>(_allActionsEntity), out var roamActionId);
         MergeInActionPermutations(actionsPermutations, EntityManager.GetComponentData<AttackActionComponent>(_allActionsEntity), out var attackActionId);
 
@@ -96,10 +103,32 @@ public class ScoreActionsSystem : SystemBase
         // still have to find best permutation and act on it though :/
         // maybe also a generic method that returns a list of ActionScorePermutation for given action and out roamActionId, then merge lists and sort by score
 
-        Entities.WithStoreEntityQueryInField(ref _aiBrainsQuery).ForEach((in AIBrainComponent brain) => { }).Run();
+        var endFrameEcb = _endSimulationEcbSystem.CreateCommandBuffer();
+        
+        Entities.WithStoreEntityQueryInField(ref _aiBrainsQuery).ForEach((Entity entity, in AIAgentComponent brain) =>
+        {
+            ActionPermutation bestActionPermutation = default;
+            foreach (var permutation in actionsPermutations.GetValuesForKey(entity))
+            {
+                if (permutation.Score > bestActionPermutation.Score)
+                    bestActionPermutation = permutation;
+            }
+
+            if (bestActionPermutation.ActionId == roamActionId)
+                endFrameEcb.AddComponent<RoamActionComponent>(entity);
+
+            if (bestActionPermutation.ActionId == attackActionId)
+            {
+                endFrameEcb.AddComponent<AttackActionComponent>(entity);
+                endFrameEcb.SetComponent(entity, new AIActionTargetComponent() { Value = bestActionPermutation.Target });
+            }
+
+        }).Run();
+        
+        _endSimulationEcbSystem.AddJobHandleForProducer(Dependency);
     }
 
-    private void MergeInActionPermutations(NativeMultiHashMap<Entity, ActionScorePermutation> permutations, IActionComponent actionComponent, out int actionId)
+    private void MergeInActionPermutations(NativeMultiHashMap<Entity, ActionPermutation> permutations, IActionComponent actionComponent, out int actionId)
     {
         actionId = actionComponent.ActionId;
         // ref var actionDef = ref actionComponent.ActionDef.Value;
@@ -126,8 +155,9 @@ public class ScoreActionsSystem : SystemBase
         public int ActionId;
         [ReadOnly] public EntityTypeHandle EntityType;
         public NativeMultiHashMap<Entity, ConsiderationPermutation> ConsiderationsPerEntity;
-        public NativeMultiHashMap<Entity, ActionScorePermutation> ActionsPermutations; // output, Entity here is Brain
+        public NativeMultiHashMap<Entity, ActionPermutation> ActionsPermutations; // output, Entity here is Brain
 
+        [BurstCompile]
         public void Execute(ArchetypeChunk batchInChunk, int batchIndex)
         {
             ref var considerationsDefs = ref ActionDef.Value.Considerations;
@@ -136,7 +166,7 @@ public class ScoreActionsSystem : SystemBase
             
             for (int entityIdx = 0; entityIdx < batchInChunk.Count; entityIdx++)
             {
-                var actionScorePerTarget = new NativeHashMap<Entity, ActionScorePermutation>(10, Allocator.Temp); // Entity here is Target
+                var actionScorePerTarget = new NativeHashMap<Entity, ActionPermutation>(10, Allocator.Temp); // Entity here is Target
                 var considerationPermutations = ConsiderationsPerEntity.GetValuesForKey(entities[entityIdx]);
                 
                 for (int i = 0; i < considerationsDefs.Length; i++)
@@ -148,10 +178,10 @@ public class ScoreActionsSystem : SystemBase
                     {
                         if (considerationPermutation.ConsiderationType == consideration.InputType)
                         {
-                            var output = ProccessWithCurve(considerationPermutation, curve);
+                            var output = ProcessWithCurve(considerationPermutation, curve);
 
                             // Add or update this action's score for this target
-                            if (!actionScorePerTarget.TryAdd(considerationPermutation.Target, new ActionScorePermutation()
+                            if (!actionScorePerTarget.TryAdd(considerationPermutation.Target, new ActionPermutation()
                             {
                                 ActionId = ActionId,
                                 Score = output,
@@ -170,7 +200,7 @@ public class ScoreActionsSystem : SystemBase
                 var scorePerTarget = actionScorePerTarget.GetKeyValueArrays(Allocator.Temp); // key is Target
                 for (int i = 0; i < scorePerTarget.Length; i++)
                 {
-                    ActionsPermutations.Add(entities[entityIdx], new ActionScorePermutation()
+                    ActionsPermutations.Add(entities[entityIdx], new ActionPermutation()
                     {
                         ActionId = ActionId,
                         Score = scorePerTarget.Values[i].Score,
@@ -182,7 +212,7 @@ public class ScoreActionsSystem : SystemBase
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float ProccessWithCurve(ConsiderationPermutation considerationPermutation, ConsiderationCurve curve)
+        private static float ProcessWithCurve(ConsiderationPermutation considerationPermutation, ConsiderationCurve curve)
         {
             var x = math.clamp(considerationPermutation.Value, 0f, 1f);
             var output = 0f;

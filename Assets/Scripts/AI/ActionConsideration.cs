@@ -11,23 +11,48 @@ namespace Vermetio.AI
         SCurve = 2
     }
     
-    // [CreateAssetMenu(fileName = "ActionConsideration", menuName = "AI/Consideration")]
     [Serializable]
-    public class ActionConsideration/* : ExpandableGenericScriptableObject*/
+    public class ActionConsideration : ISerializationCallbackReceiver
     {
         public ConsiderationInputType InputType;
         public CurveType CurveType;
-        public float CurveM;
-        public float CurveK;
-        public float CurveB;
-        public float CurveC;
+        public float M = 1f;
+        public float K = 1f;
+        public float B = 0f;
+        public float C = 0f;
 
         [SerializeField]
         private AnimationCurve _curve;
 
-        private void OnValidate()
+        private int _generatedCurveHash;
+
+        public void GenerateCurvePreview()
         {
             _curve = new AnimationCurve();
+            var steps = 512f;
+            for (int i = 0; i < steps; i++)
+            {
+                var x = i / steps;
+                _curve.AddKey(x, ScoreActionsSystem.ProcessWithCurve(x, CurveType, M, K, B, C));
+            }
+            _generatedCurveHash = GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return CurveType.GetHashCode() ^ M.GetHashCode() ^ K.GetHashCode() ^ B.GetHashCode() ^ C.GetHashCode();
+        }
+
+        public void OnBeforeSerialize()
+        {
+            if (GetHashCode() == _generatedCurveHash)
+                return;
+
+            GenerateCurvePreview();
+        }
+
+        public void OnAfterDeserialize()
+        {
         }
     }
 }

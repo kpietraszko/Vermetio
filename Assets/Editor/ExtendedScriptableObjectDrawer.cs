@@ -1,4 +1,4 @@
-// Modifications made by Luiz Wendt
+/*// Modifications made by Luiz Wendt
 // Released under the MIT Licence as held at https://opensource.org/licenses/MIT
 
 // Must be placed within a folder named "Editor"
@@ -17,10 +17,9 @@ using UnityEditor;
 /// Also provides a button to create a new ScriptableObject if property is null.
 /// todo: enable custom editors for scriptable objects
 /// </summary>
-[CustomPropertyDrawer(typeof(ExpandableGenericScriptableObject), true)]
+// [CustomPropertyDrawer(typeof(ExpandableGenericScriptableObject), true)]
 public class ExtendedScriptableObjectDrawer : PropertyDrawer // TODO: see if can get proper header by copying code from GenericHeaderEditor
 {
-
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         float totalHeight = EditorGUIUtility.singleLineHeight;
@@ -52,6 +51,7 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer // TODO: see if can
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
+        Debug.Log($"OnGUI");
         if (property.objectReferenceValue != null)
         {
             if (IsThereAnyVisibileProperty(property))
@@ -88,6 +88,7 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer // TODO: see if can
                     {
                         // Don't bother drawing the class file
                         if (prop.name == "m_Script") continue;
+                        Debug.Log($"{prop.type}");
                         float height = EditorGUI.GetPropertyHeight(prop, new GUIContent(prop.displayName), true);
                         EditorGUI.PropertyField(new Rect(position.x, y, position.width, height), prop, true);
                         y += height + EditorGUIUtility.standardVerticalSpacing;
@@ -149,4 +150,4 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer // TODO: see if can
         }
         return false;
     }
-}
+}*/

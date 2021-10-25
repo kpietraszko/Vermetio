@@ -178,7 +178,7 @@ public class ScoreActionsSystem : SystemBase
                     {
                         if (considerationPermutation.ConsiderationType == consideration.InputType)
                         {
-                            var output = ProcessWithCurve(considerationPermutation, curve);
+                            var output = ProcessWithCurve(considerationPermutation.Value, curve.CurveType, curve.M, curve.K, curve.B, curve.C);
 
                             // Add or update this action's score for this target
                             if (!actionScorePerTarget.TryAdd(considerationPermutation.Target, new ActionPermutation()
@@ -212,26 +212,26 @@ public class ScoreActionsSystem : SystemBase
     }
     
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static float ProcessWithCurve(ConsiderationPermutation considerationPermutation, ConsiderationCurve curve)
+        public static float ProcessWithCurve(float value, CurveType curveType, float m, float k, float b, float c)
         {
-            var x = math.clamp(considerationPermutation.Value, 0f, 1f);
+            var x = math.clamp(value, 0f, 1f);
             var output = 0f;
-            switch (curve.CurveType)
+            switch (curveType)
             {
                 case CurveType.LinearOrCubic:
-                    output = curve.M * math.pow(x - curve.C, curve.K) + curve.B;
+                    output = m * math.pow(x - c, k) + b;
                     break;
                 case CurveType.SCurve:
-                    output = curve.K *
-                             (1f / (1f + math.pow(1000f * math.E * curve.M, -x * x + curve.C))) +
-                             curve.B;
+                    output = k *
+                             (1f / (1f + math.pow(1000f * math.E * m, -x * x + c))) +
+                             b;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
     
             output = math.clamp(output, 0f, 1f);
-            Debug.Log($"{output}");
+            // Debug.Log($"{output}");
             return output;
         }
 }

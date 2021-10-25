@@ -22,9 +22,18 @@ namespace Vermetio.AI
         // private string ActionName;
         
         [SerializeField]
+        [Header("M - slope", order = 0), Space(-10, order = 1), Header("K - exponent", order = 2), Space(-10, order = 3), Header("B - offset vertically", order=4), Space(-10, order=5), Header("C - offset horizontally", order=6)]
         private ActionConsideration[] _considerations;
 
-        private TAction _dummyComponent = new TAction(); 
+        private TAction _dummyComponent = new TAction();
+
+        // private void OnValidate()
+        // {
+        //     foreach (var consideration in _considerations)
+        //     {
+        //         consideration.GenerateCurvePreview();
+        //     }
+        // }
 
         public override void ConvertToBlobAndAddActionComponent(EntityManager entityManager, Entity entity, int actionId)
         {
@@ -46,10 +55,10 @@ namespace Vermetio.AI
                     Curve = new ConsiderationCurve()
                     {
                         CurveType = cons.CurveType, 
-                        B = cons.CurveB, 
-                        C = cons.CurveC, 
-                        K = cons.CurveK, 
-                        M = cons.CurveM
+                        B = cons.B, 
+                        C = cons.C, 
+                        K = cons.K, 
+                        M = cons.M
                     }
                 };
             }
@@ -60,5 +69,6 @@ namespace Vermetio.AI
             // Adding a specific component per action to then compare it to actions I'm iterating over and execute specific action's code
             entityManager.AddComponentData(entity, actionComponent);
         }
+
     }
 }

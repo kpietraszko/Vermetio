@@ -32,7 +32,7 @@ namespace Vermetio.Server
 
             Entities
                 .WithNone<BoatFullyAboveWaterTag>()
-                .WithoutBurst()
+                // .WithoutBurst()
                 .ForEach((DynamicBuffer<BoatInput> keyboardInputBuffer, ref Translation translation,
                     ref Rotation rotation,
                     ref PhysicsMass pm, ref PhysicsVelocity pv, in LocalToWorld localToWorld,
@@ -46,10 +46,10 @@ namespace Vermetio.Server
                     if (math.abs(keyboardInput.Throttle) < 0.001f) // don't add force OR ROTATION if no throttle
                         return;
                     
-                    using (StreamWriter sw = new StreamWriter("boatPosition.csv", true))
-                    {
-                        sw.WriteLine($"{localToWorld.Position.x};{localToWorld.Position.z}");
-                    }
+                    // using (StreamWriter sw = new StreamWriter("boatPosition.csv", true))
+                    // {
+                    //     sw.WriteLine($"{localToWorld.Position.x};{localToWorld.Position.z}");
+                    // }
                     
                     localToWorld.Position.DrawCross(11f, Color.green, 1/60f);
 

@@ -157,7 +157,7 @@ public class ScoreActionsSystem : SystemBase
         public NativeMultiHashMap<Entity, ConsiderationPermutation> ConsiderationsPerEntity;
         public NativeMultiHashMap<Entity, ActionPermutation> ActionsPermutations; // output, Entity here is Brain
 
-        [BurstCompile]
+        [BurstCompile(FloatMode = FloatMode.Fast)]
         public void Execute(ArchetypeChunk batchInChunk, int batchIndex)
         {
             ref var considerationsDefs = ref ActionDef.Value.Considerations;
@@ -173,7 +173,7 @@ public class ScoreActionsSystem : SystemBase
                 {
                     ref var consideration = ref considerationsDefs[i];
                     ref var curve = ref considerationsDefs[i].Curve;
-                    Debug.Log($"Curve type: {curve.CurveType} curve: {curve.B};{curve.C};{curve.K};{curve.M}");
+                    // Debug.Log($"Curve type: {curve.CurveType} curve: {curve.B};{curve.C};{curve.K};{curve.M}");
                     foreach (var considerationPermutation in considerationPermutations)
                     {
                         if (considerationPermutation.ConsiderationType == consideration.InputType)

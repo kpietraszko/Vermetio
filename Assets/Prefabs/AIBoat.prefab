@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2429763103723447342}
   - component: {fileID: 4990598448304882665}
   - component: {fileID: 1164871653586883635}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Elbow Joint.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: -7929960071233452748}
   - component: {fileID: 8597390108947850378}
   - component: {fileID: 5531508102978920379}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: AIBoat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -602,7 +602,7 @@ GameObject:
   - component: {fileID: 8789359052666728527}
   - component: {fileID: 6358329943094837219}
   - component: {fileID: 8255520359295718872}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gear.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -683,7 +683,7 @@ GameObject:
   - component: {fileID: 8252436276656597274}
   - component: {fileID: 7498645136155171384}
   - component: {fileID: 5101560427486611954}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -765,7 +765,7 @@ GameObject:
   - component: {fileID: 4653105189319820614}
   - component: {fileID: 1795438971366790419}
   - component: {fileID: 6330222689878810979}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ChainCurve
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -846,7 +846,7 @@ GameObject:
   - component: {fileID: 8831218210681851771}
   - component: {fileID: 813115991720115388}
   - component: {fileID: 247722866545112177}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TurretAxleGear.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -927,7 +927,7 @@ GameObject:
   - component: {fileID: 5580296023460321941}
   - component: {fileID: 7342071509533148306}
   - component: {fileID: 57025378635514304}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TurretAxle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1010,7 +1010,7 @@ GameObject:
   - component: {fileID: 6898584872071568880}
   - component: {fileID: 2326335767075771454}
   - component: {fileID: 7173264730870302306}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1107,7 +1107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7899605511377138162}
   - component: {fileID: 9039007529936478783}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: DirectionLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1164,7 +1164,7 @@ GameObject:
   - component: {fileID: 4745026717682180847}
   - component: {fileID: 7517157044583197813}
   - component: {fileID: 6965627519713238263}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1264,7 +1264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4188777491349740820}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NOTE that I would also like to send TurretAxle rotation, but skipping for
     now, too deep
   m_TagString: Untagged
@@ -1297,7 +1297,7 @@ GameObject:
   - component: {fileID: 3072695814111728419}
   - component: {fileID: 6127420905731549268}
   - component: {fileID: 2756139076798566373}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BarrelPipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1378,7 +1378,7 @@ GameObject:
   - component: {fileID: 7671428351690450950}
   - component: {fileID: 6825490966701556393}
   - component: {fileID: 8220058094070842434}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gear.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1459,7 +1459,7 @@ GameObject:
   - component: {fileID: 253112693902750552}
   - component: {fileID: 3478883392972357049}
   - component: {fileID: 3865347763268195981}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Chain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1540,7 +1540,7 @@ GameObject:
   - component: {fileID: 7491675992935769237}
   - component: {fileID: 2410329217593327358}
   - component: {fileID: 3032100899031182454}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gear.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1619,7 +1619,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7854086055693185456}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: '"Cylinder" rotation needs to be sent to clients'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1651,7 +1651,7 @@ GameObject:
   - component: {fileID: 8566951800034236830}
   - component: {fileID: 7960777028958703163}
   - component: {fileID: 7690220127348763430}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CannonPipe.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1733,7 +1733,7 @@ GameObject:
   - component: {fileID: 7823385880036153791}
   - component: {fileID: 3468484063631206508}
   - component: {fileID: 5275728936335793929}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MainGearAxle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1814,7 +1814,7 @@ GameObject:
   - component: {fileID: 6098803132908962595}
   - component: {fileID: 1396317383447157735}
   - component: {fileID: 7243459433175122748}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Elbow Joint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1895,7 +1895,7 @@ GameObject:
   - component: {fileID: 139701464451544256}
   - component: {fileID: 3873393865489944893}
   - component: {fileID: 7414001533417829878}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CannonPipe.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1977,7 +1977,7 @@ GameObject:
   - component: {fileID: 6095296386158878228}
   - component: {fileID: 8270108013132611519}
   - component: {fileID: 193085147816764110}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2058,7 +2058,7 @@ GameObject:
   - component: {fileID: 2765750365194378792}
   - component: {fileID: 3131516059265417020}
   - component: {fileID: 3214228388593510838}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cylinder.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2139,7 +2139,7 @@ GameObject:
   - component: {fileID: 7890894722988896309}
   - component: {fileID: 8856687296954048901}
   - component: {fileID: 3168724797674684293}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Clutch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2220,7 +2220,7 @@ GameObject:
   - component: {fileID: 6266198633935556167}
   - component: {fileID: 7142800803174655677}
   - component: {fileID: 3815144928623459588}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Elbow Joint.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2301,7 +2301,7 @@ GameObject:
   - component: {fileID: 470153834774685126}
   - component: {fileID: 5849912001149961195}
   - component: {fileID: 1964545163529469416}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CannonPipe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2383,7 +2383,7 @@ GameObject:
   - component: {fileID: 8379461229959110483}
   - component: {fileID: 2017182125730745717}
   - component: {fileID: 8336246204983936456}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2465,7 +2465,7 @@ GameObject:
   - component: {fileID: 6806199597328349032}
   - component: {fileID: 817707621836323436}
   - component: {fileID: 4875722127646389552}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TurretAxleGear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2547,7 +2547,7 @@ GameObject:
   - component: {fileID: 5045453033629407968}
   - component: {fileID: 2173158050921784486}
   - component: {fileID: 581192113106854432}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Boat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2628,7 +2628,7 @@ GameObject:
   - component: {fileID: 5218893166934449411}
   - component: {fileID: 6478137963617372832}
   - component: {fileID: 6462963380776274502}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TurretAxleHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2707,7 +2707,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 519396111102986452}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BulletSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2739,7 +2739,7 @@ GameObject:
   - component: {fileID: 7607152022183177230}
   - component: {fileID: 5583231004130244828}
   - component: {fileID: 8615207280375245564}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TurretAxleHolder.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}

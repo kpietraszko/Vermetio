@@ -59,7 +59,9 @@ public class BoatsProxyPool : MonoBehaviour
             
             _proxiesOfEntities.Add(entities[i], _proxies[i]); // for future debugging use
             _proxies[i].SetActive(true);
+            #if UNITY_EDITOR
             _proxies[i].GetComponent<AIAgentDebug>().AIAgentEntity = entities[i];
+            #endif
             
             var boatPosition = world.EntityManager.GetComponentData<Translation>(entities[i]).Value;
             var boatRotation = world.EntityManager.GetComponentData<Rotation>(entities[i]).Value;

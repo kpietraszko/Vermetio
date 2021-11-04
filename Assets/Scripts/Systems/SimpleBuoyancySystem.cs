@@ -67,7 +67,7 @@ namespace Vermetio.Server
             if (_queryPoints?.Length != numberOfBuoyantObjects)
             {
                 #if UNITY_EDITOR
-                Debug.Log("Simple array size mismatch - reallocating");
+                // Debug.Log("Simple array size mismatch - reallocating");
                 #endif
                 _queryPoints = new Vector3[numberOfBuoyantObjects];
                 _waterHeights = new float[numberOfBuoyantObjects];

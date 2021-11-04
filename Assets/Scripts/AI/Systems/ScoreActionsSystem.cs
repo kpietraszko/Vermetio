@@ -16,10 +16,15 @@ using Vermetio.AI;
 [UpdateInGroup(typeof(ServerSimulationSystemGroup))]
 public class ScoreActionsSystem : SystemBase
 {
+    public NativeMultiHashMap<Entity, ConsiderationPermutation> ConsiderationsPerEntity => _considerationsPerEntity;
+    public NativeMultiHashMap<Entity, ActionPermutation> ActionsPermutations => _actionsPermutations;
+    public NativeHashMap<int, BlobAssetReference<ActionDef>> ActionDefRefPerActionId { get; private set; }
+
     private EntityQuery _allActionsQuery;
     private static Entity _allActionsEntity;
     private EntityQuery _aiBrainsQuery;
     private NativeMultiHashMap<Entity, ConsiderationPermutation> _considerationsPerEntity; // static or not?
+    private NativeMultiHashMap<Entity, ActionPermutation> _actionsPermutations;
     private EndSimulationEntityCommandBufferSystem _endSimulationEcbSystem;
 
     public struct ConsiderationPermutation
@@ -93,9 +98,17 @@ public class ScoreActionsSystem : SystemBase
 
         var allActionsComponent = GetComponent<AIAllActionsComponent>(_allActionsEntity);
         var actionsPermutations = new NativeMultiHashMap<Entity, ActionPermutation>(allActionsComponent.AllActionsCount * 2, Allocator.TempJob);
+        
+        #region forDebug
+        if (ActionDefRefPerActionId.IsCreated)
+            ActionDefRefPerActionId.Dispose();
+        
+        ActionDefRefPerActionId = new NativeHashMap<int, BlobAssetReference<ActionDef>>(allActionsComponent.AllActionsCount, Allocator.TempJob);
+        #endregion
         MergeInActionPermutations(actionsPermutations, EntityManager.GetComponentData<RoamActionComponent>(_allActionsEntity), out var roamActionId);
         MergeInActionPermutations(actionsPermutations, EntityManager.GetComponentData<AttackActionComponent>(_allActionsEntity), out var attackActionId);
 
+        _actionsPermutations = actionsPermutations;
         var keyValues = actionsPermutations.GetKeyValueArrays(Allocator.TempJob);
         ;
         // generic job that takes the roam/attackComponent, iterates over that action's blob's considerations, pulls their values from the NativeMultiHashMap,
@@ -131,6 +144,7 @@ public class ScoreActionsSystem : SystemBase
     private void MergeInActionPermutations(NativeMultiHashMap<Entity, ActionPermutation> permutations, IActionComponent actionComponent, out int actionId)
     {
         actionId = actionComponent.ActionId;
+        ActionDefRefPerActionId.Add(actionId, actionComponent.ActionDef);
         // ref var actionDef = ref actionComponent.ActionDef.Value;
 
         var considerationsPerEntity = _considerationsPerEntity;
@@ -197,13 +211,20 @@ public class ScoreActionsSystem : SystemBase
                 }
                 
                 // Copy final scores per target to output
+                // if has both [Entity.Null] and [other Entity] then [other Entity] needs to be multiplied by [Entity.Null] and [Entity.Null] should be removed
+                // because action needs target if any of its considerations is targeted
+                var someConsTargetedAndSomeNot = actionScorePerTarget.ContainsKey(Entity.Null) && actionScorePerTarget.GetKeyArray(Allocator.Temp).Length > 1;
+                actionScorePerTarget.TryGetValue(Entity.Null, out var nonTargetedScore);
                 var scorePerTarget = actionScorePerTarget.GetKeyValueArrays(Allocator.Temp); // key is Target
                 for (int i = 0; i < scorePerTarget.Length; i++)
                 {
+                    if (someConsTargetedAndSomeNot && scorePerTarget.Keys[i] == Entity.Null)
+                        continue;
+                    
                     ActionsPermutations.Add(entities[entityIdx], new ActionPermutation()
                     {
                         ActionId = ActionId,
-                        Score = scorePerTarget.Values[i].Score,
+                        Score = someConsTargetedAndSomeNot ? scorePerTarget.Values[i].Score * nonTargetedScore.Score : scorePerTarget.Values[i].Score, 
                         Target = scorePerTarget.Keys[i]
                     });
                 }

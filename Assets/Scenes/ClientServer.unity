@@ -178,6 +178,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (43)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1 &13196843
@@ -415,6 +419,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (35)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &134306511
@@ -472,6 +480,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (26)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &175852163
@@ -528,6 +540,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (36)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -637,6 +653,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (48)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -756,6 +776,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (45)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &317185040
@@ -813,6 +837,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (37)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &330954748
@@ -869,6 +897,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (39)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -1187,6 +1219,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (23)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &447502991
@@ -1304,6 +1340,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (33)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -1545,6 +1585,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (38)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &581705988
@@ -1602,6 +1646,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &589922804
@@ -1658,6 +1706,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (46)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -1777,6 +1829,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (29)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &630696704
@@ -1895,6 +1951,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &657857299
@@ -2012,6 +2072,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (42)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -2204,6 +2268,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &739937173
@@ -2260,6 +2328,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -2501,6 +2573,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (32)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &834607867
@@ -2639,6 +2715,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (30)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &851101847
@@ -2757,6 +2837,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (22)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &880622423
@@ -2813,6 +2897,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -2948,6 +3036,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &910498726
@@ -3005,6 +3097,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (28)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &979614513
@@ -3061,6 +3157,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -3207,6 +3307,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (20)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -3523,6 +3627,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (25)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1284035008
@@ -3815,6 +3923,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (47)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1346744767
@@ -3871,6 +3983,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -4063,6 +4179,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (40)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1441286627
@@ -4181,6 +4301,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (44)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1469975424
@@ -4237,6 +4361,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -4295,6 +4423,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (31)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1526976083
@@ -4351,6 +4483,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -4470,6 +4606,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1668923263
@@ -4527,6 +4667,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (17)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1673843962
@@ -4583,6 +4727,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (27)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -4702,6 +4850,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (19)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1722414317
@@ -4820,6 +4972,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1795333489
@@ -4876,6 +5032,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -5052,6 +5212,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (34)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1853620837
@@ -5108,6 +5272,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (7)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -5171,6 +5339,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (41)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1878996590
@@ -5228,6 +5400,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (24)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &1912497080
@@ -5284,6 +5460,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (18)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
@@ -5781,6 +5961,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (21)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &2078764624
@@ -5960,6 +6144,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AIBoat2 (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}
 --- !u!1001 &2119169465
@@ -6016,6 +6204,10 @@ PrefabInstance:
     - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
       propertyPath: m_Name
       value: AIBoat2 (16)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1028933030943869725, guid: ba7890c4306385943905218853b526ef, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba7890c4306385943905218853b526ef, type: 3}

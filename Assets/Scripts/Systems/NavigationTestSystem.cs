@@ -103,7 +103,7 @@ namespace Vermetio.Server
                     {
                         if (pathBuffer.Length == 0)
                         {
-                            Debug.Log("Nowhere to go");
+                            // Debug.Log("Nowhere to go");
                             ecb.AppendToBuffer(entity, new BoatInput()
                             {
                                 Throttle = 0,

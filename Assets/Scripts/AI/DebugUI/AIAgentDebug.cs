@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +37,7 @@ public class AIAgentDebug : MonoBehaviour
     {
     }
 
+    #if UNITY_EDITOR
     // TODO: disable this in release builds
     private void Update()
     {
@@ -91,5 +91,5 @@ public class AIAgentDebug : MonoBehaviour
         Actions = Actions.OrderBy(a => a.ActionName).ToList();
         ;
     }
+    #endif
 }
-#endif

@@ -18,6 +18,8 @@ public class AIAgentDebug : MonoBehaviour
     [SerializeField]
     public ActionDebug SelectedAction;
 
+    public World World;
+
     [Serializable]
     public struct ActionDebug
     {
@@ -45,11 +47,11 @@ public class AIAgentDebug : MonoBehaviour
             return;
 
         // Note that this means the server needs boats proxies GameObjects
-        var world = EntityHelpers.GetWorldWith<ServerSimulationSystemGroup>(World.All);
-        if (world == null)
+        World = EntityHelpers.GetWorldWith<ServerSimulationSystemGroup>(World.All);
+        if (World == null)
             return;
 
-        var system = world.GetExistingSystem<ScoreActionsSystem>();
+        var system = World.GetExistingSystem<ScoreActionsSystem>();
         // mismatch, using client entity in server world
         if (!system.ConsiderationsPerEntity.ContainsKey(AIAgentEntity))
             return;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Unity.Entities;
+using Unity.Entities.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -39,6 +40,10 @@ public class AIAgentDebugEditor : UnityEditor.Editor
         _rootElement.Clear();
         _visualTree.CloneTree(_rootElement);
         _rootElement.Q<Label>("entity").text = _aiAgentDebug.AIAgentEntity.ToString();
+        _rootElement.Q<Label>("entity").RegisterCallback<ClickEvent>(e =>
+        {
+            EntitySelectionProxy.SelectEntity(_aiAgentDebug.World, _aiAgentDebug.AIAgentEntity);
+        });
 
         _graphContainer = _rootElement.Q("graph");
         _considerationsContainer = _rootElement.Q("considerations");
@@ -55,15 +60,19 @@ public class AIAgentDebugEditor : UnityEditor.Editor
             _graphContainer.hierarchy.Add(actionBar);
             var actionDebug = _aiAgentDebug.Actions[actionIdx];
             actionBar.Q<Label>(className: "action-name").text = actionDebug.ActionName;
-            actionBar.Q<Label>(className: "action-target").text =
-                actionDebug.Target == Entity.Null ? String.Empty : actionDebug.Target.ToString();
-            
+            var actionTargetLabel = actionBar.Q<Label>(className: "action-target");
+            actionTargetLabel.text = actionDebug.Target == Entity.Null ? String.Empty : actionDebug.Target.ToString();
+            actionTargetLabel.RegisterCallback<ClickEvent>(e =>
+            {
+                EntitySelectionProxy.SelectEntity(_aiAgentDebug.World, actionDebug.Target);
+            });
+
             var actionScore = actionDebug.Considerations
                 .Aggregate(1, (float sum, AIAgentDebug.ConsiderationDebug current) => sum * current.ValueAfterCurve);
 
             actionBar.Q(className: "graph-bar").style.height = actionScore * 100;
 
-            actionBar.EnableInClassList("best-action",  actionScore == bestActionScore);
+            actionBar.EnableInClassList("best-action", actionScore == bestActionScore);
 
             actionBar.RegisterCallback<MouseEnterEvent>(e =>
             {
